@@ -148,7 +148,7 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
             job->available_site_cores = result->available_site_cores;
             job->available_site_cpus = result->available_site_cpus;
             saver->updateJob(job);
-            retry_counts[job]++;
+            retry_counts[job]++; 
             if (job->status == "assigned") {
                  
                 site_statistics[job->comp_site].assigned++;
