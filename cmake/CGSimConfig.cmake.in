@@ -1,0 +1,13 @@
+@PACKAGE_INIT@
+
+# Import targets from the install location
+include("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATAROOTDIR@/cmake/CGSim/CGSimTargets.cmake")
+
+# Define include directory
+set(CGSim_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@/CGSim")
+
+# Provide variables for find_package() consumers
+set(CGSim_FOUND TRUE)
+
+# Print message when package is found
+message(STATUS "CGSim package found! Include directories: ${CGSim_INCLUDE_DIR}")

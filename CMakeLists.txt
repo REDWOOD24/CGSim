@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 message(STATUS "Cmake version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
-project(SimATLAS VERSION 1.1)
+project(CGSim VERSION 1.1)
 
 # Disable annoying warnings
 #add_definitions(-DSPDLOG_FMT_EXTERNAL)
@@ -33,13 +33,13 @@ file(GLOB_RECURSE SOURCE_FILES
 )
 
 # Build the library
-add_library(SimATLAS SHARED ${SOURCE_FILES})
+add_library(CGSim SHARED ${SOURCE_FILES})
 
 # Generating the executable
-add_executable(atlas-grid-simulator src/main.cpp)
+add_executable(cg-sim src/main.cpp)
 
 target_link_libraries(
-	SimATLAS
+	CGSim
 	${SimGrid_LIBRARY}
         ${Boost_LIBRARIES}
         ${FSMOD_LIBRARY}
@@ -48,8 +48,8 @@ target_link_libraries(
 	fmt::fmt
 )
 
-target_link_libraries(atlas-grid-simulator
-    SimATLAS
+target_link_libraries(cg-sim
+    CGSim
 )
 
 # ==============================
@@ -61,42 +61,42 @@ include(CMakePackageConfigHelpers)
 
 
 # Install Library
-install(TARGETS SimATLAS
-    EXPORT SimATLASTargets
+install(TARGETS CGSim
+    EXPORT CGSimTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 # Install header files
 install(FILES include/job.h include/DispatcherPlugin.h include/host_extensions.h include/logger.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SimATLAS)
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGSim)
 
 # Install the executable
-install(TARGETS atlas-grid-simulator
+install(TARGETS cg-sim
         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Export targets to a file
-install(EXPORT SimATLASTargets
-	NAMESPACE SimATLAS::
-    	FILE SimATLASTargets.cmake
-    	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/SimATLAS
+install(EXPORT CGSimTargets
+	NAMESPACE CGSim::
+    	FILE CGSimTargets.cmake
+    	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/CGSim
 )
 
 # Create a package configuration file
 configure_package_config_file(
-        "${CMAKE_SOURCE_DIR}/cmake/SimATLASConfig.cmake.in"
-        "${CMAKE_BINARY_DIR}/SimATLASConfig.cmake"
-        INSTALL_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/cmake/SimATLAS"
+        "${CMAKE_SOURCE_DIR}/cmake/CGSimConfig.cmake.in"
+        "${CMAKE_BINARY_DIR}/CGSimConfig.cmake"
+        INSTALL_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/cmake/CGSim"
 )
 
-install(FILES "${CMAKE_BINARY_DIR}/SimATLASConfig.cmake"
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/SimATLAS)
+install(FILES "${CMAKE_BINARY_DIR}/CGSimConfig.cmake"
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/CGSim)
 
 # Generate a version file
 write_basic_package_version_file(
-        "${CMAKE_BINARY_DIR}/SimATLASConfigVersion.cmake"
+        "${CMAKE_BINARY_DIR}/CGSimConfigVersion.cmake"
         VERSION ${PROJECT_VERSION}
         COMPATIBILITY SameMajorVersion
 )
 
-install(FILES "${CMAKE_BINARY_DIR}/SimATLASConfigVersion.cmake"
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/SimATLAS)
+install(FILES "${CMAKE_BINARY_DIR}/CGSimConfigVersion.cmake"
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/CGSim)
