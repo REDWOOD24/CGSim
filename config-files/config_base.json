@@ -1,12 +1,12 @@
 {
     "Grid_Name": "ATLAS-GRID",
-    "Sites_Information": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/site_info_cpu.json",
-    "Sites": ["BNL"],
-    "Sites_Connection_Information": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/site_conn_info.json",
+    "Sites_Information": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/grid_info/site_info_cpu_calib.json",
+    "Sites": ["NET2_Amherst"],
+    "Sites_Connection_Information": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/grid_info/site_conn_info.json",
     "Dispatcher_Plugin": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.so",
-    "Output_DB": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/output/A_single_bnl_200.db",
-    "Input_Job_CSV": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/jan_10k_by_BNL.csv",
-    "Num_of_Jobs": 1000,
+    "Output_DB": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/output/mlsurrogate/ml_surroagte_net2.db",
+    "Input_Job_CSV": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/debugscalability/NET2_jobs.csv",
+    "Num_of_Jobs": 20000,
     "cpu_min_max": [
         5,
         9

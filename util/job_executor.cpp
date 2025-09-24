@@ -29,6 +29,7 @@ std::unique_ptr<sqliteSaver> JOB_EXECUTOR::saver = std::make_unique<sqliteSaver>
 sg4::ActivitySet JOB_EXECUTOR::pending_activities;
 sg4::ActivitySet JOB_EXECUTOR::exec_activities;
 std::unordered_map<std::string, JobSiteStats> JOB_EXECUTOR::site_statistics;
+std::string JOB_EXECUTOR::fixed_creation_time; // Added static member for fixed creation time
 
 
 void JOB_EXECUTOR::set_dispatcher(const std::string& dispatcherPath, sg4::NetZone* platform)
@@ -50,8 +51,25 @@ void JOB_EXECUTOR::set_output(const std::string& outputFile)
   saver->createStateTable();
 }
 
+void JOB_EXECUTOR::set_fixed_creation_time(const std::string& creation_time)
+{
+  fixed_creation_time = creation_time;
+  LOG_INFO("Fixed creation time set to: {}", fixed_creation_time);
+}
+
+std::string& JOB_EXECUTOR::get_fixed_creation_time()
+{
+  return fixed_creation_time;
+}
+
 void JOB_EXECUTOR::start_job_execution(JobQueue jobs)
 {
+  // Set the fixed creation time before starting job execution
+  if (fixed_creation_time.empty()) {
+    fixed_creation_time = "1/22/2024 12:47"; // Default creation time
+    LOG_INFO("Using default fixed creation time: {}", fixed_creation_time);
+  }
+  
   attach_callbacks();
   LOG_INFO("Callbacks attached. Starting job execution...");
   const auto* e = sg4::Engine::get_instance();
@@ -78,9 +96,7 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
     const auto* e = sg4::Engine::get_instance();
     //sg4::ActivitySet job_activities;
 
-
     LOG_INFO("Server started. Initial jobs count: {}", jobs.size());
-
 
     // Transfer all jobs from the queue into a vector for central polling.
     std::vector<Job*> pending_jobs;
@@ -96,13 +112,15 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
         job->available_site_cores = result->available_site_cores;
         job->available_site_cpus = result->available_site_cpus;
         saver->updateJob(result);
+
         if (result->status == "assigned") {
-            
+            job->site_cores = result->site_cores;
+            job->site_cpus = result->site_cpus;
             if (!result->comp_site.empty()) {
                 site_statistics[result->comp_site].assigned++;
             }
-            // saving the state of the job
-            job->lastUpdatedTimeStamp = get_job_time_stamp(job->creation_time, sg4::Engine::get_clock());
+            // saving the state of the job using fixed creation time
+            job->lastUpdatedTimeStamp = get_job_time_stamp(fixed_creation_time, sg4::Engine::get_clock());
             saver->saveState(job,site_statistics[result->comp_site]);
             // If assigned immediately, dispatch it.
             auto fs = simgrid::fsmod::FileSystem::get_file_systems_by_netzone(
@@ -110,7 +128,7 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
                           .at(job->comp_site + job->comp_host + job->disk + "filesystem");
             update_disk_content(fs, job->input_files, job);
             sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-            exec_activities.push(mqueue->put_async(job)->set_name("Comm_Job_" + job->id + "_on_" + job->comp_host));
+            pending_activities.push(mqueue->put_async(job)->set_name("Comm_Job_" + job->id + "_on_" + job->comp_host));
             LOG_DEBUG("Job {} dispatched immediately to host {}", job->id, job->comp_host);
         } else {
             // Set status and add to pending list.
@@ -126,7 +144,8 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
                 if (!job->comp_site.empty()) {
                      site_statistics[job->comp_site].pending++;
                 }
-                job->lastUpdatedTimeStamp = get_job_time_stamp(job->creation_time, sg4::Engine::get_clock());
+                // Use fixed creation time instead of job->creation_time
+                job->lastUpdatedTimeStamp = get_job_time_stamp(fixed_creation_time, sg4::Engine::get_clock());
                 saver->saveState(job,site_statistics[result->comp_site]);
                 pending_jobs.push_back(job);
             }
@@ -139,30 +158,40 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
     for (Job* job : pending_jobs) {
         retry_counts[job] = 0;
     }
-
+     // create a map of sitename and current free cores and initalize all of them to zeros
+    std::unordered_map<std::string, int> site_free_cores;
     // Poll the pending jobs list until none remain.
     while (!pending_jobs.empty()) {
+
         for (auto it = pending_jobs.begin(); it != pending_jobs.end(); ) {
+            if (site_free_cores[(*it)->comp_site] < (*it)->cores) {
+                ++it;
+                continue; // Skip this job if not enough free cores at the site
+            } 
+
             Job* job = *it;
             Job* result = dispatcher->assignJob(job);
             job->available_site_cores = result->available_site_cores;
             job->available_site_cpus = result->available_site_cpus;
             saver->updateJob(job);
             retry_counts[job]++; 
-            if (job->status == "assigned") {
+           
+            if (job->status == "assigned") { 
                  
                 site_statistics[job->comp_site].assigned++;
                 site_statistics[job->comp_site].pending--;
-                // If assigned, dispatch it.
-                job->lastUpdatedTimeStamp = get_job_time_stamp(job->creation_time, sg4::Engine::get_clock());
+                // Update the free cores for that site in the site_free_cores map
+                site_free_cores[job->comp_site] -= job->cores;
+                // If assigned, dispatch it using fixed creation time
+                job->lastUpdatedTimeStamp = get_job_time_stamp(fixed_creation_time, sg4::Engine::get_clock());
                 saver->saveState(job,site_statistics[job->comp_site]);
                 auto fs = simgrid::fsmod::FileSystem::get_file_systems_by_netzone(
                               e->netzone_by_name_or_null(job->comp_site))
                               .at(job->comp_site + job->comp_host + job->disk + "filesystem");
                 update_disk_content(fs, job->input_files, job);
                 sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-                exec_activities.push(mqueue->put_async(job)->set_name("Comm_Job_" + job->id + "_on_" + job->comp_host));
-                LOG_DEBUG("Job {} dispatched after {} retries to host {}", job->id, retry_counts[job], job->comp_host);
+                pending_activities.push(mqueue->put_async(job)->set_name("Comm_Job_" + job->id + "_on_" + job->comp_host));
+                // LOG_CRITICAL("Job {} dispatched after {} retries to host {}", job->id, retry_counts[job], job->comp_host);
                 it = pending_jobs.erase(it);
             }
 
@@ -172,37 +201,80 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
         }
         if (!exec_activities.empty()) {
           auto activityPtr = exec_activities.wait_any();
-          LOG_INFO("Updated Pending Activities count: {}", JOB_EXECUTOR::exec_activities.size());
-          LOG_INFO("Activity completed: {}", activityPtr->get_name());
-        }
-        LOG_INFO("Pending jobs count: {}", pending_jobs.size());
+          std::cout << "Activity completed: " << activityPtr->get_name() << std::endl;
+
+          // Extracting cores released by this activity, using the cores used information embedded in the activity name as a workaround
+          std::string activityName = activityPtr->get_name();
+          int cores_free = JOB_EXECUTOR::coreReleased(activityName);
+
+          // LOG_CRITICAL("Updated Pending Activities count: {}", JOB_EXECUTOR::exec_activities.size());
+          // LOG_CRITICAL("Activity completed: {}", activityPtr->get_name());
+          // std::cout << "Activity completed: " << activityPtr->get_name() << std::endl;
+          while (auto concurrentActivityPtr = exec_activities.test_any()) {
+            std::string concurrentActivityName = activityPtr->get_name();
+            cores_free += JOB_EXECUTOR::coreReleased(concurrentActivityName);
+            // no time advancement, just removes finished activities
+            // wait_any() returns only one finished activity even if multiple are finished at the time stamp
+            // test_any() returns one finished activity at the time stamp but does not advance time
+            // std::cout << "Activity completed: " << concurrentActivityPtr->get_name() << std::endl;
+          }
+          // update the free cores for that site info into the site_free_cores map
+          // need to know the site name from the activity name, here is format of activity name: Exec_Job_<job_name>_on_<host_name>_at_site_<site_name>_UsingCores_<num_of_cores>
+          std::regex site_regex(R"_(_at_site_(\w+)_UsingCores_)_");
+          std::smatch match;
+          if (std::regex_search(activityName, match, site_regex)) {
+              std::string site_name = match[1];
+              // std::cout << "Site name extracted from activity: " << site_name << std::endl;
+              site_free_cores[site_name] += cores_free;
+              // std::cout << "Total free cores for site " << site_name << ": " << site_free_cores[site_name] << std::endl;
+          } else {
+              std::cout << "Failed to extract site name from activity: " << activityName << std::endl;
+          }
+        }         
+        std::cout << "Pending Jobs Count " << pending_jobs.size() << std::endl;
+        LOG_CRITICAL("Pending jobs count: {}", pending_jobs.size());
     }
 
     while (!exec_activities.empty())
       {
-      // std::cout << exec_activities.size() << std::endl;
+      std::cout << "Execution Activity Size"<< exec_activities.size() << std::endl;
       exec_activities.wait_any();
       // std::cout << exec_activities.wait_any()->get_name() << std::endl;
       // std::cout << exec_activities.size() << std::endl;
       }
-    while (!pending_activities.empty())
-      {
-      // std::cout << pending_activities.size() << std::endl;
-      pending_activities.wait_any();
-      // std::cout << pending_activities.wait_any()->get_name() << std::endl;
-      // std::cout << pending_activities.size() << std::endl;
-      }
+    // while (!pending_activities.empty())
+    //   {
+    //   std::cout << "Pending Activity Size" << pending_activities.size() << std::endl;
+    //   pending_activities.wait_all();
+    //   // std::cout << pending_activities.wait_any()->get_name() << std::endl;
+    //   // std::cout << pending_activities.size() << std::endl;
+    //   }
 
-  // pending_activities.wait_all();
+  pending_activities.wait_all();
   LOG_DEBUG("Finished All Pending Activities");
-
 }
+
+int JOB_EXECUTOR::coreReleased(std::string &activityName)
+{
+  std::regex cores_regex(R"(_UsingCores_(\d+))");
+  std::smatch match;
+  int cores_released = 0;
+  if (std::regex_search(activityName, match, cores_regex))
+  {
+    cores_released = std::stoi(match[1]);
+  }
+  std::cout << "Cores released by activity: " << cores_released << std::endl;
+  return cores_released;
+}
+
+
 
 void JOB_EXECUTOR::execute_job(Job* j)
 {
   LOG_DEBUG("Executing job: {}", j->id);
   j->status = "running";
-  j->lastUpdatedTimeStamp = get_job_time_stamp(j->creation_time, sg4::Engine::get_clock());
+  // Use fixed creation time instead of j->creation_time
+  j->lastUpdatedTimeStamp = get_job_time_stamp(fixed_creation_time, sg4::Engine::get_clock());
   saver->updateJob(j);
   saver->saveState(j,site_statistics[j->comp_site]);
 
@@ -339,10 +411,11 @@ double JOB_EXECUTOR::get_job_queue_time(std::string jobCreationTime, std::string
         return queue_time;
     }
 
-    // Helper function to parse timestamp from either format
+    // Helper function to parse timestamp from any supported format
     auto parse_timestamp = [](const std::string& timeStr) -> std::time_t {
-        std::regex timestamp_regex1(R"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})");  // Original format
-        std::regex timestamp_regex2(R"(\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2})");   // New format
+        std::regex timestamp_regex1(R"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})");  // Original format: YYYY-MM-DD HH:MM:SS
+        std::regex timestamp_regex2(R"(\d{1,2}/\d{1,2}/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)");   // New format with AM/PM: M/D/YYYY  H:MM:SS AM/PM
+        std::regex timestamp_regex3(R"(\d{1,2}/\d{1,2}/\d{4}\s+\d{1,2}:\d{2})");   // Alternative format: M/D/YYYY H:MM
         std::smatch match;
         
         if (std::regex_search(timeStr, match, timestamp_regex1)) {
@@ -354,7 +427,15 @@ double JOB_EXECUTOR::get_job_queue_time(std::string jobCreationTime, std::string
             return std::mktime(&tm);
             
         } else if (std::regex_search(timeStr, match, timestamp_regex2)) {
-            // Handle new format: MM/DD/YYYY H:MM
+            // Handle new format with AM/PM: M/D/YYYY  H:MM:SS AM/PM
+            std::string timestamp_str = match.str();
+            std::tm tm = {};
+            std::istringstream ss(timestamp_str);
+            ss >> std::get_time(&tm, "%m/%d/%Y %I:%M:%S %p");  // %I for 12-hour format, %p for AM/PM
+            return std::mktime(&tm);
+            
+        } else if (std::regex_search(timeStr, match, timestamp_regex3)) {
+            // Handle alternative format: M/D/YYYY H:MM
             std::string timestamp_str = match.str();
             std::tm tm = {};
             std::istringstream ss(timestamp_str);

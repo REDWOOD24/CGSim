@@ -13,7 +13,7 @@ void Actions::exec_task_multi_thread_async(Job* j, sg4::ActivitySet& pending_act
     sg4::ExecPtr exec_activity = sg4::Exec::init()
         ->set_flops_amount(j->flops)
         ->set_host(host)
-        ->set_name("Exec_Job_" + j->job_name + "_on_" + host->get_name());
+        ->set_name("Exec_Job_" + j->job_name + "_on_" + host->get_name() +"_at_site_"+j->comp_site+ "_UsingCores_" + std::to_string(j->cores));
 
     exec_activity->start();
     
@@ -23,62 +23,19 @@ void Actions::exec_task_multi_thread_async(Job* j, sg4::ActivitySet& pending_act
     exec_activity->on_this_completion_cb([j, &saver, &dispatcher, host](simgrid::s4u::Exec const& ex) {
         j->EXEC_time_taken += ex.get_finish_time() - ex.get_start_time();
         j->status = "finished";
-        j->start_time = JOB_EXECUTOR::get_job_time_stamp(j->creation_time, ex.get_start_time());
-        j->end_time = JOB_EXECUTOR::get_job_time_stamp(j->creation_time, ex.get_finish_time());
-        j->queue_time = JOB_EXECUTOR::get_job_queue_time(j->creation_time, j->start_time);
+        j->start_time = JOB_EXECUTOR::get_job_time_stamp(JOB_EXECUTOR::get_fixed_creation_time(), ex.get_start_time());
+        j->end_time = JOB_EXECUTOR::get_job_time_stamp(JOB_EXECUTOR::get_fixed_creation_time(), ex.get_finish_time());
+        j->queue_time = JOB_EXECUTOR::get_job_queue_time(JOB_EXECUTOR::get_fixed_creation_time(), j->start_time);
         j->lastUpdatedTimeStamp = j->end_time; // Update last updated timestamp to end time
-        // std::regex timestamp_regex(R"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})");
-        // std::smatch match;
-        
-        // if (std::regex_search(j->creation_time, match, timestamp_regex)) {
-        //     std::string timestamp_str = match.str();
-            
-        //     // Parse and convert to time_t
-        //     std::tm tm = {};
-        //     std::istringstream ss(timestamp_str);
-        //     ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-        //     std::time_t base_time = std::mktime(&tm);
-            
-        //     // Calculate start and end times
-        //     std::time_t start_timestamp = base_time + static_cast<std::time_t>(ex.get_start_time());
-        //     std::time_t end_timestamp = base_time + static_cast<std::time_t>(ex.get_finish_time());
-            
-        //     // Format timestamps
-        //     auto format_time = [](std::time_t t) {
-        //         std::ostringstream oss;
-        //         oss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
-        //         return oss.str();
-        //     };
-            
-        //     j->start_time = format_time(start_timestamp);
-        //     j->end_time = format_time(end_timestamp);
-        //     j->queue_time = static_cast<long>(start_timestamp - base_time);
-        //     j->lastUpdatedTimeStamp = j->end_time; // Update last updated timestamp to end time
-        // }
-        // std::cout << "Creation time of job " << std::to_string(j->jobid) << ": " << j->creation_time << std::endl;
-        // std::cout << "Starting execution of job " << std::to_string(j->jobid) << " on host " << host->get_name() 
-        //         << " at time " << ex.get_start_time() << std::endl;
-        // std::cout << "Finished execution of job " << std::to_string(j->jobid) << " on host " << host->get_name() 
-        //         << " at time " << ex.get_finish_time() << std::endl;
-        // std::cout << "Job " << std::to_string(j->jobid) << " start time: " << j->start_time << std::endl;
-        // std::cout << "Job " << std::to_string(j->jobid) << " end time: " << j->end_time << std::endl;
-        
+
+        std::cout<< "Call back of exec activity for job id: " << j->jobid << std::endl;
+        std::cout<< "Job End Time" << j->end_time<< std::endl; 
         saver->updateJob(j);
-        
-
-        // if (j->status == "finished" &&
-        //     j->files_read == j->input_files.size() &&
-        //     j->files_written == j->output_files.size()) {
-        //     LOG_DEBUG("All files read and written for job {}.", j->id);
-        //     LOG_DEBUG("Finished on host: {}", host->get_name());
-
-        //     sg4::this_actor::get_host()->extension<HostExtensions>()->onJobFinish(j);
-        //     // dispatcher->onJobEnd(j);
-        // }
+    
 
          if (j->status == "finished" ) {
             // LOG_DEBUG("All files read and written for job {}.", j->id);
-            LOG_DEBUG("JOB ID {} Finished on host: {}", j->jobid ,host->get_name());
+            // LOG_CRITICAL("JOB ID {} Finished on host: {}", j->jobid ,host->get_name());
             JOB_EXECUTOR::on_job_finished(j);
 
             // sg4::this_actor::get_host()->extension<HostExtensions>()->onJobFinish(j);

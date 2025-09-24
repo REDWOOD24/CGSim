@@ -88,104 +88,104 @@ double SIMPLE_DISPATCHER::getTotalSize(const std::unordered_map<std::string, siz
 
 Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
 {
-    Host* best_cpu = nullptr;
-    std::string best_disk;
-    double best_score = std::numeric_limits<double>::lowest();
+    // Input validation
+    if (!j || cpus.empty()) {
+        LOG_DEBUG("Invalid input: job is null or no CPUs available");
+        return nullptr;
+    }
+
     int total_available_site_cores = 0;
     int total_available_site_cpus = 0;
+    
+    // Calculate total storage requirement once
+    const size_t total_required_storage = getTotalSize(j->input_files) + getTotalSize(j->output_files);
 
-
-    // Create a priority queue from the CPU candidates.
-    std::priority_queue<Host*> cpu_queue;
-    for (auto* cpu : cpus)
-    {
-        int cpu_cores_available = sg4::Host::by_name(cpu->name)->extension<HostExtensions>()->get_cores_available();
+    // First pass: calculate site statistics
+    for (auto* cpu : cpus) {
         if (!cpu) {
             LOG_DEBUG("Warning: Encountered a null CPU pointer.");
             continue;
         }
 
+        auto* host_ext = sg4::Host::by_name(cpu->name)->extension<HostExtensions>();
+        if (!host_ext) {
+            LOG_DEBUG("Warning: No host extension for CPU {}", cpu->name);
+            continue;
+        }
+        
+        int cpu_cores_available = host_ext->get_cores_available();
         total_available_site_cores += cpu_cores_available;
+        
         if (cpu_cores_available > 0) {
             total_available_site_cpus++;
-        } else {
-            LOG_DEBUG("CPU {} has no available cores.", cpu->name);
         }
-        cpu_queue.push(cpu);
     }
 
-    int candidatesExamined = 0;
-    const int maxCandidates = 10;
+    // Second pass: find first suitable CPU (first-come-first-serve)
+    for (auto* cpu : cpus) {
+        // Null check FIRST
+        if (!cpu) {
+            continue;
+        }
 
-    while (!cpu_queue.empty() && candidatesExamined < maxCandidates)
-    {
-        Host* current = cpu_queue.top();
-        cpu_queue.pop();
-        ++candidatesExamined;
-        // LOG_DEBUG("Available Cores {}", sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available());
-        // LOG_DEBUG("JOB Cores needed {}", j->cores);
-        if (sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available() < j->cores)
-        {   
-            LOG_DEBUG("Cores not suffficient for job {} on CPU {}", j->jobid, current->name);
+       
+        auto* host_ext = sg4::Host::by_name(cpu->name)->extension<HostExtensions>();
+        if (!host_ext) {
+            continue;
+        }
         
+        int cpu_cores_available = host_ext->get_cores_available();
+
+        // Check core requirements
+        if (cpu_cores_available < j->cores) {
+            LOG_CRITICAL("Insufficient cores for job {} on CPU {} ({} available, {} needed)", 
+                     j->jobid, cpu->name, cpu_cores_available, j->cores);
             continue;
         }
 
-        // For now, using a dummy score.
-        double score = 1;
-        std::string current_disk = "";
-        size_t total_required_storage = this->getTotalSize(j->input_files) 
-                                        + this->getTotalSize(j->output_files);
-
-        for (const auto& d : current->disks) {
-            if (d->storage >= total_required_storage) {
-                current_disk = d->name;
+        // Check storage requirements and find suitable disk
+        std::string suitable_disk;
+        for (const auto& disk : cpu->disks) {
+            if (disk->storage >= total_required_storage) {
+                suitable_disk = disk->name;
                 break;
             }
         }
-        if (current_disk == "") {
+        
+        if (suitable_disk.empty()) {
+            LOG_CRITICAL("Insufficient storage for job {} on CPU {}", j->jobid, cpu->name);
             continue;
         }
-        if (score >= best_score)
-        {
-            best_score = score;
-            best_cpu = current;
-            best_disk = current_disk;
-        }
-        // NOTE: Original code had additional assignments that may be unintended;
-        // they are commented out here.
-        // best_cpu = current;
-        // best_disk = current_disk;
-    }
 
-    if (best_cpu)
-    {
-        // Deduct CPU cores and assign job.
-        sg4::Host::by_name(best_cpu->name)->extension<HostExtensions>()->registerJob(j); 
-        best_cpu->jobs.insert(j->jobid);
-        best_cpu->cores_available -= j->cores;
+        // Found first suitable CPU - allocate resources immediately
+        LOG_CRITICAL("Assigning job {} to first available CPU {}", j->jobid, cpu->name);
+        
+        // Register job with host extension
+        host_ext->registerJob(j);
+        
+        // Update CPU state
+        cpu->jobs.insert(j->jobid);
+        cpu->cores_available -= j->cores;
+        cpu->available_site_cores = total_available_site_cores;
+        cpu->available_site_cpus = total_available_site_cpus;
 
-        // Deduct storage from the chosen disk.
-        const auto totalSize = this->getTotalSize(j->input_files) 
-                             + this->getTotalSize(j->output_files);
-        for (auto& disk : best_cpu->disks)
-        {
-            if (disk->name == best_disk)
-            {
-                disk->storage -= totalSize;
+        // Allocate storage from chosen disk
+        for (auto& disk : cpu->disks) {
+            if (disk->name == suitable_disk) {
+                disk->storage -= total_required_storage;
                 break;
             }
         }
-        j->disk = best_disk;
-        j->comp_host = best_cpu->name;
-        best_cpu->available_site_cores = total_available_site_cores;
-        best_cpu->available_site_cpus = total_available_site_cpus;
-    }
-    else {
-        LOG_DEBUG("Could not find a suitable CPU for job {}", j->jobid );
 
+        // Update job assignment
+        j->disk = suitable_disk;
+        j->comp_host = cpu->name;
+
+        return cpu;
     }
-    return best_cpu;
+
+    LOG_CRITICAL("Could not find a suitable CPU for job {}", j->jobid);
+    return nullptr;
 }
 
 
@@ -266,7 +266,7 @@ void SIMPLE_DISPATCHER::free(Job* job)
    cpu->cores_available   += job->cores;
    disk->storage          += (this->getTotalSize(job->input_files) + this->getTotalSize(job->output_files));
    cpu->jobs.erase(job->jobid);
-   LOG_DEBUG("Job {} freed from CPU {}", job->jobid, cpu->name);
+   LOG_CRITICAL("Job {} freed from CPU {}", job->jobid, cpu->name);
    
  }
 }
@@ -285,21 +285,21 @@ Site* SIMPLE_DISPATCHER::findSiteByName(std::vector<Site*>& sites, const std::st
 
 void SIMPLE_DISPATCHER::printJobInfo(Job* job)
 {
-    LOG_DEBUG("----------------------------------------------------------------------");
-    LOG_INFO("Submitting .. {}", job->jobid);
-    LOG_DEBUG("FLOPs to be executed: {}", job->flops);
-    LOG_DEBUG("Files to be read:");
+    LOG_INFO("----------------------------------------------------------------------");
+    LOG_CRITICAL("Submitting .. {}", job->jobid);
+    LOG_INFO("FLOPs to be executed: {}", job->flops);
+    LOG_INFO("Files to be read:");
     for (const auto& file : job->input_files) {
-        LOG_DEBUG("File: {:<40} Size: {:>10}", file.first, file.second);
+        LOG_INFO("File: {:<40} Size: {:>10}", file.first, file.second);
     }
-    LOG_DEBUG("Files to be written:");
+    LOG_INFO("Files to be written:");
     for (const auto& file : job->output_files) {
-        LOG_DEBUG("File: {:<40} Size: {:>10}", file.first, file.second);
+        LOG_INFO("File: {:<40} Size: {:>10}", file.first, file.second);
     }
-    LOG_DEBUG("Cores Used: {}", job->cores);
-    LOG_DEBUG("Disk Used: {}", job->disk);
-    LOG_DEBUG("Host: {}", job->comp_host);
-    LOG_DEBUG("----------------------------------------------------------------------");
+    LOG_INFO("Cores Used: {}", job->cores);
+    LOG_INFO("Disk Used: {}", job->disk);
+    LOG_INFO("Host: {}", job->comp_host);
+    LOG_INFO("----------------------------------------------------------------------");
 }
 
 void SIMPLE_DISPATCHER::cleanup()

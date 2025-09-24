@@ -50,8 +50,6 @@ void sqliteSaver::createStateTable()
         "SITE TEXT NOT NULL, "
         "AVAILABLE_SITE_CORES INTEGER NOT NULL, "
         "AVAILABLE_SITE_CPUS INTEGER NOT NULL, "
-        "TOTAL_SITE_CPUS REAL NOT NULL, "
-        "TOTAL_SITE_CORES INTEGER NOT NULL, "
         "WORKLOAD REAL NOT NULL, "
         "NINPUT_FILES INTEGER NOT NULL, "
         "NOUTPUT_FILES INTEGER NOT NULL, "
@@ -124,10 +122,10 @@ void sqliteSaver::saveState(Job* j, const JobSiteStats& site_stats)
     sqlite3_stmt* stmt;
     std::string sql_insert =
     "INSERT INTO STATE (JOB_ID, CPU_NAME, STATE, TIMESTAMP, SITE, AVAILABLE_SITE_CORES, "
-    "AVAILABLE_SITE_CPUS, TOTAL_SITE_CPUS, TOTAL_SITE_CORES, WORKLOAD, NINPUT_FILES, NOUTPUT_FILES, "
+    "AVAILABLE_SITE_CPUS, WORKLOAD, NINPUT_FILES, NOUTPUT_FILES, "
     "INPUT_FILE_BYTES, OUTPUT_FILE_BYTES, SITE_PENDING_JOBS, SITE_ASSIGNED_JOBS, "
     "SITE_FINISHED_JOBS, SITE_FAILED_JOBS) "
-    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     if (sqlite3_prepare_v2(db, sql_insert.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, std::to_string(j->jobid).c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 2, j->comp_host.substr(j->comp_host.rfind('_') + 1).c_str(), -1, SQLITE_TRANSIENT);
@@ -136,18 +134,16 @@ void sqliteSaver::saveState(Job* j, const JobSiteStats& site_stats)
         sqlite3_bind_text(stmt, 5, j->comp_site.c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_int(stmt, 6, j->available_site_cores);
         sqlite3_bind_double(stmt, 7, j->available_site_cpus);
-        sqlite3_bind_double(stmt, 8, j->site_cpus);
-        sqlite3_bind_int(stmt, 9, j->site_cores);
-        sqlite3_bind_double(stmt, 10, j->flops);
-        sqlite3_bind_int(stmt, 11, j->no_of_inp_files);
-        sqlite3_bind_int(stmt, 12, j->no_of_out_files);
-        sqlite3_bind_double(stmt, 13, j->inp_file_bytes);
-        sqlite3_bind_double(stmt, 14, j->out_file_bytes);  
+        sqlite3_bind_double(stmt, 8, j->flops);
+        sqlite3_bind_int(stmt, 9, j->no_of_inp_files);
+        sqlite3_bind_int(stmt, 10, j->no_of_out_files);
+        sqlite3_bind_double(stmt, 11, j->inp_file_bytes);
+        sqlite3_bind_double(stmt, 12, j->out_file_bytes);  
         
-        sqlite3_bind_double(stmt, 15, site_stats.pending);
-        sqlite3_bind_double(stmt, 16, site_stats.assigned);
-        sqlite3_bind_double(stmt, 17, site_stats.finished);
-        sqlite3_bind_double(stmt, 18, site_stats.failed);
+        sqlite3_bind_double(stmt, 13, site_stats.pending);
+        sqlite3_bind_double(stmt, 14, site_stats.assigned);
+        sqlite3_bind_double(stmt, 15, site_stats.finished);
+        sqlite3_bind_double(stmt, 16, site_stats.failed);
     
         if (sqlite3_step(stmt) != SQLITE_DONE) {
             LOG_ERROR("Error inserting state for job {}: {}", j->jobid, sqlite3_errmsg(db));

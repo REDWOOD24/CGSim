@@ -1,0 +1,27 @@
+{
+    "Grid_Name": "ATLAS-GRID",
+    "Sites_Information": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/site_info_cpu.json",
+    "Sites": [
+        "BNL",
+        "CERN-T0",
+        "MWT2",
+        "NET2_Amherst",
+        "IN2P3-CC",
+        "RAL",
+        "CERN",
+        "FZK-LCG2",
+        "Vega",
+        "ANALY_AGLT2_VP",
+        "INFN-CNAF"
+    ],
+    "Sites_Connection_Information": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/site_conn_info.json",
+    "Dispatcher_Plugin": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.so",
+    "Output_DB": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/output/scalability_test_11_sites.db",
+    "Input_Job_CSV": "/home/sairam/ATLASGRIDV2/ATLAS-GRID-SIMULATION/data/pmbs/jan_2200_11.csv",
+    "Num_of_Jobs": 2200,
+    "cpu_min_max": [
+        5,
+        9
+    ],
+    "cpu_speed_precision": 11
+}

@@ -17,8 +17,8 @@ namespace logger {
         logger_instance = spdlog::basic_logger_mt("atlas_grid_simulation", "logs/atlas_grid_simulation.log", true);
         spdlog::set_default_logger(logger_instance);
         spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e [%l] %v");  
-        spdlog::set_level(spdlog::level::debug);               
-        spdlog::flush_on(spdlog::level::debug);
+        spdlog::set_level(spdlog::level::critical);               
+        spdlog::flush_on(spdlog::level::critical);
     }
 
     // Returns a reference to the global logger instance.
