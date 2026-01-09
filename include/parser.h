@@ -9,6 +9,7 @@
 #include <job.h>
 #include <queue>
 #include <list>
+#include <sstream>
 
 //Information needed to a specify a Disk                                                      
 struct DiskInfo {

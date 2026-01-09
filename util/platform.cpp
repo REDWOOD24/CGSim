@@ -1,5 +1,4 @@
 #include "platform.h"
-#include "logger.h"  // Add this line
 
 
 sg4::NetZone* Platform::create_platform(const std::string& platform_name)
@@ -53,13 +52,13 @@ sg4::NetZone* Platform::create_site(sg4::NetZone* platform, const std::string& s
 std::unordered_map<std::string, sg4::NetZone*> Platform::create_sites(sg4::NetZone* platform, std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>>& siteNameCPUInfo, std::unordered_map<std::string, int>& siteNameGFLOPS)
 {
     std::unordered_map<std::string, sg4::NetZone*> sites;
-    LOG_INFO("Initializing SimGrid Platform with all Sites...");
+    //LOG_INFO("Initializing SimGrid Platform with all Sites...");
     
     for (auto& sitePair : siteNameCPUInfo) {
         const std::string& site_name = sitePair.first;
         std::unordered_map<std::string, CPUInfo>& cpuInfo = sitePair.second;
         sites[site_name] = this->create_site(platform, site_name, cpuInfo, siteNameGFLOPS[site_name]);
-        LOG_DEBUG("Created site {}", site_name);
+        //LOG_DEBUG("Created site {}", site_name);
     }
 
     siteNameCPUInfo.clear();
@@ -70,14 +69,14 @@ std::unordered_map<std::string, sg4::NetZone*> Platform::create_sites(sg4::NetZo
 std::unordered_map<std::string, sg4::NetZone*> Platform::create_sites(sg4::NetZone* platform, const std::list<std::string>& filteredSiteList, std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>>& siteNameCPUInfo, std::unordered_map<std::string, int>& siteNameGFLOPS)
 {
     std::unordered_map<std::string, sg4::NetZone*> sites;
-    LOG_INFO("Initializing SimGrid Platform with selected Sites...");
+    //LOG_INFO("Initializing SimGrid Platform with selected Sites...");
 
     if (filteredSiteList.empty()) {
         for (auto& sitePair : siteNameCPUInfo) {
             const std::string& site_name = sitePair.first;
             std::unordered_map<std::string, CPUInfo>& cpuInfo = sitePair.second;
             sites[site_name] = this->create_site(platform, site_name, cpuInfo, siteNameGFLOPS[site_name]);
-            LOG_DEBUG("Created site {}", site_name);
+            //LOG_DEBUG("Created site {}", site_name);
         }
     } else {
         for (auto& sitePair : siteNameCPUInfo) {
@@ -85,7 +84,7 @@ std::unordered_map<std::string, sg4::NetZone*> Platform::create_sites(sg4::NetZo
             if (std::find(filteredSiteList.begin(), filteredSiteList.end(), site_name) != filteredSiteList.end()) {
                 std::unordered_map<std::string, CPUInfo>& cpuInfo = sitePair.second;
                 sites[site_name] = this->create_site(platform, site_name, cpuInfo, siteNameGFLOPS[site_name]);
-                LOG_DEBUG("Created filtered site {}", site_name);
+               // LOG_DEBUG("Created filtered site {}", site_name);
             }
         }
     }
@@ -111,7 +110,7 @@ void Platform::initialize_site_connections(sg4::NetZone* platform, std::unordere
         const sg4::Link* interzonal_link = platform->create_link(linkname, bandwidth)->set_latency(latency)->seal();
         platform->add_route(src, dst, { sg4::LinkInRoute(interzonal_link) });
 
-        LOG_DEBUG("Connected {} <--> {} with latency {} and bandwidth {}", src_name, dst_name, latency, bandwidth);
+        //LOG_DEBUG("Connected {} <--> {} with latency {} and bandwidth {}", src_name, dst_name, latency, bandwidth);
     }
 }
 
@@ -120,7 +119,7 @@ void Platform::initialize_simgrid_plugins()
     // Plugin initialization placeholder
     // sg_host_energy_plugin_init();
     simatlas_host_extension_init();
-    LOG_INFO("SimGrid plugins initialized (if any)");
+    //LOG_INFO("SimGrid plugins initialized (if any)");
 }
 
 void Platform::initialize_job_server(sg4::NetZone* platform, std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>>& siteNameCPUInfo, std::unordered_map<std::string, sg4::NetZone*>& sites)
@@ -142,7 +141,7 @@ void Platform::initialize_job_server(sg4::NetZone* platform, std::unordered_map<
     JOB_SERVER_site->set_gateway(JOB_SERVER_host->get_netpoint());
     JOB_SERVER_host->seal();
 
-    LOG_INFO("Created JOB-SERVER site and host");
+    //LOG_INFO("Created JOB-SERVER site and host");
 
     for (auto& sitePair : siteNameCPUInfo) {
         const std::string site_name = sitePair.first;
@@ -154,6 +153,6 @@ void Platform::initialize_job_server(sg4::NetZone* platform, std::unordered_map<
 
         platform->add_route(JOB_SERVER_site, site, { sg4::LinkInRoute(server_site_link) });
 
-        LOG_DEBUG("Connected JOB-SERVER to site {}", site_name);
+        //LOG_DEBUG("Connected JOB-SERVER to site {}", site_name);
     }
 }

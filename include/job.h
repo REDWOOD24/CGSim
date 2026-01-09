@@ -2,6 +2,7 @@
 #define JOB_H
 #include <string>
 #include <unordered_map>
+#include <queue>
 
 // //Information needed to a specify a Job
 // struct Job {
@@ -73,6 +74,8 @@ struct Job {
   
   
   };
+
+using JobQueue = std::priority_queue<Job*>;
 
 
 #endif //JOB_H

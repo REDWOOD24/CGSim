@@ -9,27 +9,25 @@
 #include <chrono>
 #include <list>
 #include <simgrid/s4u.hpp>
-#include "logger.h"
 #include "parser.h"
 #include "platform.h"
-#include "job_manager.h"
 #include "version.h"
+#include "logger.h"
 #include "job_executor.h"
 
 int main(int argc, char** argv)
 {
-  //simatlas_host_extension_init();
     logger::init();  // Must be called before any logging
     
     const std::string usage = std::string("usage: ") + argv[0] + " -c config.json";
     
     if (argc != 3) {
-        LOG_ERROR("Invalid number of arguments.\n{}", usage);
+     //   LOG_ERROR("Invalid number of arguments.\n{}", usage);
         return -1;
     }
 
     if (std::string(argv[1]) != "-c") {
-        LOG_ERROR("Missing -c option.\n{}", usage);
+     //   LOG_ERROR("Missing -c option.\n{}", usage);
         return -1;
     }
     
@@ -39,7 +37,7 @@ int main(int argc, char** argv)
 
     std::ifstream in(configFile);
     if (!in.is_open()) {
-        LOG_CRITICAL("Failed to open config file: {}", configFile);
+     //   LOG_CRITICAL("Failed to open config file: {}", configFile);
         return -1;
     }
 
@@ -50,7 +48,7 @@ int main(int argc, char** argv)
     const std::string siteConnInfoFile             = j["Sites_Connection_Information"];
     const std::string dispatcherPath               = j["Dispatcher_Plugin"];
     const std::string outputFile                   = j["Output_DB"];
-    const int         num_of_jobs                  = j["Num_of_Jobs"];
+    const long        num_of_jobs                 = j["Num_of_Jobs"];
     const std::string jobFile                      = j["Input_Job_CSV"];
     const std::list<std::string> filteredSiteList  = j["Sites"].get<std::list<std::string>>();
 
@@ -78,23 +76,18 @@ int main(int argc, char** argv)
     auto sites = pf->create_sites(platform, filteredSiteList, siteNameCPUInfo, siteNameGLOPS);
     pf->initialize_site_connections(platform, siteConnInfo, sites);
     pf->initialize_job_server(platform, siteNameCPUInfo, sites);
-    
+
+
+    PluginLoader<DispatcherPlugin> plugin_loader;
+    auto dispatcher = plugin_loader.load(dispatcherPath);
+    dispatcher->getResourceInformation(platform);
+
     // Create and set up executor
     std::unique_ptr<JOB_EXECUTOR> executor = std::make_unique<JOB_EXECUTOR>();
     executor->set_output(outputFile);
-    executor->set_dispatcher(dispatcherPath, platform);
+    executor->set_dispatcher(dispatcher);
     executor->start_receivers();
-
-    // Create jobs
-    std::unique_ptr<JOB_MANAGER> jm = std::make_unique<JOB_MANAGER>();
-    jm->set_parser(std::move(parser));
-    JobQueue jobs = jm->get_jobs(num_of_jobs);
-    LOG_INFO("Jobs to be executed: {}", jobs.size());
-    
-    // Execute jobs
-    executor->start_job_execution(jobs);
-    
-    executor->saveJobs(jobs);
+    executor->start_job_execution(num_of_jobs);
 
     // Print version
     LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);

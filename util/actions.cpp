@@ -1,28 +1,27 @@
 #include "actions.h"
-#include "logger.h"  // Add this include for logging
 
-void Actions::exec_task_multi_thread_async(Job* j, sg4::ActivitySet& pending_activities, sg4::ActivitySet& exec_activities, std::unique_ptr<sqliteSaver>& saver, std::unique_ptr<DispatcherPlugin>& dispatcher)
+void Actions::exec_task_multi_thread_async(Job* j, sg4::ActivitySet& pending_activities, sg4::ActivitySet& exec_activities, std::unique_ptr<DispatcherPlugin>& dispatcher)
 {   // @askFred
     auto host = sg4::this_actor::get_host();
-    LOG_DEBUG("In exec_task_multi_thread_async on host: {}", host->get_name());
+    //LOG_DEBUG("In exec_task_multi_thread_async on host: {}", host->get_name());
     sg4::ExecPtr exec_activity = sg4::Exec::init()
         ->set_flops_amount(j->flops)
         ->set_host(host)
         ->set_name("Exec_Job_" + j->job_name + "_on_" + host->get_name());
 
-    LOG_DEBUG("Exec activity added for Job {} ", j->job_name);
+    //LOG_DEBUG("Exec activity added for Job {} ", j->job_name);
     exec_activities.push(exec_activity);
     //pending_activities.push(exec_activity);
 
     exec_activity->start();
 
 
-    exec_activity->on_this_completion_cb([j, &saver, &dispatcher, host](simgrid::s4u::Exec const& ex) {
+    exec_activity->on_this_completion_cb([j, &dispatcher, host](simgrid::s4u::Exec const& ex) {
         j->EXEC_time_taken += ex.get_finish_time() - ex.get_start_time();
         j->status = "finished";
-        LOG_DEBUG("Finished executing job {} | EXEC_time_taken: {}", j->id, j->EXEC_time_taken);
+        //LOG_DEBUG("Finished executing job {} | EXEC_time_taken: {}", j->id, j->EXEC_time_taken);
 
-        saver->updateJob(j);
+        //saver->updateJob(j);
         
 
         // if (j->status == "finished" &&
@@ -37,7 +36,7 @@ void Actions::exec_task_multi_thread_async(Job* j, sg4::ActivitySet& pending_act
 
          if (j->status == "finished" ) {
             // LOG_DEBUG("All files read and written for job {}.", j->id);
-            LOG_DEBUG("Finished on host: {}", host->get_name());
+            //LOG_DEBUG("Finished on host: {}", host->get_name());
 
             // sg4::this_actor::get_host()->extension<HostExtensions>()->onJobFinish(j);
              host->extension<HostExtensions>()->onJobFinish(j);
@@ -63,7 +62,7 @@ void Actions::read_file_async(const std::shared_ptr<simgrid::fsmod::FileSystem>&
         
         pending_activities.push(read_activity);
 
-        LOG_DEBUG("Reading file asynchronously: {} ({} bytes)", filename, filesize);
+        //LOG_DEBUG("Reading file asynchronously: {} ({} bytes)", filename, filesize);
 
         read_activity->on_this_completion_cb([file, j, &dispatcher](simgrid::s4u::Io const& io) {
             file->close();
@@ -71,7 +70,7 @@ void Actions::read_file_async(const std::shared_ptr<simgrid::fsmod::FileSystem>&
             j->IO_size_performed += io.get_performed_ioops();
             j->files_read += 1;
 
-            LOG_DEBUG("Read complete: {} | Time: {} | IO Ops: {}", file->get_path(), io.get_finish_time() - io.get_start_time(), io.get_performed_ioops());
+            //LOG_DEBUG("Read complete: {} | Time: {} | IO Ops: {}", file->get_path(), io.get_finish_time() - io.get_start_time(), io.get_performed_ioops());
 
             // if (j->status == "finished" &&
             //     j->files_read == j->input_files.size() &&
@@ -96,7 +95,7 @@ void Actions::write_file_async(const std::shared_ptr<simgrid::fsmod::FileSystem>
         write_activity->set_name("Write_" + filename + "_for_Job_" + j->job_name);
         pending_activities.push(write_activity);
 
-        LOG_DEBUG("Writing file asynchronously: {} ({} kB)", filename, output_file.second);
+        //LOG_DEBUG("Writing file asynchronously: {} ({} kB)", filename, output_file.second);
 
         write_activity->on_this_completion_cb([file, j, &dispatcher, host](simgrid::s4u::Io const& io) {
 	  file->close();
@@ -104,11 +103,11 @@ void Actions::write_file_async(const std::shared_ptr<simgrid::fsmod::FileSystem>
             j->IO_size_performed += io.get_performed_ioops();
             j->files_written += 1;
 
-            LOG_DEBUG("Job ID: {} | Write complete: {} | Time: {} | IO Ops: {}", j->id ,file->get_path(), io.get_finish_time() - io.get_start_time(), io.get_performed_ioops());
+            //LOG_DEBUG("Job ID: {} | Write complete: {} | Time: {} | IO Ops: {}", j->id ,file->get_path(), io.get_finish_time() - io.get_start_time(), io.get_performed_ioops());
 
             if (j->status == "finished" ) {
-                LOG_DEBUG("Files Read equal to input file size",(j->files_read == j->input_files.size()));
-                LOG_DEBUG("Files write equal to write file size",(j->files_written == j->output_files.size()));
+                //LOG_DEBUG("Files Read equal to input file size",(j->files_read == j->input_files.size()));
+                //LOG_DEBUG("Files write equal to write file size",(j->files_written == j->output_files.size()));
             //     j->files_written == j->output_files.size()
                 // sg4::this_actor::get_host()->extension<HostExtensions>()->onJobFinish(j);
                 //host->extension<HostExtensions>()->onJobFinish(j);

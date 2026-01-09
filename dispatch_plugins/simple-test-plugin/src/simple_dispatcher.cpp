@@ -1,11 +1,105 @@
 #include "simple_dispatcher.h"
 
-
-sg4::NetZone* SIMPLE_DISPATCHER::getPlatform()
-{
-  return this->platform;
+std::vector<std::string> parseCSVLine(const std::string& line) {
+    std::vector<std::string> row;
+    std::string cell;
+    bool in_quotes = false;
+    for (size_t i = 0; i < line.size(); ++i) {
+        char c = line[i];
+        if (c == '"') {
+            in_quotes = !in_quotes;
+        } else if (c == ',' && !in_quotes) {
+            row.push_back(cell);
+            cell.clear();
+        } else {
+            cell += c;
+        }
+    }
+    row.push_back(cell);
+    for (auto& field : row) {
+        if (!field.empty() && field.front() == '"' && field.back() == '"') {
+            field = field.substr(1, field.size() - 2);
+        }
+        field.erase(std::remove_if(field.begin(), field.end(),
+                            [](unsigned char c) { return !std::isprint(c); }),
+                            field.end());
+    }
+    return row;
 }
 
+JobQueue SIMPLE_DISPATCHER::getJobs(long max_jobs) {
+    std::priority_queue<Job*> jobs;
+    std::string jobFile = "/Users/raekhan/CGSim/data/jan_100_BNL.csv";
+    std::ifstream file(jobFile);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + jobFile);
+    }
+    std::string line;
+    std::map<std::string, int> column_map;
+    bool header_parsed = false;
+    while (std::getline(file, line)) {
+        std::vector<std::string> row = parseCSVLine(line);
+        if (max_jobs != -1 && static_cast<long>(jobs.size()) >= max_jobs) {
+            break;
+        }
+        if (!header_parsed) {
+            header_parsed = true;
+            int column_index = 0;
+            for (std::string& column_name : row) {
+                std::transform(column_name.begin(), column_name.end(), column_name.begin(), ::toupper);
+                column_map.insert({column_name, column_index});
+                column_index++;
+            }
+            continue;
+        }
+        try {
+
+            Job* job = new Job();  // Allocate memory dynamically
+            job->jobid = std::stol(row[column_map.at("PANDAID")]);
+            job->creation_time = row[column_map.at("CREATIONTIME")];
+            job->job_status = row[column_map.at("JOBSTATUS")];
+            job->job_name = row[column_map.at("JOBNAME")];
+            job->cpu_consumption_time = std::stod(row[column_map.at("CPUCONSUMPTIONTIME")]);
+            job->comp_site = row[column_map.at("COMPUTINGSITE")];
+            job->destination_dataset_name = row[column_map.at("DESTINATIONDBLOCK")];
+            job->destination_SE = row[column_map.at("DESTINATIONSE")];
+            job->source_site = row[column_map.at("SOURCESITE")];
+            job->transfer_type = row[column_map.at("TRANSFERTYPE")];
+            job->cores = row[column_map.at("CORECOUNT")].empty() ? 0 : std::stol(row[column_map.at("CORECOUNT")]);
+            job->no_of_inp_files = std::stoi(row[column_map.at("NINPUTDATAFILES")]);
+            job->inp_file_bytes = std::stod(row[column_map.at("INPUTFILEBYTES")]);
+            job->no_of_out_files = std::stoi(row[column_map.at("NOUTPUTDATAFILES")]);
+            job->out_file_bytes = std::stod(row[column_map.at("OUTPUTFILEBYTES")]);
+            job->pilot_error_code = row[column_map.at("PILOTERRORCODE")];
+            job->exe_error_code = row[column_map.at("EXEERRORCODE")];
+            job->ddm_error_code = row[column_map.at("DDMERRORCODE")];
+            job->dispatcher_error_code = row[column_map.at("JOBDISPATCHERERRORCODE")];
+            job->taskbuffer_error_code = row[column_map.at("TASKBUFFERERRORCODE")];
+            job->status = row[column_map.at("JOBSTATUS")];
+
+            std::string prefix = "/input/user.input." + std::to_string(job->jobid) + ".00000";
+            std::string suffix = ".root";
+            size_t size_per_inp_file = job->inp_file_bytes / job->no_of_inp_files;
+            for (int file = 1; file <= job->no_of_inp_files; file++) {
+                std::string name = prefix + std::to_string(file) + suffix;
+                job->input_files[name] = size_per_inp_file;
+            }
+            prefix = "/output/user.output." + std::to_string(job->jobid) + ".00000";
+            suffix = ".root";
+            size_t size_per_out_file = job->out_file_bytes / job->no_of_out_files;
+            for (int file = 1; file <= job->no_of_out_files; file++) {
+                std::string name = prefix + std::to_string(file) + suffix;
+                job->output_files[name] = size_per_out_file;
+            }
+            jobs.push(job);  // Push pointer to queue
+        } catch (const std::exception& e) {
+            //LOG_WARN("Skipping invalid row: {}", line); // currently reasons for being invalid 1) no_of_inp_files,no_of_inp_files  is empty 2)  no_of_out_files,out_file_bytes is empty
+            //LOG_WARN("Reason: {}", e.what());
+        }
+    }
+    file.close();
+    return jobs;
+}
 
 void SIMPLE_DISPATCHER::setPlatform(sg4::NetZone* platform)
 {
@@ -22,7 +116,7 @@ void SIMPLE_DISPATCHER::setPlatform(sg4::NetZone* platform)
             try {
                 _site->gflops = std::stol(gflops_str);
             } catch (const std::exception& e) {
-	      LOG_ERROR("Error: Failed to convert 'gflops' to integer. Exception: {}", e.what());
+	      //LOG_ERROR("Error: Failed to convert 'gflops' to integer. Exception: {}", e.what());
             }
         }
         for(const auto& host: site->get_all_hosts())
@@ -96,7 +190,7 @@ Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
     for (auto* cpu : cpus)
     {
         if (!cpu) {
-	  LOG_DEBUG("Warning: Encountered a null CPU pointer.");
+	  std::cerr << "Warning: Encountered a null CPU pointer." << std::endl;
 	  continue;
         }
         cpu_queue.push(cpu);
@@ -110,13 +204,12 @@ Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
         Host* current = cpu_queue.top();
         cpu_queue.pop();
         ++candidatesExamined;
-	LOG_DEBUG("Available Cores {}", sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available());
-        LOG_DEBUG("JOB Cores needed {}", j->cores);
-	
+	    //LOG_DEBUG("Available Cores {}", sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available());
+        //LOG_DEBUG("JOB Cores needed {}", j->cores);
         if (sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available() < j->cores)
         {   
-	  LOG_DEBUG("Cores not suffficient for job {} on CPU {}", j->jobid, current->name);
-	  continue;
+	      //LOG_DEBUG("Cores not suffficient for job {} on CPU {}", j->jobid, current->name);
+	      continue;
         }
 
         // For now, using a dummy score.
@@ -168,7 +261,7 @@ Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
         j->comp_host = best_cpu->name;
     }
     else {
-      LOG_DEBUG("Could not find a suitable CPU for job {}", j->jobid );
+      //LOG_DEBUG("Could not find a suitable CPU for job {}", j->jobid );
     }
 
     return best_cpu;
@@ -201,24 +294,24 @@ Job* SIMPLE_DISPATCHER::assignJobToResource(Job* job)
   Host*  best_cpu    = nullptr;
   Site*  site        = nullptr;
   
-  LOG_DEBUG(" Waiting to assign job resources : {}", job->comp_site);
+  //LOG_DEBUG(" Waiting to assign job resources : {}", job->comp_site);
 //   std::string site_name = job->comp_site;
 //   auto site = findSiteByName(_sites, site_name);
 try {
   site = _sites_map.at(job->comp_site);
-  LOG_DEBUG(" Found the site {}", job->comp_site);
+  //LOG_DEBUG(" Found the site {}", job->comp_site);
 }
 catch (const std::out_of_range& e) {
-  LOG_DEBUG("Computing Site is not found: {}", job->comp_site);
+  //LOG_DEBUG("Computing Site is not found: {}", job->comp_site);
 }
 
   if (job == nullptr) {
-    LOG_DEBUG("JOB pointer null");
+    //LOG_DEBUG("JOB pointer null");
        
     }
     if (site == nullptr) {
         job->status = "failed";
-        LOG_DEBUG("Computing Site is not found: Site pointer NULL :{}", job->comp_site);
+        //LOG_DEBUG("Computing Site is not found: Site pointer NULL :{}", job->comp_site);
         return job;
     }
   job->flops = site->gflops*job->cpu_consumption_time*job->cores;
@@ -227,11 +320,11 @@ catch (const std::out_of_range& e) {
     site->cpus_in_use++; 
     job->comp_site = site->name; 
     job->status = "assigned"; 
-    LOG_DEBUG("Job Status changed to assigned");
+    //LOG_DEBUG("Job Status changed to assigned");
 }
   else{
   job->status = "pending";
-  LOG_DEBUG("Job Status changed to pending");
+  //LOG_DEBUG("Job Status changed to pending");
 
   }
   this->printJobInfo(job);
@@ -249,7 +342,7 @@ void SIMPLE_DISPATCHER::free(Job* job)
    cpu->cores_available   += job->cores;
    disk->storage          += (this->getTotalSize(job->input_files) + this->getTotalSize(job->output_files));
    cpu->jobs.erase(job->jobid);
-   LOG_DEBUG("Job {} freed from CPU {}", job->jobid, cpu->name);
+   //LOG_DEBUG("Job {} freed from CPU {}", job->jobid, cpu->name);
    
  }
 }
@@ -268,7 +361,7 @@ Site* SIMPLE_DISPATCHER::findSiteByName(std::vector<Site*>& sites, const std::st
 
 void SIMPLE_DISPATCHER::printJobInfo(Job* job)
 {
-  LOG_DEBUG("----------------------------------------------------------------------");
+  /*LOG_DEBUG("----------------------------------------------------------------------");
   LOG_INFO("Submitting .. {}", job->jobid);
   LOG_DEBUG("FLOPs to be executed: {}", job->flops);
   LOG_DEBUG("Files to be read:");
@@ -282,7 +375,7 @@ void SIMPLE_DISPATCHER::printJobInfo(Job* job)
   LOG_DEBUG("Cores Used: {}", job->cores);
   LOG_DEBUG("Disk Used: {}", job->disk);
   LOG_DEBUG("Host: {}", job->comp_host);
-  LOG_DEBUG("----------------------------------------------------------------------");
+  LOG_DEBUG("----------------------------------------------------------------------");*/
 }
 
 void SIMPLE_DISPATCHER::cleanup()

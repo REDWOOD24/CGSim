@@ -11,7 +11,6 @@
 #include <iomanip>
 #include "job.h"
 #include "fsmod.hpp"
-#include "logger.h"
 #include "host_extensions.h"
 
 namespace sg4 = simgrid::s4u;
@@ -33,7 +32,7 @@ struct Host {
   int                                            cores_available{};
   std::vector<Disk*>                             disks{};
   std::unordered_map<std::string, Disk*>         disks_map{};
-  std::unordered_set<long long>                jobs{};
+  std::unordered_set<long long>                  jobs{};
   bool operator<(const Host& other) const {return cores_available <= other.cores_available;}
 };
 
@@ -56,9 +55,11 @@ public:
   SIMPLE_DISPATCHER(){};
  ~SIMPLE_DISPATCHER(){};
 
+  //Assign Workload
+  JobQueue getJobs(long max_jobs);
+
   //Resource Management
   void setPlatform(sg4::NetZone* platform);
-  virtual sg4::NetZone* getPlatform();
 
   //Functions needed to specify hosts for jobs
   double calculateWeightedScore(Host* cpu, Job* j, std::string& best_disk_name);
@@ -74,9 +75,9 @@ public:
 private:
   int                                            current_site_index{0};
   bool                                           use_round_robin{false};
-  std::vector<Site*>                            _sites{};
-  std::unordered_map<std::string, Site*>        _sites_map{};
-  sg4::NetZone*                                 platform;
+  std::vector<Site*>                             _sites{};
+  std::unordered_map<std::string, Site*>         _sites_map{};
+  sg4::NetZone*                                  platform;
 
   const std::unordered_map<std::string, double>  weights =
       {
