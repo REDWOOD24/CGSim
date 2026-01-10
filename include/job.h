@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <queue>
+#include <unordered_set>
 
 // //Information needed to a specify a Job
 // struct Job {
@@ -54,24 +55,22 @@ struct Job {
     std::string            taskbuffer_error_code{}; // taskBuffer error code
     std::string            status{}; // taskBuffer error code
    
-    // flops field is calculated with an approximation in PANDA_DISPATCHER::allocateResourcesToJobs
-    long long                 flops{};
-    // below fields will be assigned by dispatcher
-    int                                         cores{}; // core_count
+    long long                                   flops{};
+    int                                         cores{};
+    int                                         priority{};
     std::string                                 disk{};
-    std::string                                 comp_host{}; // cpu
-    // TODO fields moved for compatibility with base code, either merge or remove later  
-    size_t                                      IO_size_performed{}; // no_of_inp_files*inp_file_bytes +
-    double                                      IO_time_taken{};
+    std::string                                 comp_host{};
+    size_t                                      IO_READ_size_performed{};
+    double                                      IO_READ_time_taken{};
+    size_t                                      IO_WRITE_size_performed{};
+    double                                      IO_WRITE_time_taken{};
     double                                      EXEC_time_taken{};
-    int                                         files_read{}; //inp_file_bytes
-    int                                         files_written{};//out_file_bytes
     double                                      memory_usage{};
     std::string                                 mount{};
     std::string                                 id{};
-    std::unordered_map<std::string, size_t>     input_files{};//no_of_inp_files
-    std::unordered_map<std::string, size_t>     output_files{};//no_of_out_files
-  
+    std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>     input_files{};
+    std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>     output_files{};
+    bool operator<(const Job& other) const {if(priority == other.priority){return jobid > other.jobid;} return priority < other.priority;}
   
   };
 

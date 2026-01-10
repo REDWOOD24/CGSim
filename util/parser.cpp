@@ -6,307 +6,111 @@
 #include <algorithm>
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include <utility>
+#include <boost/parameter/aux_/pack/item.hpp>
 
 using json = nlohmann::json;
 
-static std::string joinStrings(const std::vector<std::string>& vec, const std::string& delimiter = ", ")
-{
-    std::ostringstream oss;
-    for (size_t i = 0; i < vec.size(); ++i) {
-        if (i != 0)
-            oss << delimiter;
-        oss << vec[i];
-    }
-    return oss.str();
-}
+Parser::Parser(std::string _siteConnInfoFile,
+               std::string _siteInfoFile,
+               const std::set<std::string>& _filteredSiteList)
+    : siteConnInfoFile(std::move(_siteConnInfoFile)),
+      siteInfoFile(std::move(_siteInfoFile)),
+      filteredSiteList(_filteredSiteList){}
 
-Parser::Parser(const std::string& _siteConnInfoFile, const std::string& _siteInfoFile)
-{
-    siteConnInfoFile = _siteConnInfoFile;
-    siteInfoFile     = _siteInfoFile;
-    this->setSiteCPUCount(); // Set before site-names because if a site has 0 CPUs (no info), I don't include it.
-    this->setSiteNames();
-}
+std::vector<SiteInfo> Parser::getSiteInfo() {
 
-Parser::Parser(const std::string& _siteConnInfoFile, const std::string& _siteInfoFile, const std::string& _jobInfoFile)
-{
-    siteConnInfoFile = _siteConnInfoFile;
-    siteInfoFile     = _siteInfoFile;
-    jobFile          = _jobInfoFile;
-    this->setSiteCPUCount(); // Set before site-names because if a site has 0 CPUs (no info), I don't include it.
-    this->setSiteNames();
-    this->setSiteGFLOPS();
-}
-
-Parser::Parser(const std::string& _siteConnInfoFile, const std::string& _siteInfoFile, const std::string& _jobInfoFile, const std::list<std::string>& filteredSiteList)
-{
-    siteConnInfoFile = _siteConnInfoFile;
-    siteInfoFile     = _siteInfoFile;
-    jobFile          = _jobInfoFile;
-    this->setSiteCPUCount(); // Set before site-names because if a site has 0 CPUs (no info), I don't include it.
-    this->setSiteNames(filteredSiteList);
-    this->setSiteGFLOPS();
-}
-
-int Parser::genRandNum(int lower, int upper)
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distrib(lower, upper);
-    return distrib(gen);
-}
-
-double Parser::GaussianDistribution(double mean, double stddev)
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<> d(mean, stddev);
-    return d(gen);
-}
-
-void Parser::setSiteNames()
-{
     std::ifstream in(siteInfoFile);
-    if (!in.is_open()) {
-        //LOG_ERROR("Error: Could not open file {}", siteConnInfoFile);
-        return;
-    }
+    if (!in.is_open()) throw std::runtime_error("Could not open site info file");
     json j;
-    try {
-        j = json::parse(in);
-    } catch (const json::parse_error& e) {
-        //LOG_ERROR("Error parsing JSON: {}", e.what());
-        return;
-    }
-    // Get all site names
-    for (auto it = j.begin(); it != j.end(); ++it) {
-        std::string site = it.key();
-        if (siteCPUCount[site] > 0) {
-            site_names.insert(site);
-        } else {
-            //LOG_INFO("Site Name (invalid or no CPUs or info not available): {}", site);
+    try {j = json::parse(in);}
+    catch (const json::parse_error& e) {throw std::runtime_error(e.what());}
+
+    std::vector<SiteInfo> sites;
+
+    for (auto& [site_name, site_json] : j.items()) {
+
+        if (!filteredSiteList.empty() && filteredSiteList.count(site_name) == 0) continue;
+        SiteInfo site;
+        site.name = site_name;
+
+        // --- PROPERTIES ---
+        for (auto& [key, value] : site_json["SITE_PROPERTIES"].items()) {
+            site.properties[key] = value.get<std::string>();
         }
-    }
-}
 
-void Parser::setSiteNames(const std::list<std::string>& filteredSiteList)
-{
-    std::ifstream in(siteInfoFile);
-    if (!in.is_open()) {
-        //LOG_ERROR("Error: Could not open file {}", siteInfoFile);
-        return;
-    }
-    
-    json j;
-    try {
-        j = json::parse(in);
-    } catch (const json::parse_error& e) {
-        //LOG_ERROR("Error parsing JSON: {}", e.what());
-        return;
-    }
-    
-    // If filteredSiteList is empty, use all sites from the JSON file.
-    if (filteredSiteList.empty()) {
-        for (auto it = j.begin(); it != j.end(); ++it) {
-            std::string site = it.key();
-            if (siteCPUCount[site] > 0) {
-                site_names.insert(site);
-            } else {
-                //LOG_INFO("Site Name (invalid or no CPUs): {}", site);
-            }
-        }
-    } else {
-        // Otherwise, add only the sites provided in filteredSiteList.
-        for (const auto& site : filteredSiteList) {
-            if (siteCPUCount[site] > 0) {
-                site_names.insert(site);
-            } else {
-                //LOG_INFO("Site Name (invalid or no CPUs): {}", site);
-            }
-        }
-    }
-}
-
-void Parser::setSiteCPUCount()
-{
-    std::ifstream in(siteInfoFile);
-    auto j = json::parse(in);
-    for (auto it = j.begin(); it != j.end(); ++it) {
-        // moved the computation of CPU counts to the siteInfo.json file
-        // 500 flops per core and 32 cores per host (assumption)
-        int cpus   = (j[it.key()]["CPUCount"]).get<int>();
-        std::vector<double> cpuSpeeds = (j[it.key()]["CPUSpeed"]).get<std::vector<double>>();
-        // int gflops = (j[it.key()]["GFLOPS"]).get<int>(); 
-        // int cpus   = std::round(gflops / (32 * 500.0));
-        siteCPUCount[it.key()] = cpus;
-        siteCPUSpeeds[it.key()] = cpuSpeeds;
-    }
-}
-
-
-
-
-
-void Parser::setSiteGFLOPS()
-{
-    std::ifstream in(siteInfoFile);
-    auto j = json::parse(in);
-    for (auto it = j.begin(); it != j.end(); ++it) {
-        // 500 flops per core and 32 cores per host (assumption)
-        int gflops = (j[it.key()]["GFLOPS"]).get<int>(); 
-        siteNameGFLOPS[it.key()] = gflops;
-    }
-}
-
-std::unordered_map<std::string,int> Parser::getSiteNameGFLOPS()
-{
-    return siteNameGFLOPS;
-}
-
-std::vector<DiskInfo> Parser::getDisksInfo(const std::string site_name, int num_of_cpus)
-{
-    std::ifstream in(siteInfoFile);
-    auto j = json::parse(in);
-    std::vector<DiskInfo> disks;
-    auto info = j[site_name]["RSE"];
-    
-    for (auto it = info.begin(); it != info.end(); ++it)
-    {
-        if (j[site_name]["RSE"][it.key()] == 0) continue;
-        if (it.key().find("DISK") == std::string::npos) continue;
-
-        DiskInfo disk;
-        disk.name = it.key();
-        disk.read_bw = this->genRandNum(150, 250) * 1e8; // Assumption
-        disk.write_bw = this->genRandNum(40, 120) * 1e8;  // Assumption
-        disk.size = std::to_string(std::round(1048576.0 * 1000 * 1000 * std::stod(j[site_name]["RSE"][it.key()].get<std::string>()) / num_of_cpus * 1.0)) + "kB";
-
-        if (it.key().find("SCRATCH") != std::string::npos)
-            disk.mount = "/scratch/";
-        else if (it.key().find("LOCAL") != std::string::npos)
-            disk.mount = "/local/";
-        else if (it.key().find("DATA") != std::string::npos)
-            disk.mount = "/data/";
-        else if (it.key().find("CALIB") != std::string::npos)
-            disk.mount = "/calib/";
-        else
-            disk.mount = "/other/";
-
-        disks.push_back(disk);
-    }
-  
-    return disks;
-}
-
-std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>> Parser::getSiteNameCPUInfo()
-{
-    std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>> siteNameCPUInfo;
-  
-    for (const auto& site : site_names) {
-        // int num_of_cpus = siteCPUCount[site] + this->genRandNum(-3, 3); // Little random offset added.
-        int num_of_cpus = siteCPUCount[site]; // Little random offset added.
-        std::vector<DiskInfo> disks = this->getDisksInfo(site, num_of_cpus);
-
-        //LOG_INFO("Adding Site: {} with CPUs: {}", site, num_of_cpus);
-        std::vector<double> cpuSpeeds = siteCPUSpeeds[site];
-        // std::vector<double> cpuSpeeds = {
-        //     1.6e6, 200000, 600000, 1.5e6, 1.4e6, 600000, 2e6, 1.8e6, 1e6, 900000,
-        // 200000, 1.5e6, 200000, 1.9e6, 1.3e6, 1.6e6, 2e6, 800000, 600000, 600000,
-        // 1.5e6, 100000, 100000, 2e6, 1.5e6, 300000, 1.3e6, 1.3e6, 400000, 700000,
-        // 800000, 400000, 500000, 600000, 1.5e6, 100000, 1.5e6, 800000, 1.8e6, 1.5e6,
-        // 1.4e6, 1.3e6, 1.5e6, 1.7e6, 1.3e6, 1.3e6, 400000, 100000, 1.2e6, 1.1e6,
-        // 1.3e6, 1.4e6, 1e6, 1.1e6, 2e6, 1.7e6, 1e6, 600000, 1.3e6, 300000,
-        // 700000, 600000, 900000, 400000, 600000, 1.8e6, 1e6, 1.7e6, 500000, 400000,
-        // 1.8e6, 1.1e6, 1.1e6, 200000, 500000, 1.8e6, 1.3e6, 1.6e6, 1.5e6, 900000,
-        // 1.9e6, 1.7e6, 700000, 1.9e6, 1.6e6, 500000, 1.6e6, 300000, 100000, 1.6e6,
-        // 800000, 400000, 1.4e6, 300000, 900000, 300000, 1.6e6, 1.7e6, 400000, 1.9e6,
-        // 800000, 300000, 100000, 900000, 1.8e6, 600000, 700000, 500000, 100000, 900000,
-        // 1.6e6, 900000
-        // // };
-
-
-        // std::cout << "Site CPUS: " << siteCPUCount[site] << std::endl;
-        // std::cout << "CPUS count: " << num_of_cpus << std::endl;
-        // std::cout << "CPU Speeds: " << cpuSpeeds.size() << std::endl;
-        for (int cpu_num = 0; cpu_num < num_of_cpus; cpu_num++) {
+        // --- CPU INFO ---
+        for (auto& cpu_json : site_json["CPUInfo"]) {
             CPUInfo cpu;
-            cpu.cores = 32;                                          // Assumption.
-            // cpu.speed = this->genRandNum(2, 4) * 1e7;   
-            cpu.speed =  cpuSpeeds.at(cpu_num);            // Assumption.
-            // std::cout << "CPU Speed: " << cpu.speed << std::endl;
-            cpu.BW_CPU = this->genRandNum(10, 20) * 1e10;              // Assumption.
-            cpu.LAT_CPU = 0;                                          // Assumption.
-            cpu.ram = std::to_string(this->genRandNum(8, 16)) + "GiB";  // Assumption.
-            cpu.disk_info = disks;
-            siteNameCPUInfo[site][site + "_cpu-" + std::to_string(cpu_num)] = cpu; 
-        }
-    }
-    return siteNameCPUInfo;
-}
-// this method is just for calibration will be removed after calibrating the cpuspeeds
-std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>> Parser::getSiteNameCPUInfo(int cpuMin, int cpuMax, int speedPrecision)
-{
-    std::unordered_map<std::string, std::unordered_map<std::string, CPUInfo>> siteNameCPUInfo;
-  
-    for (const auto& site : site_names) {
-        // int num_of_cpus = siteCPUCount[site] + this->genRandNum(-3, 3); // Little random offset added.
-        int num_of_cpus = siteCPUCount[site] + 3; // Little random offset added.
-        std::vector<DiskInfo> disks = this->getDisksInfo(site, num_of_cpus);
+            cpu.units = cpu_json.value("count", 0);
+            cpu.cores = cpu_json.value("cores", 0);
+            cpu.speed = cpu_json.value("speed", 0.0);
+            cpu.BW_CPU = cpu_json.value("BW_CPU", "");
+            cpu.LAT_CPU = cpu_json.value("LAT_CPU", "");
+            cpu.ram = cpu_json.value("ram", "");
 
-        //LOG_INFO("Adding Site: {} with CPUs: {}", site, num_of_cpus);
-        
-        // std::cout << "Site CPUS: " << siteCPUCount[site] << std::endl;
-        // std::cout << "CPUS count: " << num_of_cpus << std::endl;
-        // std::cout << "CPU Speeds: " << cpuSpeeds.size() << std::endl;
-        for (int cpu_num = 0; cpu_num < num_of_cpus; cpu_num++) {
-            CPUInfo cpu;
-            cpu.cores = 32;                                          // Assumption.
-            cpu.speed = this->genRandNum(cpuMin, cpuMax) * std::pow(10,speedPrecision);   
-            //cpu.speed =  cpuSpeeds.at(cpu_num);            // Assumption.
-            // std::cout << "CPU Speed: " << cpu.speed << std::endl;
-            cpu.BW_CPU = this->genRandNum(10, 20) * 1e10;              // Assumption.
-            cpu.LAT_CPU = 0;                                          // Assumption.
-            cpu.ram = std::to_string(this->genRandNum(8, 16)) + "GiB";  // Assumption.
-            cpu.disk_info = disks;
-            siteNameCPUInfo[site][site + "_cpu-" + std::to_string(cpu_num)] = cpu; 
+            //Properties
+            for (auto& [key, value] : cpu_json["properties"].items()) {
+                cpu.properties[key] = value.get<std::string>();
+            }
+
+            // --- Disks ---
+            for (auto& disk_json : cpu_json["disks"]) {
+                DiskInfo disk;
+                disk.name = disk_json.value("name", "");
+                disk.read_bw = disk_json.value("read_bw", "");
+                disk.write_bw = disk_json.value("write_bw", "");
+                cpu.disk_info.push_back(disk);
+            }
+
+            site.cpu_info.push_back(cpu);
         }
+
+        // --- Files ---
+        for (auto& file : site_json["files"]) {
+            std::string name = file[0].get<std::string>();
+            long long size = file[1].get<long long>();
+            site.files[name] = size;
+        }
+
+        sites.push_back(site);
     }
-    return siteNameCPUInfo;
+
+    return sites;
 }
 
 
 
-std::unordered_map<std::string, std::pair<double, double>> Parser::getSiteConnInfo()
+
+
+
+std::vector<SiteConnInfo> Parser::getSiteConnInfo()
 {
     std::ifstream in(siteConnInfoFile);
-    auto j = json::parse(in);
+    if (!in.is_open()) throw std::runtime_error("Could not open site connections file");
+    json j;
+    try {j = json::parse(in);}
+    catch (const json::parse_error& e) {throw std::runtime_error(e.what());}
 
-    // Defining Latency in ms based on 'closeness' value in JSON file
-    std::unordered_map<int, double> closeness_latency_map = {
-        {0, 0.0}, {1, 10.0}, {2, 20.0}, {3, 30.0}, {4, 40.0},
-        {5, 50.0}, {6, 60.0}, {7, 70.0}, {8, 80.0}, {9, 90.0},
-        {10, 100.0}, {11, 110.0}, {12, 120.0}
-    };
+    std::vector<SiteConnInfo> connections;
 
-    std::unordered_map<std::string, std::pair<double, double>> siteConnInfo;
-    for (auto it1 = site_names.begin(); it1 != site_names.end(); ++it1) {
-        for (auto it2 = std::next(it1); it2 != site_names.end(); ++it2) {
-            std::string site1 = *it1;
-            std::string site2 = *it2;
-            std::string connection = site1 + ":" + site2;
-      
-            // Check if connection information exists.
-            bool info_exists = j[connection].contains("mbps") &&
-                               j[connection]["closeness"].contains("latest") &&
-                               j[connection]["mbps"]["dashb"].contains("1w");
+    // Iterate over all connections
+    for (auto& [key, val] : j.items()) {
+        auto pos = key.find(':');
+        if (pos == std::string::npos) continue;
 
-            if (info_exists) {
-                double latency = closeness_latency_map[j[connection]["closeness"]["latest"]];
-                double bandwidth = j[connection]["mbps"]["dashb"]["1w"];
-                siteConnInfo[connection] = std::make_pair(latency, bandwidth);
-            }
-        }
+        SiteConnInfo conn;
+        conn.site_A = key.substr(0, pos);
+        conn.site_B = key.substr(pos + 1);
+
+        if (!filteredSiteList.empty() && filteredSiteList.count(conn.site_A) == 0) continue;
+        if (!filteredSiteList.empty() && filteredSiteList.count(conn.site_B) == 0) continue;
+
+        conn.bandwidth = val.value("bandwidth", "");
+        conn.latency   = val.value("latency", "");
+
+        connections.push_back(conn);
     }
  
-    return siteConnInfo;
+    return connections;
 }

@@ -10,9 +10,7 @@
 
 class HostExtensions {
 public:
-  // Declaration of the static extension ID (class member, no "extern" or "static" here)
   static simgrid::xbt::Extension<simgrid::s4u::Host, HostExtensions> EXTENSION_ID;
-
   explicit HostExtensions(const simgrid::s4u::Host* h)
       : cores_used(0), cores_available(h->get_core_count()), name(h->get_name()) {}
 
@@ -32,7 +30,6 @@ private:
   std::string name;
 };
 
-// Initialization function to register extension with SimGrid, to be called once at startup
 void simatlas_host_extension_init();
 
 #endif // HOST_EXTENSIONS_H

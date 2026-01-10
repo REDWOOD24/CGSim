@@ -17,80 +17,51 @@
 
 int main(int argc, char** argv)
 {
-    logger::init();  // Must be called before any logging
-    
+    //Initialize Logging
+    CGSim::logger::init();
     const std::string usage = std::string("usage: ") + argv[0] + " -c config.json";
-    
-    if (argc != 3) {
-     //   LOG_ERROR("Invalid number of arguments.\n{}", usage);
-        return -1;
-    }
 
-    if (std::string(argv[1]) != "-c") {
-     //   LOG_ERROR("Missing -c option.\n{}", usage);
-        return -1;
-    }
-    
-    // Parse Configuration File
+    //Read in Configuration
+    if (argc != 3 || std::string(argv[1]) != "-c") {throw std::runtime_error(usage);}
     const std::string configFile = argv[2];
-    LOG_INFO("Reading in configuration from: {}", configFile);
+    CG_SIM_LOG_INFO("Reading in configuration from: {}", configFile);
 
     std::ifstream in(configFile);
-    if (!in.is_open()) {
-     //   LOG_CRITICAL("Failed to open config file: {}", configFile);
-        return -1;
-    }
-
+    if (!in.is_open()) { throw std::runtime_error("could not open configuration file");}
     auto j = json::parse(in);
 
+    //Configuration Elements
     const std::string gridName                     = j["Grid_Name"];
     const std::string siteInfoFile                 = j["Sites_Information"];
     const std::string siteConnInfoFile             = j["Sites_Connection_Information"];
     const std::string dispatcherPath               = j["Dispatcher_Plugin"];
     const std::string outputFile                   = j["Output_DB"];
-    const long        num_of_jobs                 = j["Num_of_Jobs"];
-    const std::string jobFile                      = j["Input_Job_CSV"];
-    const std::list<std::string> filteredSiteList  = j["Sites"].get<std::list<std::string>>();
+    const long        num_of_jobs                  = j["Num_of_Jobs"];
+    const std::set<std::string> filteredSiteList   = j["Sites"].get<std::set<std::string>>();
 
-    // Calibration Parameter these will be moved to site info later
-    // const int cpu_min = j["cpu_min_max"][0];
-    // const int cpu_max = j["cpu_min_max"][1];
-    // const int speed_precision = j["cpu_speed_precision"]; 
-    // const std::vector<double> cpuSpeeds = j["cpu_speeds"].get<std::vector<double>>();
-
-    std::unique_ptr<Parser> parser = std::make_unique<Parser>(siteConnInfoFile, siteInfoFile, jobFile, filteredSiteList);
-    // auto siteNameCPUInfo = parser->getSiteNameCPUInfo(cpu_min,cpu_max,speed_precision);
-    auto siteNameCPUInfo = parser->getSiteNameCPUInfo();
-    auto siteConnInfo    = parser->getSiteConnInfo();
-    auto siteNameGLOPS   = parser->getSiteNameGFLOPS();
+    //Parse Input
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>(siteConnInfoFile, siteInfoFile, filteredSiteList);
+    auto sitesInfo     = parser->getSiteInfo();
+    auto siteConnInfo  = parser->getSiteConnInfo();
 
     // Initialize SimGrid
     sg4::Engine e(&argc, argv);
 
     // Create the platform
-    std::unique_ptr<Platform> pf = std::make_unique<Platform>();
-    auto* platform = pf->create_platform(gridName);
-    pf->initialize_simgrid_plugins();
-   
-    // Create sites and connections
-    auto sites = pf->create_sites(platform, filteredSiteList, siteNameCPUInfo, siteNameGLOPS);
-    pf->initialize_site_connections(platform, siteConnInfo, sites);
-    pf->initialize_job_server(platform, siteNameCPUInfo, sites);
-
+    std::unique_ptr<Platform> pf = std::make_unique<Platform>(gridName, sitesInfo, siteConnInfo);
+    auto* platform = pf->get_simgrid_platform();
 
     PluginLoader<DispatcherPlugin> plugin_loader;
     auto dispatcher = plugin_loader.load(dispatcherPath);
     dispatcher->getResourceInformation(platform);
 
     // Create and set up executor
-    std::unique_ptr<JOB_EXECUTOR> executor = std::make_unique<JOB_EXECUTOR>();
-    executor->set_output(outputFile);
-    executor->set_dispatcher(dispatcher);
-    executor->start_receivers();
-    executor->start_job_execution(num_of_jobs);
+    JOB_EXECUTOR::set_dispatcher(dispatcher);
+    JOB_EXECUTOR::start_receivers();
+    JOB_EXECUTOR::start_job_execution(num_of_jobs);
 
     // Print version
-    LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
+    CG_SIM_LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
 
     return 0;
 }

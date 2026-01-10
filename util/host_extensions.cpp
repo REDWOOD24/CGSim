@@ -8,8 +8,6 @@ void HostExtensions::registerJob(Job* j) {
         cores_used      += j->cores;
         cores_available -= j->cores;
     });
-    //LOG_DEBUG("Job {} Cores {} registered on host {}. Cores used: {}. Cores available: {}.",
-    //j->id, j->cores, name, cores_used, cores_available);
 }
 
 void HostExtensions::onJobFinish(Job* j) {
@@ -18,8 +16,6 @@ void HostExtensions::onJobFinish(Job* j) {
         cores_used      -= j->cores;
         cores_available += j->cores;
     });
-    //LOG_DEBUG("Job {} finished on host {}. Cores used: {}. Cores available: {}.",
-    //          j->id, name, cores_used, cores_available);
 }
 
 unsigned int HostExtensions::get_cores_used() const { return cores_used; }
