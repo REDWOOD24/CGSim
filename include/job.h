@@ -64,12 +64,14 @@ struct Job {
     double                                      IO_READ_time_taken{};
     size_t                                      IO_WRITE_size_performed{};
     double                                      IO_WRITE_time_taken{};
+    int                                         files_read{};
+    int                                         files_written{};
     double                                      EXEC_time_taken{};
     double                                      memory_usage{};
     std::string                                 mount{};
     std::string                                 id{};
     std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>     input_files{};
-    std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>     output_files{};
+    std::unordered_map<std::string, long long>            output_file{};
     bool operator<(const Job& other) const {if(priority == other.priority){return jobid > other.jobid;} return priority < other.priority;}
   
   };

@@ -1,0 +1,14 @@
+{
+    "Grid_Name": "ATLAS-GRID",
+    "Sites_Information": "/Users/raekhan/CGSim/new_data/new_site_info.json",
+    "Sites": [],
+    "Sites_Connection_Information": "/Users/raekhan/CGSim/new_data/new_site_conn_info.json",
+    "Dispatcher_Plugin": "/Users/raekhan/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
+    "Output_DB": "/Users/raekhan/CGSim/output/jan_100_BNL.db",
+    "Num_of_Jobs": 30,
+    "cpu_min_max": [
+        5,
+        9
+    ],
+    "cpu_speed_precision": 11
+}

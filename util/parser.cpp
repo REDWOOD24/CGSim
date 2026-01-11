@@ -42,17 +42,19 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
         // --- CPU INFO ---
         for (auto& cpu_json : site_json["CPUInfo"]) {
             CPUInfo cpu;
-            cpu.units = cpu_json.value("count", 0);
+            cpu.units = cpu_json.value("units", 0);
             cpu.cores = cpu_json.value("cores", 0);
             cpu.speed = cpu_json.value("speed", 0.0);
             cpu.BW_CPU = cpu_json.value("BW_CPU", "");
             cpu.LAT_CPU = cpu_json.value("LAT_CPU", "");
-            cpu.ram = cpu_json.value("ram", "");
 
             //Properties
-            for (auto& [key, value] : cpu_json["properties"].items()) {
-                cpu.properties[key] = value.get<std::string>();
+            for (auto& prop_obj : cpu_json["properties"]) {
+                for (auto& [key, value] : prop_obj.items()) {
+                    cpu.properties[key] = value.get<std::string>();
+                }
             }
+
 
             // --- Disks ---
             for (auto& disk_json : cpu_json["disks"]) {

@@ -10,7 +10,6 @@
 #include <simgrid/s4u.hpp>
 #include <iomanip>
 #include "job.h"
-#include "fsmod.hpp"
 #include "host_extensions.h"
 
 namespace sg4 = simgrid::s4u;
@@ -20,7 +19,6 @@ namespace sg4 = simgrid::s4u;
 struct Disk {
   std::string                                    name{};
   std::string                                    mount{};
-  size_t                                         storage{};
   double                                         read_bw{};
   double                                         write_bw{};
 };
@@ -43,6 +41,7 @@ struct Site {
   std::unordered_map<std::string, Host*>         cpus_map{};
   int                                            cpus_in_use{};
   long long                                      gflops{};
+  long long                                      storage{};
   bool operator<(const Site& other) const {return priority <= other.priority;}
 };
 

@@ -1,0 +1,1986 @@
+{
+  "AGLT2_site_0:AGLT2_site_1": {
+    "bandwidth": "165.74Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_0:AGLT2_site_2": {
+    "bandwidth": "48.67Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_0:AGLT2_site_3": {
+    "bandwidth": "31.37Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_0:AGLT2_site_4": {
+    "bandwidth": "106.24Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_0:AGLT2_site_5": {
+    "bandwidth": "93.73Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_0:AGLT2_site_6": {
+    "bandwidth": "87.29Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_0:AGLT2_site_7": {
+    "bandwidth": "13.26Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_0:AGLT2_site_8": {
+    "bandwidth": "78.62Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_0:AGLT2_site_9": {
+    "bandwidth": "78.99Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_0:AGLT2_site_10": {
+    "bandwidth": "85.43Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_0:AGLT2_site_11": {
+    "bandwidth": "155.41Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_0:AGLT2_site_12": {
+    "bandwidth": "120.77Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_0:AGLT2_site_13": {
+    "bandwidth": "190.1Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_0:AGLT2_site_14": {
+    "bandwidth": "83.07Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_0:AGLT2_site_15": {
+    "bandwidth": "145.85Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_0:AGLT2_site_16": {
+    "bandwidth": "118.74Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_0:AGLT2_site_17": {
+    "bandwidth": "139.39Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_0:AGLT2_site_18": {
+    "bandwidth": "190.49Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_0:AGLT2_site_19": {
+    "bandwidth": "158.14Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_0:AGLT2_site_20": {
+    "bandwidth": "174.87Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_0:AGLT2_site_21": {
+    "bandwidth": "74.57Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_0:AGLT2_site_22": {
+    "bandwidth": "59.37Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_0:AGLT2_site_23": {
+    "bandwidth": "170.76Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_0:AGLT2_site_24": {
+    "bandwidth": "181.26Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_0:AGLT2_site_25": {
+    "bandwidth": "140.39Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_0:AGLT2_site_26": {
+    "bandwidth": "151.62Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_0:AGLT2_site_27": {
+    "bandwidth": "136.63Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_0:AGLT2_site_28": {
+    "bandwidth": "102.58Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_0:AGLT2_site_29": {
+    "bandwidth": "110.3Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_0:AGLT2_site_30": {
+    "bandwidth": "175.98Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_0:AGLT2_site_31": {
+    "bandwidth": "245.83Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_1:AGLT2_site_2": {
+    "bandwidth": "162.89Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_1:AGLT2_site_3": {
+    "bandwidth": "86.86Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_1:AGLT2_site_4": {
+    "bandwidth": "238.08Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_1:AGLT2_site_5": {
+    "bandwidth": "115.51Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_1:AGLT2_site_6": {
+    "bandwidth": "124.62Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_1:AGLT2_site_7": {
+    "bandwidth": "8.15Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_1:AGLT2_site_8": {
+    "bandwidth": "95.05Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_1:AGLT2_site_9": {
+    "bandwidth": "112.5Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_1:AGLT2_site_10": {
+    "bandwidth": "171.53Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_1:AGLT2_site_11": {
+    "bandwidth": "218.06Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_1:AGLT2_site_12": {
+    "bandwidth": "135.48Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_1:AGLT2_site_13": {
+    "bandwidth": "215.6Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_1:AGLT2_site_14": {
+    "bandwidth": "153.77Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_1:AGLT2_site_15": {
+    "bandwidth": "47.16Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_1:AGLT2_site_16": {
+    "bandwidth": "27.12Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_1:AGLT2_site_17": {
+    "bandwidth": "65.74Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_1:AGLT2_site_18": {
+    "bandwidth": "0.1Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_1:AGLT2_site_19": {
+    "bandwidth": "114.45Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_1:AGLT2_site_20": {
+    "bandwidth": "22.89Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_1:AGLT2_site_21": {
+    "bandwidth": "43.5Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_1:AGLT2_site_22": {
+    "bandwidth": "145.9Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_1:AGLT2_site_23": {
+    "bandwidth": "68.55Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_1:AGLT2_site_24": {
+    "bandwidth": "8.27Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_1:AGLT2_site_25": {
+    "bandwidth": "87.18Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_1:AGLT2_site_26": {
+    "bandwidth": "180.62Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_1:AGLT2_site_27": {
+    "bandwidth": "182.57Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_1:AGLT2_site_28": {
+    "bandwidth": "101.77Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_1:AGLT2_site_29": {
+    "bandwidth": "97.8Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_1:AGLT2_site_30": {
+    "bandwidth": "0.1Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_1:AGLT2_site_31": {
+    "bandwidth": "14.28Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_2:AGLT2_site_3": {
+    "bandwidth": "0.1Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_2:AGLT2_site_4": {
+    "bandwidth": "62.86Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_2:AGLT2_site_5": {
+    "bandwidth": "43.75Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_2:AGLT2_site_6": {
+    "bandwidth": "62.05Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_2:AGLT2_site_7": {
+    "bandwidth": "46.39Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_2:AGLT2_site_8": {
+    "bandwidth": "154.83Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_2:AGLT2_site_9": {
+    "bandwidth": "113.15Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_2:AGLT2_site_10": {
+    "bandwidth": "164.38Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_2:AGLT2_site_11": {
+    "bandwidth": "166.4Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_2:AGLT2_site_12": {
+    "bandwidth": "75.16Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_2:AGLT2_site_13": {
+    "bandwidth": "72.61Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_2:AGLT2_site_14": {
+    "bandwidth": "132.04Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_2:AGLT2_site_15": {
+    "bandwidth": "200.52Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_2:AGLT2_site_16": {
+    "bandwidth": "124.11Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_2:AGLT2_site_17": {
+    "bandwidth": "54.06Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_2:AGLT2_site_18": {
+    "bandwidth": "194.48Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_2:AGLT2_site_19": {
+    "bandwidth": "101.6Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_2:AGLT2_site_20": {
+    "bandwidth": "64.27Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_2:AGLT2_site_21": {
+    "bandwidth": "149.74Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_2:AGLT2_site_22": {
+    "bandwidth": "96.5Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_2:AGLT2_site_23": {
+    "bandwidth": "93.23Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_2:AGLT2_site_24": {
+    "bandwidth": "103.63Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_2:AGLT2_site_25": {
+    "bandwidth": "0.1Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_2:AGLT2_site_26": {
+    "bandwidth": "0.1Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_2:AGLT2_site_27": {
+    "bandwidth": "214.86Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_2:AGLT2_site_28": {
+    "bandwidth": "128.89Mbps",
+    "latency": "22ms"
+  },
+  "AGLT2_site_2:AGLT2_site_29": {
+    "bandwidth": "46.01Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_2:AGLT2_site_30": {
+    "bandwidth": "0.1Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_2:AGLT2_site_31": {
+    "bandwidth": "135.95Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_3:AGLT2_site_4": {
+    "bandwidth": "209.13Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_3:AGLT2_site_5": {
+    "bandwidth": "0.1Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_3:AGLT2_site_6": {
+    "bandwidth": "212.19Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_3:AGLT2_site_7": {
+    "bandwidth": "188.18Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_3:AGLT2_site_8": {
+    "bandwidth": "163.45Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_3:AGLT2_site_9": {
+    "bandwidth": "51.02Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_3:AGLT2_site_10": {
+    "bandwidth": "112.59Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_3:AGLT2_site_11": {
+    "bandwidth": "79.25Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_3:AGLT2_site_12": {
+    "bandwidth": "137.35Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_3:AGLT2_site_13": {
+    "bandwidth": "104.24Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_3:AGLT2_site_14": {
+    "bandwidth": "60.09Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_3:AGLT2_site_15": {
+    "bandwidth": "85.6Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_3:AGLT2_site_16": {
+    "bandwidth": "74.95Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_3:AGLT2_site_17": {
+    "bandwidth": "82.39Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_3:AGLT2_site_18": {
+    "bandwidth": "93.63Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_3:AGLT2_site_19": {
+    "bandwidth": "48.21Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_3:AGLT2_site_20": {
+    "bandwidth": "122.73Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_3:AGLT2_site_21": {
+    "bandwidth": "26.52Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_3:AGLT2_site_22": {
+    "bandwidth": "114.2Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_3:AGLT2_site_23": {
+    "bandwidth": "73.8Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_3:AGLT2_site_24": {
+    "bandwidth": "178.96Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_3:AGLT2_site_25": {
+    "bandwidth": "134.61Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_3:AGLT2_site_26": {
+    "bandwidth": "87.83Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_3:AGLT2_site_27": {
+    "bandwidth": "119.19Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_3:AGLT2_site_28": {
+    "bandwidth": "8.05Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_3:AGLT2_site_29": {
+    "bandwidth": "99.43Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_3:AGLT2_site_30": {
+    "bandwidth": "0.1Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_3:AGLT2_site_31": {
+    "bandwidth": "116.2Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_4:AGLT2_site_5": {
+    "bandwidth": "145.86Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_4:AGLT2_site_6": {
+    "bandwidth": "108.85Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_4:AGLT2_site_7": {
+    "bandwidth": "5.28Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_4:AGLT2_site_8": {
+    "bandwidth": "15.38Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_4:AGLT2_site_9": {
+    "bandwidth": "108.53Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_4:AGLT2_site_10": {
+    "bandwidth": "110.45Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_4:AGLT2_site_11": {
+    "bandwidth": "37.49Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_4:AGLT2_site_12": {
+    "bandwidth": "251.9Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_4:AGLT2_site_13": {
+    "bandwidth": "105.27Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_4:AGLT2_site_14": {
+    "bandwidth": "163.69Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_4:AGLT2_site_15": {
+    "bandwidth": "98.67Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_4:AGLT2_site_16": {
+    "bandwidth": "48.44Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_4:AGLT2_site_17": {
+    "bandwidth": "135.83Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_4:AGLT2_site_18": {
+    "bandwidth": "176.65Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_4:AGLT2_site_19": {
+    "bandwidth": "197.7Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_4:AGLT2_site_20": {
+    "bandwidth": "98.56Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_4:AGLT2_site_21": {
+    "bandwidth": "81.22Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_4:AGLT2_site_22": {
+    "bandwidth": "98.97Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_4:AGLT2_site_23": {
+    "bandwidth": "85.31Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_4:AGLT2_site_24": {
+    "bandwidth": "136.82Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_4:AGLT2_site_25": {
+    "bandwidth": "135.37Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_4:AGLT2_site_26": {
+    "bandwidth": "134.05Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_4:AGLT2_site_27": {
+    "bandwidth": "126.76Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_4:AGLT2_site_28": {
+    "bandwidth": "102.41Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_4:AGLT2_site_29": {
+    "bandwidth": "197.24Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_4:AGLT2_site_30": {
+    "bandwidth": "99.26Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_4:AGLT2_site_31": {
+    "bandwidth": "141.33Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_5:AGLT2_site_6": {
+    "bandwidth": "180.03Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_5:AGLT2_site_7": {
+    "bandwidth": "61.49Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_5:AGLT2_site_8": {
+    "bandwidth": "189.12Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_5:AGLT2_site_9": {
+    "bandwidth": "3.78Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_5:AGLT2_site_10": {
+    "bandwidth": "214.3Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_5:AGLT2_site_11": {
+    "bandwidth": "144.96Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_5:AGLT2_site_12": {
+    "bandwidth": "53.39Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_5:AGLT2_site_13": {
+    "bandwidth": "124.72Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_5:AGLT2_site_14": {
+    "bandwidth": "77.12Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_5:AGLT2_site_15": {
+    "bandwidth": "141.04Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_5:AGLT2_site_16": {
+    "bandwidth": "26.11Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_5:AGLT2_site_17": {
+    "bandwidth": "106.28Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_5:AGLT2_site_18": {
+    "bandwidth": "128.57Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_5:AGLT2_site_19": {
+    "bandwidth": "123.76Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_5:AGLT2_site_20": {
+    "bandwidth": "94.86Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_5:AGLT2_site_21": {
+    "bandwidth": "98.67Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_5:AGLT2_site_22": {
+    "bandwidth": "20.76Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_5:AGLT2_site_23": {
+    "bandwidth": "149.91Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_5:AGLT2_site_24": {
+    "bandwidth": "186.01Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_5:AGLT2_site_25": {
+    "bandwidth": "62.51Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_5:AGLT2_site_26": {
+    "bandwidth": "101.31Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_5:AGLT2_site_27": {
+    "bandwidth": "154.02Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_5:AGLT2_site_28": {
+    "bandwidth": "47.48Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_5:AGLT2_site_29": {
+    "bandwidth": "102.3Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_5:AGLT2_site_30": {
+    "bandwidth": "148.67Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_5:AGLT2_site_31": {
+    "bandwidth": "75.49Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_6:AGLT2_site_7": {
+    "bandwidth": "106.69Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_6:AGLT2_site_8": {
+    "bandwidth": "65.18Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_6:AGLT2_site_9": {
+    "bandwidth": "270.07Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_6:AGLT2_site_10": {
+    "bandwidth": "33.18Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_6:AGLT2_site_11": {
+    "bandwidth": "115.57Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_6:AGLT2_site_12": {
+    "bandwidth": "187.17Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_6:AGLT2_site_13": {
+    "bandwidth": "26.29Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_6:AGLT2_site_14": {
+    "bandwidth": "114.84Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_6:AGLT2_site_15": {
+    "bandwidth": "132.03Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_6:AGLT2_site_16": {
+    "bandwidth": "21.63Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_6:AGLT2_site_17": {
+    "bandwidth": "0.36Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_6:AGLT2_site_18": {
+    "bandwidth": "134.16Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_6:AGLT2_site_19": {
+    "bandwidth": "197.24Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_6:AGLT2_site_20": {
+    "bandwidth": "65.71Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_6:AGLT2_site_21": {
+    "bandwidth": "66.07Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_6:AGLT2_site_22": {
+    "bandwidth": "96.59Mbps",
+    "latency": "13ms"
+  },
+  "AGLT2_site_6:AGLT2_site_23": {
+    "bandwidth": "67.38Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_6:AGLT2_site_24": {
+    "bandwidth": "164.41Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_6:AGLT2_site_25": {
+    "bandwidth": "132.7Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_6:AGLT2_site_26": {
+    "bandwidth": "142.77Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_6:AGLT2_site_27": {
+    "bandwidth": "119.33Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_6:AGLT2_site_28": {
+    "bandwidth": "107.52Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_6:AGLT2_site_29": {
+    "bandwidth": "0.1Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_6:AGLT2_site_30": {
+    "bandwidth": "202.45Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_6:AGLT2_site_31": {
+    "bandwidth": "0.1Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_7:AGLT2_site_8": {
+    "bandwidth": "234.37Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_7:AGLT2_site_9": {
+    "bandwidth": "60.87Mbps",
+    "latency": "22ms"
+  },
+  "AGLT2_site_7:AGLT2_site_10": {
+    "bandwidth": "0.1Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_7:AGLT2_site_11": {
+    "bandwidth": "143.27Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_7:AGLT2_site_12": {
+    "bandwidth": "71.91Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_7:AGLT2_site_13": {
+    "bandwidth": "95.92Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_7:AGLT2_site_14": {
+    "bandwidth": "159.42Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_7:AGLT2_site_15": {
+    "bandwidth": "105.17Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_7:AGLT2_site_16": {
+    "bandwidth": "21.65Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_7:AGLT2_site_17": {
+    "bandwidth": "36.47Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_7:AGLT2_site_18": {
+    "bandwidth": "107.47Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_7:AGLT2_site_19": {
+    "bandwidth": "128.74Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_7:AGLT2_site_20": {
+    "bandwidth": "151.81Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_7:AGLT2_site_21": {
+    "bandwidth": "59.05Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_7:AGLT2_site_22": {
+    "bandwidth": "14.61Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_7:AGLT2_site_23": {
+    "bandwidth": "120.46Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_7:AGLT2_site_24": {
+    "bandwidth": "72.9Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_7:AGLT2_site_25": {
+    "bandwidth": "112.64Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_7:AGLT2_site_26": {
+    "bandwidth": "180.25Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_7:AGLT2_site_27": {
+    "bandwidth": "93.68Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_7:AGLT2_site_28": {
+    "bandwidth": "173.94Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_7:AGLT2_site_29": {
+    "bandwidth": "32.99Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_7:AGLT2_site_30": {
+    "bandwidth": "116.16Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_7:AGLT2_site_31": {
+    "bandwidth": "155.14Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_8:AGLT2_site_9": {
+    "bandwidth": "38.9Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_8:AGLT2_site_10": {
+    "bandwidth": "175.8Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_8:AGLT2_site_11": {
+    "bandwidth": "120.01Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_8:AGLT2_site_12": {
+    "bandwidth": "40.34Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_8:AGLT2_site_13": {
+    "bandwidth": "56.67Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_8:AGLT2_site_14": {
+    "bandwidth": "134.36Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_8:AGLT2_site_15": {
+    "bandwidth": "209.31Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_8:AGLT2_site_16": {
+    "bandwidth": "147.06Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_8:AGLT2_site_17": {
+    "bandwidth": "120.35Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_8:AGLT2_site_18": {
+    "bandwidth": "218.71Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_8:AGLT2_site_19": {
+    "bandwidth": "28.17Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_8:AGLT2_site_20": {
+    "bandwidth": "46.62Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_8:AGLT2_site_21": {
+    "bandwidth": "142.14Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_8:AGLT2_site_22": {
+    "bandwidth": "136.48Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_8:AGLT2_site_23": {
+    "bandwidth": "73.04Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_8:AGLT2_site_24": {
+    "bandwidth": "31.88Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_8:AGLT2_site_25": {
+    "bandwidth": "87.27Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_8:AGLT2_site_26": {
+    "bandwidth": "75.33Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_8:AGLT2_site_27": {
+    "bandwidth": "212.61Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_8:AGLT2_site_28": {
+    "bandwidth": "146.49Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_8:AGLT2_site_29": {
+    "bandwidth": "39.61Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_8:AGLT2_site_30": {
+    "bandwidth": "149.62Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_8:AGLT2_site_31": {
+    "bandwidth": "69.16Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_9:AGLT2_site_10": {
+    "bandwidth": "116.02Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_9:AGLT2_site_11": {
+    "bandwidth": "117.53Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_9:AGLT2_site_12": {
+    "bandwidth": "91.01Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_9:AGLT2_site_13": {
+    "bandwidth": "163.36Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_9:AGLT2_site_14": {
+    "bandwidth": "106.14Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_9:AGLT2_site_15": {
+    "bandwidth": "160.0Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_9:AGLT2_site_16": {
+    "bandwidth": "150.36Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_9:AGLT2_site_17": {
+    "bandwidth": "66.22Mbps",
+    "latency": "13ms"
+  },
+  "AGLT2_site_9:AGLT2_site_18": {
+    "bandwidth": "54.0Mbps",
+    "latency": "13ms"
+  },
+  "AGLT2_site_9:AGLT2_site_19": {
+    "bandwidth": "43.8Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_9:AGLT2_site_20": {
+    "bandwidth": "25.12Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_9:AGLT2_site_21": {
+    "bandwidth": "223.59Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_9:AGLT2_site_22": {
+    "bandwidth": "85.29Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_9:AGLT2_site_23": {
+    "bandwidth": "96.49Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_9:AGLT2_site_24": {
+    "bandwidth": "62.49Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_9:AGLT2_site_25": {
+    "bandwidth": "253.16Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_9:AGLT2_site_26": {
+    "bandwidth": "182.15Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_9:AGLT2_site_27": {
+    "bandwidth": "92.28Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_9:AGLT2_site_28": {
+    "bandwidth": "137.28Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_9:AGLT2_site_29": {
+    "bandwidth": "28.67Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_9:AGLT2_site_30": {
+    "bandwidth": "94.56Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_9:AGLT2_site_31": {
+    "bandwidth": "41.27Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_10:AGLT2_site_11": {
+    "bandwidth": "172.1Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_10:AGLT2_site_12": {
+    "bandwidth": "3.25Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_10:AGLT2_site_13": {
+    "bandwidth": "7.96Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_10:AGLT2_site_14": {
+    "bandwidth": "134.68Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_10:AGLT2_site_15": {
+    "bandwidth": "153.8Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_10:AGLT2_site_16": {
+    "bandwidth": "90.66Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_10:AGLT2_site_17": {
+    "bandwidth": "131.8Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_10:AGLT2_site_18": {
+    "bandwidth": "35.76Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_10:AGLT2_site_19": {
+    "bandwidth": "152.34Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_10:AGLT2_site_20": {
+    "bandwidth": "90.26Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_10:AGLT2_site_21": {
+    "bandwidth": "24.92Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_10:AGLT2_site_22": {
+    "bandwidth": "38.4Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_10:AGLT2_site_23": {
+    "bandwidth": "55.65Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_10:AGLT2_site_24": {
+    "bandwidth": "75.63Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_10:AGLT2_site_25": {
+    "bandwidth": "58.61Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_10:AGLT2_site_26": {
+    "bandwidth": "121.56Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_10:AGLT2_site_27": {
+    "bandwidth": "95.05Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_10:AGLT2_site_28": {
+    "bandwidth": "174.13Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_10:AGLT2_site_29": {
+    "bandwidth": "90.38Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_10:AGLT2_site_30": {
+    "bandwidth": "71.67Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_10:AGLT2_site_31": {
+    "bandwidth": "218.03Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_11:AGLT2_site_12": {
+    "bandwidth": "54.81Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_11:AGLT2_site_13": {
+    "bandwidth": "84.45Mbps",
+    "latency": "27ms"
+  },
+  "AGLT2_site_11:AGLT2_site_14": {
+    "bandwidth": "12.75Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_11:AGLT2_site_15": {
+    "bandwidth": "50.26Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_11:AGLT2_site_16": {
+    "bandwidth": "158.71Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_11:AGLT2_site_17": {
+    "bandwidth": "97.75Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_11:AGLT2_site_18": {
+    "bandwidth": "85.28Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_11:AGLT2_site_19": {
+    "bandwidth": "0.1Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_11:AGLT2_site_20": {
+    "bandwidth": "194.79Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_11:AGLT2_site_21": {
+    "bandwidth": "239.56Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_11:AGLT2_site_22": {
+    "bandwidth": "133.72Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_11:AGLT2_site_23": {
+    "bandwidth": "73.06Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_11:AGLT2_site_24": {
+    "bandwidth": "104.59Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_11:AGLT2_site_25": {
+    "bandwidth": "63.37Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_11:AGLT2_site_26": {
+    "bandwidth": "202.4Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_11:AGLT2_site_27": {
+    "bandwidth": "84.98Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_11:AGLT2_site_28": {
+    "bandwidth": "55.77Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_11:AGLT2_site_29": {
+    "bandwidth": "77.64Mbps",
+    "latency": "22ms"
+  },
+  "AGLT2_site_11:AGLT2_site_30": {
+    "bandwidth": "28.55Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_11:AGLT2_site_31": {
+    "bandwidth": "15.06Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_12:AGLT2_site_13": {
+    "bandwidth": "153.96Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_12:AGLT2_site_14": {
+    "bandwidth": "110.95Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_12:AGLT2_site_15": {
+    "bandwidth": "171.92Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_12:AGLT2_site_16": {
+    "bandwidth": "152.35Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_12:AGLT2_site_17": {
+    "bandwidth": "0.1Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_12:AGLT2_site_18": {
+    "bandwidth": "191.25Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_12:AGLT2_site_19": {
+    "bandwidth": "67.1Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_12:AGLT2_site_20": {
+    "bandwidth": "119.71Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_12:AGLT2_site_21": {
+    "bandwidth": "96.73Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_12:AGLT2_site_22": {
+    "bandwidth": "60.38Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_12:AGLT2_site_23": {
+    "bandwidth": "0.1Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_12:AGLT2_site_24": {
+    "bandwidth": "182.35Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_12:AGLT2_site_25": {
+    "bandwidth": "23.76Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_12:AGLT2_site_26": {
+    "bandwidth": "76.97Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_12:AGLT2_site_27": {
+    "bandwidth": "143.78Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_12:AGLT2_site_28": {
+    "bandwidth": "110.76Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_12:AGLT2_site_29": {
+    "bandwidth": "0.1Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_12:AGLT2_site_30": {
+    "bandwidth": "109.08Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_12:AGLT2_site_31": {
+    "bandwidth": "116.64Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_13:AGLT2_site_14": {
+    "bandwidth": "146.25Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_13:AGLT2_site_15": {
+    "bandwidth": "95.0Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_13:AGLT2_site_16": {
+    "bandwidth": "56.79Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_13:AGLT2_site_17": {
+    "bandwidth": "126.1Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_13:AGLT2_site_18": {
+    "bandwidth": "143.09Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_13:AGLT2_site_19": {
+    "bandwidth": "179.47Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_13:AGLT2_site_20": {
+    "bandwidth": "114.35Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_13:AGLT2_site_21": {
+    "bandwidth": "0.1Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_13:AGLT2_site_22": {
+    "bandwidth": "165.02Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_13:AGLT2_site_23": {
+    "bandwidth": "174.88Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_13:AGLT2_site_24": {
+    "bandwidth": "113.33Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_13:AGLT2_site_25": {
+    "bandwidth": "95.37Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_13:AGLT2_site_26": {
+    "bandwidth": "187.32Mbps",
+    "latency": "16ms"
+  },
+  "AGLT2_site_13:AGLT2_site_27": {
+    "bandwidth": "83.04Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_13:AGLT2_site_28": {
+    "bandwidth": "146.81Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_13:AGLT2_site_29": {
+    "bandwidth": "0.1Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_13:AGLT2_site_30": {
+    "bandwidth": "54.6Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_13:AGLT2_site_31": {
+    "bandwidth": "183.19Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_14:AGLT2_site_15": {
+    "bandwidth": "71.03Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_14:AGLT2_site_16": {
+    "bandwidth": "104.95Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_14:AGLT2_site_17": {
+    "bandwidth": "151.1Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_14:AGLT2_site_18": {
+    "bandwidth": "156.08Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_14:AGLT2_site_19": {
+    "bandwidth": "87.88Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_14:AGLT2_site_20": {
+    "bandwidth": "91.62Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_14:AGLT2_site_21": {
+    "bandwidth": "142.61Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_14:AGLT2_site_22": {
+    "bandwidth": "120.87Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_14:AGLT2_site_23": {
+    "bandwidth": "117.72Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_14:AGLT2_site_24": {
+    "bandwidth": "67.43Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_14:AGLT2_site_25": {
+    "bandwidth": "147.44Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_14:AGLT2_site_26": {
+    "bandwidth": "153.4Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_14:AGLT2_site_27": {
+    "bandwidth": "137.99Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_14:AGLT2_site_28": {
+    "bandwidth": "9.3Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_14:AGLT2_site_29": {
+    "bandwidth": "106.69Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_14:AGLT2_site_30": {
+    "bandwidth": "105.24Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_14:AGLT2_site_31": {
+    "bandwidth": "151.99Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_15:AGLT2_site_16": {
+    "bandwidth": "139.11Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_15:AGLT2_site_17": {
+    "bandwidth": "96.04Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_15:AGLT2_site_18": {
+    "bandwidth": "220.83Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_15:AGLT2_site_19": {
+    "bandwidth": "39.6Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_15:AGLT2_site_20": {
+    "bandwidth": "70.98Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_15:AGLT2_site_21": {
+    "bandwidth": "187.12Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_15:AGLT2_site_22": {
+    "bandwidth": "164.81Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_15:AGLT2_site_23": {
+    "bandwidth": "22.76Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_15:AGLT2_site_24": {
+    "bandwidth": "86.26Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_15:AGLT2_site_25": {
+    "bandwidth": "140.24Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_15:AGLT2_site_26": {
+    "bandwidth": "57.39Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_15:AGLT2_site_27": {
+    "bandwidth": "86.98Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_15:AGLT2_site_28": {
+    "bandwidth": "82.47Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_15:AGLT2_site_29": {
+    "bandwidth": "75.52Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_15:AGLT2_site_30": {
+    "bandwidth": "21.79Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_15:AGLT2_site_31": {
+    "bandwidth": "107.51Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_16:AGLT2_site_17": {
+    "bandwidth": "105.54Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_16:AGLT2_site_18": {
+    "bandwidth": "125.87Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_16:AGLT2_site_19": {
+    "bandwidth": "25.17Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_16:AGLT2_site_20": {
+    "bandwidth": "145.38Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_16:AGLT2_site_21": {
+    "bandwidth": "179.32Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_16:AGLT2_site_22": {
+    "bandwidth": "249.24Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_16:AGLT2_site_23": {
+    "bandwidth": "124.37Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_16:AGLT2_site_24": {
+    "bandwidth": "33.39Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_16:AGLT2_site_25": {
+    "bandwidth": "65.21Mbps",
+    "latency": "28ms"
+  },
+  "AGLT2_site_16:AGLT2_site_26": {
+    "bandwidth": "151.98Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_16:AGLT2_site_27": {
+    "bandwidth": "154.34Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_16:AGLT2_site_28": {
+    "bandwidth": "12.6Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_16:AGLT2_site_29": {
+    "bandwidth": "57.44Mbps",
+    "latency": "22ms"
+  },
+  "AGLT2_site_16:AGLT2_site_30": {
+    "bandwidth": "84.99Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_16:AGLT2_site_31": {
+    "bandwidth": "137.19Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_17:AGLT2_site_18": {
+    "bandwidth": "144.04Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_17:AGLT2_site_19": {
+    "bandwidth": "60.03Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_17:AGLT2_site_20": {
+    "bandwidth": "196.32Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_17:AGLT2_site_21": {
+    "bandwidth": "22.39Mbps",
+    "latency": "31ms"
+  },
+  "AGLT2_site_17:AGLT2_site_22": {
+    "bandwidth": "225.69Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_17:AGLT2_site_23": {
+    "bandwidth": "116.64Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_17:AGLT2_site_24": {
+    "bandwidth": "147.17Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_17:AGLT2_site_25": {
+    "bandwidth": "152.08Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_17:AGLT2_site_26": {
+    "bandwidth": "84.07Mbps",
+    "latency": "12ms"
+  },
+  "AGLT2_site_17:AGLT2_site_27": {
+    "bandwidth": "24.89Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_17:AGLT2_site_28": {
+    "bandwidth": "83.92Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_17:AGLT2_site_29": {
+    "bandwidth": "127.32Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_17:AGLT2_site_30": {
+    "bandwidth": "118.1Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_17:AGLT2_site_31": {
+    "bandwidth": "90.22Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_18:AGLT2_site_19": {
+    "bandwidth": "186.86Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_18:AGLT2_site_20": {
+    "bandwidth": "66.91Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_18:AGLT2_site_21": {
+    "bandwidth": "98.58Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_18:AGLT2_site_22": {
+    "bandwidth": "48.79Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_18:AGLT2_site_23": {
+    "bandwidth": "107.19Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_18:AGLT2_site_24": {
+    "bandwidth": "73.22Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_18:AGLT2_site_25": {
+    "bandwidth": "110.42Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_18:AGLT2_site_26": {
+    "bandwidth": "103.76Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_18:AGLT2_site_27": {
+    "bandwidth": "163.32Mbps",
+    "latency": "13ms"
+  },
+  "AGLT2_site_18:AGLT2_site_28": {
+    "bandwidth": "104.6Mbps",
+    "latency": "19ms"
+  },
+  "AGLT2_site_18:AGLT2_site_29": {
+    "bandwidth": "142.79Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_18:AGLT2_site_30": {
+    "bandwidth": "98.76Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_18:AGLT2_site_31": {
+    "bandwidth": "97.84Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_19:AGLT2_site_20": {
+    "bandwidth": "95.41Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_19:AGLT2_site_21": {
+    "bandwidth": "88.94Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_19:AGLT2_site_22": {
+    "bandwidth": "95.33Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_19:AGLT2_site_23": {
+    "bandwidth": "49.42Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_19:AGLT2_site_24": {
+    "bandwidth": "76.42Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_19:AGLT2_site_25": {
+    "bandwidth": "106.47Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_19:AGLT2_site_26": {
+    "bandwidth": "62.95Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_19:AGLT2_site_27": {
+    "bandwidth": "77.13Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_19:AGLT2_site_28": {
+    "bandwidth": "115.26Mbps",
+    "latency": "8ms"
+  },
+  "AGLT2_site_19:AGLT2_site_29": {
+    "bandwidth": "72.12Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_19:AGLT2_site_30": {
+    "bandwidth": "130.96Mbps",
+    "latency": "38ms"
+  },
+  "AGLT2_site_19:AGLT2_site_31": {
+    "bandwidth": "60.14Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_20:AGLT2_site_21": {
+    "bandwidth": "131.07Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_20:AGLT2_site_22": {
+    "bandwidth": "111.48Mbps",
+    "latency": "17ms"
+  },
+  "AGLT2_site_20:AGLT2_site_23": {
+    "bandwidth": "55.62Mbps",
+    "latency": "11ms"
+  },
+  "AGLT2_site_20:AGLT2_site_24": {
+    "bandwidth": "103.45Mbps",
+    "latency": "3ms"
+  },
+  "AGLT2_site_20:AGLT2_site_25": {
+    "bandwidth": "6.76Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_20:AGLT2_site_26": {
+    "bandwidth": "151.35Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_20:AGLT2_site_27": {
+    "bandwidth": "159.68Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_20:AGLT2_site_28": {
+    "bandwidth": "25.94Mbps",
+    "latency": "25ms"
+  },
+  "AGLT2_site_20:AGLT2_site_29": {
+    "bandwidth": "124.88Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_20:AGLT2_site_30": {
+    "bandwidth": "72.05Mbps",
+    "latency": "14ms"
+  },
+  "AGLT2_site_20:AGLT2_site_31": {
+    "bandwidth": "239.39Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_21:AGLT2_site_22": {
+    "bandwidth": "47.83Mbps",
+    "latency": "29ms"
+  },
+  "AGLT2_site_21:AGLT2_site_23": {
+    "bandwidth": "127.34Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_21:AGLT2_site_24": {
+    "bandwidth": "114.63Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_21:AGLT2_site_25": {
+    "bandwidth": "155.76Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_21:AGLT2_site_26": {
+    "bandwidth": "78.38Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_21:AGLT2_site_27": {
+    "bandwidth": "34.48Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_21:AGLT2_site_28": {
+    "bandwidth": "123.72Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_21:AGLT2_site_29": {
+    "bandwidth": "63.36Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_21:AGLT2_site_30": {
+    "bandwidth": "208.48Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_21:AGLT2_site_31": {
+    "bandwidth": "238.32Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_22:AGLT2_site_23": {
+    "bandwidth": "37.18Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_22:AGLT2_site_24": {
+    "bandwidth": "105.72Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_22:AGLT2_site_25": {
+    "bandwidth": "98.42Mbps",
+    "latency": "20ms"
+  },
+  "AGLT2_site_22:AGLT2_site_26": {
+    "bandwidth": "52.73Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_22:AGLT2_site_27": {
+    "bandwidth": "50.56Mbps",
+    "latency": "37ms"
+  },
+  "AGLT2_site_22:AGLT2_site_28": {
+    "bandwidth": "165.17Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_22:AGLT2_site_29": {
+    "bandwidth": "65.2Mbps",
+    "latency": "18ms"
+  },
+  "AGLT2_site_22:AGLT2_site_30": {
+    "bandwidth": "130.36Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_22:AGLT2_site_31": {
+    "bandwidth": "183.14Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_23:AGLT2_site_24": {
+    "bandwidth": "137.04Mbps",
+    "latency": "34ms"
+  },
+  "AGLT2_site_23:AGLT2_site_25": {
+    "bandwidth": "243.49Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_23:AGLT2_site_26": {
+    "bandwidth": "103.33Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_23:AGLT2_site_27": {
+    "bandwidth": "28.93Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_23:AGLT2_site_28": {
+    "bandwidth": "90.18Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_23:AGLT2_site_29": {
+    "bandwidth": "0.1Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_23:AGLT2_site_30": {
+    "bandwidth": "125.36Mbps",
+    "latency": "36ms"
+  },
+  "AGLT2_site_23:AGLT2_site_31": {
+    "bandwidth": "98.3Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_24:AGLT2_site_25": {
+    "bandwidth": "49.94Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_24:AGLT2_site_26": {
+    "bandwidth": "133.5Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_24:AGLT2_site_27": {
+    "bandwidth": "26.79Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_24:AGLT2_site_28": {
+    "bandwidth": "115.39Mbps",
+    "latency": "4ms"
+  },
+  "AGLT2_site_24:AGLT2_site_29": {
+    "bandwidth": "56.38Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_24:AGLT2_site_30": {
+    "bandwidth": "169.0Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_24:AGLT2_site_31": {
+    "bandwidth": "95.95Mbps",
+    "latency": "32ms"
+  },
+  "AGLT2_site_25:AGLT2_site_26": {
+    "bandwidth": "154.49Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_25:AGLT2_site_27": {
+    "bandwidth": "155.39Mbps",
+    "latency": "7ms"
+  },
+  "AGLT2_site_25:AGLT2_site_28": {
+    "bandwidth": "82.4Mbps",
+    "latency": "35ms"
+  },
+  "AGLT2_site_25:AGLT2_site_29": {
+    "bandwidth": "75.21Mbps",
+    "latency": "21ms"
+  },
+  "AGLT2_site_25:AGLT2_site_30": {
+    "bandwidth": "73.06Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_25:AGLT2_site_31": {
+    "bandwidth": "163.32Mbps",
+    "latency": "2ms"
+  },
+  "AGLT2_site_26:AGLT2_site_27": {
+    "bandwidth": "257.02Mbps",
+    "latency": "6ms"
+  },
+  "AGLT2_site_26:AGLT2_site_28": {
+    "bandwidth": "103.56Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_26:AGLT2_site_29": {
+    "bandwidth": "102.03Mbps",
+    "latency": "26ms"
+  },
+  "AGLT2_site_26:AGLT2_site_30": {
+    "bandwidth": "36.52Mbps",
+    "latency": "1ms"
+  },
+  "AGLT2_site_26:AGLT2_site_31": {
+    "bandwidth": "205.14Mbps",
+    "latency": "5ms"
+  },
+  "AGLT2_site_27:AGLT2_site_28": {
+    "bandwidth": "88.96Mbps",
+    "latency": "23ms"
+  },
+  "AGLT2_site_27:AGLT2_site_29": {
+    "bandwidth": "103.65Mbps",
+    "latency": "10ms"
+  },
+  "AGLT2_site_27:AGLT2_site_30": {
+    "bandwidth": "82.25Mbps",
+    "latency": "39ms"
+  },
+  "AGLT2_site_27:AGLT2_site_31": {
+    "bandwidth": "106.77Mbps",
+    "latency": "15ms"
+  },
+  "AGLT2_site_28:AGLT2_site_29": {
+    "bandwidth": "77.75Mbps",
+    "latency": "9ms"
+  },
+  "AGLT2_site_28:AGLT2_site_30": {
+    "bandwidth": "0.1Mbps",
+    "latency": "40ms"
+  },
+  "AGLT2_site_28:AGLT2_site_31": {
+    "bandwidth": "20.88Mbps",
+    "latency": "24ms"
+  },
+  "AGLT2_site_29:AGLT2_site_30": {
+    "bandwidth": "163.12Mbps",
+    "latency": "33ms"
+  },
+  "AGLT2_site_29:AGLT2_site_31": {
+    "bandwidth": "163.56Mbps",
+    "latency": "30ms"
+  },
+  "AGLT2_site_30:AGLT2_site_31": {
+    "bandwidth": "33.46Mbps",
+    "latency": "1ms"
+  }
+}

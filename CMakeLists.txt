@@ -14,7 +14,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/")
 find_package(Boost     REQUIRED)
 find_package(SimGrid   REQUIRED)
 find_package(SQLite3   REQUIRED)
-find_package(FSMod     REQUIRED)
 find_package(spdlog    REQUIRED)
 find_package(fmt REQUIRED)
 
@@ -23,7 +22,7 @@ add_subdirectory(json)
 list(APPEND BUILT_PACKAGES "json")
 
 # Include directories
-include_directories(${SimGrid_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${FSMOD_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/json/single_include)
+include_directories(${SimGrid_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/json/single_include)
 include_directories(include/)
 
 # Source files
@@ -42,7 +41,6 @@ target_link_libraries(
 	CGSim
 	${SimGrid_LIBRARY}
         ${Boost_LIBRARIES}
-        ${FSMOD_LIBRARY}
         SQLite::SQLite3
         spdlog::spdlog
 	fmt::fmt
@@ -67,7 +65,7 @@ install(TARGETS CGSim
 )
 
 # Install header files
-install(FILES include/logger.h include/job.h include/DispatcherPlugin.h include/host_extensions.h
+install(FILES include/file_manager.h include/logger.h include/job.h include/DispatcherPlugin.h include/host_extensions.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGSim)
 
 # Install the executable

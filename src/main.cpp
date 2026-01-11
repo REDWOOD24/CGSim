@@ -35,7 +35,6 @@ int main(int argc, char** argv)
     const std::string siteInfoFile                 = j["Sites_Information"];
     const std::string siteConnInfoFile             = j["Sites_Connection_Information"];
     const std::string dispatcherPath               = j["Dispatcher_Plugin"];
-    const std::string outputFile                   = j["Output_DB"];
     const long        num_of_jobs                  = j["Num_of_Jobs"];
     const std::set<std::string> filteredSiteList   = j["Sites"].get<std::set<std::string>>();
 
