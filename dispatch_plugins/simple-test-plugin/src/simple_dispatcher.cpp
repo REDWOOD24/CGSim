@@ -264,7 +264,6 @@ Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
     {
         Host* current_best_cpu = cpu_queue.top();
         cpu_queue.pop();
-        std::cout << current_best_cpu->name << std::endl;
         if(current_best_cpu->cores_available < j->cores) continue;
         std::string current_best_disk = "";
         double score = calculateWeightedScore(current_best_cpu, j, current_best_disk);
@@ -281,7 +280,6 @@ Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
 
     if(best_cpu) //Found a CPU. Deduct storage from the selected disk.
     {
-        sg4::Host::by_name(best_cpu->name)->extension<HostExtensions>()->registerJob(j);
         best_cpu->jobs.insert(j->jobid);
         best_cpu->cores_available  -= j->cores;
 
@@ -340,20 +338,13 @@ catch (const std::out_of_range& e) {
     }
 
   job->flops = site->gflops*job->cpu_consumption_time*job->cores;
-  std::cout << "Looking for a CPU" << std::endl;
   best_cpu           = findBestAvailableCPU(site->cpus, job);
-  if(best_cpu) std::cout << "CPU found" << std::endl;
-  else std::cout << "CPU not found" << std::endl;
   if(best_cpu) {
     site->cpus_in_use++; 
-    //job->comp_site = site->name;
-    job->status = "assigned"; 
-    //LOG_DEBUG("Job Status changed to assigned");
+    job->status = "assigned";
 }
   else{
   job->status = "pending";
-  //LOG_DEBUG("Job Status changed to pending");
-
   }
   this->printJobInfo(job);
   return job;
@@ -364,15 +355,8 @@ catch (const std::out_of_range& e) {
 void SIMPLE_DISPATCHER::free(Job* job)
 {
  Host* cpu               = _sites_map.at(job->comp_site)->cpus_map.at(job->comp_host);
-  cpu->cores_available   += job->cores;
+ cpu->cores_available   += job->cores;
 
- //if(cpu->jobs.count(job->jobid) > 0)
-// {
- //  Disk* disk              = cpu->disks_map.at(job->disk);
-  // cpu->cores_available   += job->cores;
-  // cpu->jobs.erase(job->jobid);
-
- //}
 }
 
 
