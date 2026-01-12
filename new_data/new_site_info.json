@@ -8,7 +8,7 @@
     },
     "CPUInfo": [
       {
-        "units": 888,
+        "units": 1,
         "speed": 30000000.0,
         "cores": 20,
         "BW_CPU": "3489GBps",
@@ -42,7 +42,7 @@
         ]
       },
       {
-        "units": 887,
+        "units": 1,
         "speed": 20000000.0,
         "cores": 26,
         "BW_CPU": "3834GBps",

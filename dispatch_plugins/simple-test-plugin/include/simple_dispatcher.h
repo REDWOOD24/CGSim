@@ -70,7 +70,6 @@ public:
   void   cleanup();
   Site*  findSiteByName(std::vector<Site*>& sites, const std::string& site_name);
 
-
 private:
   int                                            current_site_index{0};
   bool                                           use_round_robin{false};

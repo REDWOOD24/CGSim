@@ -2,10 +2,10 @@
 
 std::unique_ptr<DispatcherPlugin>   JOB_EXECUTOR::dispatcher;
 sg4::ActivitySet                    JOB_EXECUTOR::pending_activities;
-sg4::ActivitySet                    JOB_EXECUTOR::exec_activities;
 std::vector<Job*>                   JOB_EXECUTOR::pending_jobs;
 JobQueue                            JOB_EXECUTOR::jobs;
 std::unordered_map<Job*, int>       JOB_EXECUTOR::retry_counts;
+unsigned long                       JOB_EXECUTOR::MAX_RETRIES;
 
 
 void JOB_EXECUTOR::start_job_execution(long num_of_jobs_to_run)
@@ -21,21 +21,41 @@ void JOB_EXECUTOR::start_job_execution(long num_of_jobs_to_run)
 void JOB_EXECUTOR::start_server(JobQueue jobs) {
 
   while (!jobs.empty()) {
+    std::cout << "Jobs left: " << jobs.size() << std::endl;
     Job* job = jobs.top();
     jobs.pop();
 
+    std::cout << "Processing job " << job->jobid << " with status " << job->status << std::endl;
+
     CGSim::FileManager::request_file_location(job);
+    std::cout << "File requested for job " << job->jobid << std::endl;
+
     dispatcher->assignJob(job);
-    job->status = "assigned";
-    job->comp_host = "AGLT2_site_0_cpu-4";
-    job->comp_site = "AGLT2_site_0";
-    job->disk= "AGLT2_CALIBDISK";
+    std::cout << "Job " << job->jobid << " status: " << job->status << std::endl;
 
     if (job->status == "assigned") {
       sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-      pending_activities.push(mqueue->put_async(job)->set_name("Comm_Job_" + std::to_string(job->jobid) + "_on_" + job->comp_host));}
-    else {if(job->status != "failed"){job->status = "pending"; pending_jobs.push_back(job);}}
+      std::cout << "Putting job " << job->jobid << " on MQ " << job->comp_host << std::endl;
+      //auto send_activity = mqueue->put_async(job)->set_name("Comm_send_Job_" + std::to_string(job->jobid) + "_on_" + job->comp_host);
+      //send_activity->on_this_completion_cb([](simgrid::s4u::Mess const& me) {
+       // std::cout << me.get_cname() << ", Finished on:  " << me.get_finish_time() << std::endl;
+         //  });
+      sg4::MessPtr act = mqueue->put_async(job)->set_name("Comm_send_Job_" + std::to_string(job->jobid) + "_on_" + job->comp_host);
+      act->on_this_completion_cb([](simgrid::s4u::Mess const& me) {std::cout << "Sending Job: " << me.get_name() << std::endl;});
+      pending_activities.push(act);
+      std::cout << "Job " << job->jobid << " async put done" << std::endl;
+    } else {
+      if (job->status != "failed") {
+        job->status = "pending";
+        pending_jobs.push_back(job);
+        std::cout << "Job " << job->jobid << " pushed to pending_jobs" << std::endl;
+      } else {
+        std::cout << "Job " << job->jobid << " failed" << std::endl;
+      }
+    }
   }
+  MAX_RETRIES = 2*pending_jobs.size();
+  while (true) {if (pending_activities.wait_any()->get_name().find("Exec") != std::string::npos) break;}
 
   for (Job* job : pending_jobs) {retry_counts[job] = 0;}
 
@@ -49,32 +69,21 @@ void JOB_EXECUTOR::start_server(JobQueue jobs) {
 
       if (job->status == "assigned") {
         sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-        pending_activities.push(mqueue->put_async(job)->set_name("Comm_Job_" + job->id + "_on_" + job->comp_host));
+        sg4::MessPtr act = mqueue->put_async(job)->set_name("Comm_send_Job_" + job->id + "_on_" + job->comp_host);
+        act->on_this_completion_cb([](simgrid::s4u::Mess const& me) {std::cout << "Sending Job: " << me.get_name() << std::endl;});
+        pending_activities.push(act);
         it = pending_jobs.erase(it);
       }
       else ++it;
     }
-
-    if (!exec_activities.empty()) {
-      auto activityPtr = exec_activities.wait_any();
-    }
+    while (true) {if (pending_activities.wait_any()->get_name().find("Exec") != std::string::npos) break;}
   }
 
   while (!pending_activities.empty())
   {
-    std::cout << sg4::Engine::get_clock() <<  std::endl;
     pending_activities.wait_any();
-    //pending_activities.wait_any();
-  }
-
-  /*while (!exec_activities.empty())
-    {
     std::cout << sg4::Engine::get_clock() <<  std::endl;
-    exec_activities.wait_any();
-    //pending_activities.wait_any();
-    }*/
-
-  //pending_activities.wait_all();
+  }
 
 
 }
@@ -109,7 +118,7 @@ void JOB_EXECUTOR::execute_job(Job* j)
     }
   }
 
-  for (const auto& [filename,size] : j->output_file) {
+  for (const auto& [filename,size] : j->output_files) {
     auto write_activity = Actions::write_file_async(j,filename,size,dispatcher);
     exec_activity->add_successor(write_activity);
     write_activities.push_back(write_activity);
@@ -151,7 +160,6 @@ void JOB_EXECUTOR::start_receivers()
     sg4::Actor::create(host->get_name() + "-actor", host, receiver, host->get_name() + "-MQ");
   }
 }
-
 
 void JOB_EXECUTOR::attach_callbacks()
 {

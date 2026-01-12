@@ -79,15 +79,16 @@ JobQueue SIMPLE_DISPATCHER::getJobs(long max_jobs) {
             // Safely get each column, providing defaults if missing
             job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
             job->creation_time         = getColumn(row, column_map, "creationtime", "");
-            job->job_status            = getColumn(row, column_map, "jobstatus", "UNKNOWN");
-            job->job_name              = getColumn(row, column_map, "jobname", "UNKNOWN");
+            job->job_status            = getColumn(row, column_map, "jobstatus", "");
+            job->job_name              = getColumn(row, column_map, "jobname", "");
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
-            job->comp_site             = "AGLT2_site_"+getColumn(row, column_map, "computingsite", "UNKNOWN");
+            job->comp_site             = "AGLT2_site_"+getColumn(row, column_map, "computingsite", "");
             job->destination_dataset_name = getColumn(row, column_map, "destinationdblock", "");
             job->destination_SE        = getColumn(row, column_map, "destinationse", "");
             job->source_site           = getColumn(row, column_map, "sourcesite", "");
             job->transfer_type         = getColumn(row, column_map, "transfertype", "");
             job->core_count            = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
+            job->cores                 = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
             job->no_of_inp_files       = std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));
             job->inp_file_bytes        = std::stod(getColumn(row, column_map, "inputfilebytes", "0"));
             job->no_of_out_files       = std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));
@@ -97,7 +98,7 @@ JobQueue SIMPLE_DISPATCHER::getJobs(long max_jobs) {
             job->ddm_error_code        = getColumn(row, column_map, "ddmerrorcode", "");
             job->dispatcher_error_code = getColumn(row, column_map, "jobdispatchererrorcode", "");
             job->taskbuffer_error_code = getColumn(row, column_map, "taskbuffererrorcode", "");
-            job->status                = getColumn(row, column_map, "jobstatus", "UNKNOWN");
+            job->status                = "created";
 
             // ---- Parse input files JSON ----
             std::string json_str = getColumn(row, column_map, "files_info", "");
@@ -123,7 +124,7 @@ JobQueue SIMPLE_DISPATCHER::getJobs(long max_jobs) {
             long long size_per_out_file = job->no_of_out_files > 0 ? job->out_file_bytes / job->no_of_out_files : 0;
             for (int f = 1; f <= job->no_of_out_files; ++f) {
                 std::string filename = "/output/user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
-                job->output_file[filename] = size_per_out_file;
+                job->output_files[filename] = size_per_out_file;
             }
 
             jobs.push(job);
@@ -236,10 +237,10 @@ void SIMPLE_DISPATCHER::setPlatform(sg4::NetZone* platform)
 
 double SIMPLE_DISPATCHER::calculateWeightedScore(Host* cpu, Job* j, std::string& best_disk_name)
 {
-    double score = cpu->speed/1e8 * weights.at("speed") + cpu->cores * weights.at("cores");
+    double score = cpu->speed/1e8 * weights.at("speed") + cpu->cores_available * weights.at("cores");
     double best_disk_score = std::numeric_limits<double>::lowest();
     for (const auto& d : cpu->disks) {
-	      double disk_score = (d->read_bw/10) * weights.at("disk_read_bw") + (d->write_bw/10) * weights.at("disk_write_bw");
+	      double disk_score = (d->read_bw/1e12 ) * weights.at("disk_read_bw") + (d->write_bw/1e12) * weights.at("disk_write_bw");
            if (disk_score > best_disk_score) {
                best_disk_score = disk_score;
                best_disk_name = d->name;
@@ -251,66 +252,44 @@ double SIMPLE_DISPATCHER::calculateWeightedScore(Host* cpu, Job* j, std::string&
 
 Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
 {
-    Host* best_cpu = nullptr;
-    std::string best_disk;
-    double best_score = std::numeric_limits<double>::lowest();
+    Host*          best_cpu       = nullptr;
+    std::string    best_disk;
+    double         best_score     = std::numeric_limits<double>::lowest();
+    int           _search_depth   = 0;
 
-    // Create a priority queue from the CPU candidates.
     std::priority_queue<Host*> cpu_queue;
-    for (auto* cpu : cpus)
-    {
-        if (!cpu) {
-	  std::cerr << "Warning: Encountered a null CPU pointer." << std::endl;
-	  continue;
-        }
-        cpu_queue.push(cpu);
-    }
+    for (const auto& cpu : cpus) { cpu_queue.push(cpu);}
 
-    int candidatesExamined = 0;
-    const int maxCandidates = 1;
-
-    while (!cpu_queue.empty() && candidatesExamined < maxCandidates)
+    while(!cpu_queue.empty())
     {
-        Host* current = cpu_queue.top();
+        Host* current_best_cpu = cpu_queue.top();
         cpu_queue.pop();
-        ++candidatesExamined;
-	    //LOG_DEBUG("Available Cores {}", sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available());
-        //LOG_DEBUG("JOB Cores needed {}", j->cores);
-        if (sg4::Host::by_name(current->name)->extension<HostExtensions>()->get_cores_available() < j->cores)
-        {   
-	      //LOG_DEBUG("Cores not suffficient for job {} on CPU {}", j->jobid, current->name);
-	      continue;
-        }
-
-        // For now, using a dummy score.
-        double score = 1;
-        std::string current_disk = "";
-        if (current_disk == "") {
-            continue;
-        }
-        if (score >= best_score)
+        std::cout << current_best_cpu->name << std::endl;
+        if(current_best_cpu->cores_available < j->cores) continue;
+        std::string current_best_disk = "";
+        double score = calculateWeightedScore(current_best_cpu, j, current_best_disk);
+        if(current_best_disk.empty()) continue; //Not enough disk space left
+        if (score > best_score)
         {
-            best_score = score;
-            best_cpu = current;
-            best_disk = current_disk;
+            best_score          = score;
+            best_cpu            = current_best_cpu;
+            best_disk           = current_best_disk;
         }
-        // NOTE: Original code had additional assignments that may be unintended;
-        // they are commented out here.
-        // best_cpu = current;
-        // best_disk = current_disk;
+        //if(_search_depth++ > 10) break; //Optimization to not loop over too many CPUs
+        //cpu_queue.pop();
     }
 
-    if (best_cpu)
+    if(best_cpu) //Found a CPU. Deduct storage from the selected disk.
     {
-        // Deduct CPU cores and assign job.
-        sg4::Host::by_name(best_cpu->name)->extension<HostExtensions>()->registerJob(j); 
+        sg4::Host::by_name(best_cpu->name)->extension<HostExtensions>()->registerJob(j);
         best_cpu->jobs.insert(j->jobid);
-        best_cpu->cores_available -= j->cores;
-        j->disk = best_disk;
-        j->comp_host = best_cpu->name;
-    }
-    else {
-      //LOG_DEBUG("Could not find a suitable CPU for job {}", j->jobid );
+        best_cpu->cores_available  -= j->cores;
+
+        for(auto& d: best_cpu->disks)
+        //{if(d->name == best_disk){d->storage -= (this->getTotalSize(j->input_files) + this->getTotalSize(j->output_files));}}
+
+        j->disk       =  best_disk;
+        j->comp_host  =  best_cpu->name;
     }
 
     return best_cpu;
@@ -345,13 +324,10 @@ Job* SIMPLE_DISPATCHER::assignJobToResource(Job* job)
   
 
 try {
+  job->comp_site = "AGLT2_site_0";
   site = _sites_map.at(job->comp_site);
-
-  //std::cout << job->comp_site << std::endl;
-  //LOG_DEBUG(" Found the site {}", job->comp_site);
 }
 catch (const std::out_of_range& e) {
-  //LOG_DEBUG("Computing Site is not found: {}", job->comp_site);
 }
 
   if (job == nullptr) {
@@ -360,15 +336,17 @@ catch (const std::out_of_range& e) {
     }
     if (site == nullptr) {
         job->status = "failed";
-        //LOG_DEBUG("Computing Site is not found: Site pointer NULL :{}", job->comp_site);
         return job;
     }
-  job->flops = 5000000;
-  Host* h = site->cpus[0];
-  best_cpu           = h;
+
+  job->flops = site->gflops*job->cpu_consumption_time*job->cores;
+  std::cout << "Looking for a CPU" << std::endl;
+  best_cpu           = findBestAvailableCPU(site->cpus, job);
+  if(best_cpu) std::cout << "CPU found" << std::endl;
+  else std::cout << "CPU not found" << std::endl;
   if(best_cpu) {
     site->cpus_in_use++; 
-    job->comp_site = site->name; 
+    //job->comp_site = site->name;
     job->status = "assigned"; 
     //LOG_DEBUG("Job Status changed to assigned");
 }
@@ -385,7 +363,9 @@ catch (const std::out_of_range& e) {
 
 void SIMPLE_DISPATCHER::free(Job* job)
 {
- //Host* cpu               = _sites_map.at(job->comp_site)->cpus_map.at(job->comp_host);
+ Host* cpu               = _sites_map.at(job->comp_site)->cpus_map.at(job->comp_host);
+  cpu->cores_available   += job->cores;
+
  //if(cpu->jobs.count(job->jobid) > 0)
 // {
  //  Disk* disk              = cpu->disks_map.at(job->disk);

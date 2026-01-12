@@ -28,10 +28,8 @@ public:
 
 private:
     static   std::unique_ptr<DispatcherPlugin>      dispatcher;
-    static   constexpr int MAX_RETRIES            = 300;
-    static   constexpr int RETRY_INTERVAL         = 1000000000; //seconds
+    static   unsigned long MAX_RETRIES;
     static   sg4::ActivitySet pending_activities;
-    static   sg4::ActivitySet exec_activities;
     static   JobQueue jobs;
     static   std::vector<Job*> pending_jobs;
     static   std::unordered_map<Job*, int> retry_counts;
