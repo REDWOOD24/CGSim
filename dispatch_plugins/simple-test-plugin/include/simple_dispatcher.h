@@ -7,10 +7,7 @@
 #include <fstream>
 #include <string>
 #include <math.h>
-#include <simgrid/s4u.hpp>
-#include <iomanip>
-#include "job.h"
-#include "host_extensions.h"
+#include "CGSim.h"
 
 namespace sg4 = simgrid::s4u;
 

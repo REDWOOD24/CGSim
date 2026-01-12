@@ -7,6 +7,7 @@
 #include <simgrid/s4u/Disk.hpp>
 #include <simgrid/s4u/Comm.hpp>
 #include <simgrid/s4u/Exec.hpp>
+#include <simgrid/s4u/Mess.hpp>
 #include <stdexcept>
 #include "job.h"
 namespace sg4 = simgrid::s4u;

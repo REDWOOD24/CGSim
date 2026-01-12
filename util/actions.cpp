@@ -20,7 +20,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j, std::unique_ptr<Dispa
         j->status = "finished";
          if (j->status == "finished" ) {
              host->extension<HostExtensions>()->onJobFinish(j);
-             dispatcher->onJobEnd(j);
+             dispatcher->onJobExecutionEnd(j,ex);
         }});
     return exec_activity;
 }

@@ -8,7 +8,7 @@ public:
     virtual JobQueue getWorkload(long num_of_jobs) override;
     virtual Job* assignJob(Job* job) final override;
     virtual void getResourceInformation(simgrid::s4u::NetZone* platform) final override;
-    virtual void onJobEnd(Job* job) final override;
+    virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
     virtual void onSimulationEnd() final override;
 
 private:
@@ -38,7 +38,7 @@ Job* SimpleDispatcherPlugin::assignJob(Job* job)
   return sd->assignJobToResource(job);
 }
 
-void SimpleDispatcherPlugin::onJobEnd(Job* job)
+void SimpleDispatcherPlugin::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
 {
     sd->free(job);
 }

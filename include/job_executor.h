@@ -22,7 +22,6 @@ public:
     static void start_job_execution(long num_of_jobs_to_run);
     static void receiver(const std::string& MQ_name);
     static void start_receivers();
-    static void saveJobs();
     static void attach_callbacks();
 
 
