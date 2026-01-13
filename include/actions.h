@@ -14,6 +14,8 @@
 #include "file_manager.h"
 
 namespace sg4 = simgrid::s4u;
+static std::unordered_set<std::string> started_comms; //Hack to avoid double start of comms in callback
+
 class Actions
 {
 public:

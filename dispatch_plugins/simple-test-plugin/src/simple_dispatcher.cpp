@@ -1,5 +1,7 @@
 #include "simple_dispatcher.h"
 
+Output* SIMPLE_DISPATCHER::output;
+
 std::vector<std::string> parseCSVLine(const std::string& line) {
     std::vector<std::string> row;
     std::string cell;
@@ -181,7 +183,7 @@ void SIMPLE_DISPATCHER::setPlatform(sg4::NetZone* platform)
                 std::cerr << "Warning: Null host found in site " << _site->name << ", skipping.\n";
                 continue;
             }
-
+            if ((host->get_name()).find("_communication") != std::string::npos) continue;
             Host* cpu = new Host;
             const char* host_cname = host->get_cname();
             cpu->name = host_cname ? host_cname : "UNKNOWN_HOST";
@@ -293,28 +295,6 @@ Host* SIMPLE_DISPATCHER::findBestAvailableCPU(std::vector<Host*>& cpus, Job* j)
     return best_cpu;
 }
 
-
-
-
-// Job* SIMPLE_DISPATCHER::assignJobToResource(Job* job)
-// {
-//   Host*  best_cpu    = nullptr;
-
-//   for(int i = 0; i < _sites.size(); ++i)
-//     {
-//       current_site_index = use_round_robin ? (current_site_index + 1) % _sites.size() : current_site_index;
-//       auto site          = _sites[current_site_index];
-//       //Add new metric called Site pressure site->num_of_jobs_cores/site->num_of_cpus_cores, if pressure > 80% skip
-//       use_round_robin    = !use_round_robin && (site->cpus_in_use >= site->cpus.size() / 2);
-//       best_cpu           = findBestAvailableCPU(site->cpus, job);
-//       if(best_cpu) {site->cpus_in_use++; job->comp_site = site->name; job->status = "assigned"; break;}
-//     }
-//   if(!best_cpu){job->status = "pending";}
-//   this->printJobInfo(job);
-//   return job;
-  
-// }
-
 Job* SIMPLE_DISPATCHER::assignJobToResource(Job* job)
 {
   Host*  best_cpu    = nullptr;
@@ -346,7 +326,6 @@ catch (const std::out_of_range& e) {
   else{
   job->status = "pending";
   }
-  this->printJobInfo(job);
   return job;
   
 }
@@ -369,29 +348,28 @@ Site* SIMPLE_DISPATCHER::findSiteByName(std::vector<Site*>& sites, const std::st
   return it != sites.end() ? *it : nullptr;
 }
 
-
-
-void SIMPLE_DISPATCHER::printJobInfo(Job* job)
-{
-  /*LOG_DEBUG("----------------------------------------------------------------------");
-  LOG_INFO("Submitting .. {}", job->jobid);
-  LOG_DEBUG("FLOPs to be executed: {}", job->flops);
-  LOG_DEBUG("Files to be read:");
-  for (const auto& file : job->input_files) {
-    LOG_DEBUG("File: {:<40} Size: {:>10}", file.first, file.second);
-  }
-  LOG_DEBUG("Files to be written:");
-  for (const auto& file : job->output_files) {
-    LOG_DEBUG("File: {:<40} Size: {:>10}", file.first, file.second);
-  }
-  LOG_DEBUG("Cores Used: {}", job->cores);
-  LOG_DEBUG("Disk Used: {}", job->disk);
-  LOG_DEBUG("Host: {}", job->comp_host);
-  LOG_DEBUG("----------------------------------------------------------------------");*/
-}
-
 void SIMPLE_DISPATCHER::cleanup()
 {
 	for(auto& s : _sites){for(auto& h : s->cpus){for(auto&d : h->disks){delete d;}h->disks.clear(); delete h;}s->cpus.clear();delete s;}
 	_sites.clear();
 }
+
+
+// Job* SIMPLE_DISPATCHER::assignJobToResource(Job* job)
+// {
+//   Host*  best_cpu    = nullptr;
+
+//   for(int i = 0; i < _sites.size(); ++i)
+//     {
+//       current_site_index = use_round_robin ? (current_site_index + 1) % _sites.size() : current_site_index;
+//       auto site          = _sites[current_site_index];
+//       //Add new metric called Site pressure site->num_of_jobs_cores/site->num_of_cpus_cores, if pressure > 80% skip
+//       use_round_robin    = !use_round_robin && (site->cpus_in_use >= site->cpus.size() / 2);
+//       best_cpu           = findBestAvailableCPU(site->cpus, job);
+//       if(best_cpu) {site->cpus_in_use++; job->comp_site = site->name; job->status = "assigned"; break;}
+//     }
+//   if(!best_cpu){job->status = "pending";}
+//   this->printJobInfo(job);
+//   return job;
+
+// }

@@ -1,5 +1,5 @@
-#ifndef SQLITESAVER_H
-#define SQLITESAVER_H
+#ifndef OUTPUT_H
+#define OUTPUT_H
 
 #include <iostream>
 #include <string>
@@ -7,26 +7,24 @@
 #include <sqlite3.h>
 #include <vector>
 #include <sstream>
-#include "job.h"
+#include "CGSim.h"
 
 
-class sqliteSaver {
+class Output {
     bool initialized = false;
     std::string file_name;
     sqlite3 *db;
     void initialize();
 
 public:
-     sqliteSaver(){};
-    ~sqliteSaver() { sqlite3_close_v2(db); }
+     Output(){};
+    ~Output() { sqlite3_close_v2(db); }
 
     void setFilePath(const std::string& file);
-    void createJobsTable();
-    void saveJob(Job* j);
-    void updateJob(Job* j);
+    void createEventsTable();
     void exportJobsToCSV();
 
 };
 
 #endif
-//SQLITESAVER_H
+//OUTPUT_H

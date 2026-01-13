@@ -8,6 +8,7 @@
 #include <string>
 #include <math.h>
 #include "CGSim.h"
+#include "output.h"
 
 namespace sg4 = simgrid::s4u;
 
@@ -63,7 +64,6 @@ public:
   Host*  findBestAvailableCPU(std::vector<Host*>& cpus, Job* j);
   Job*   assignJobToResource(Job* job);
   void   free(Job* job);
-  void   printJobInfo(Job* job);
   void   cleanup();
   Site*  findSiteByName(std::vector<Site*>& sites, const std::string& site_name);
 
@@ -73,6 +73,7 @@ private:
   std::vector<Site*>                             _sites{};
   std::unordered_map<std::string, Site*>         _sites_map{};
   sg4::NetZone*                                  platform;
+  static Output*                                 output;
 
   const std::unordered_map<std::string, double>  weights =
       {
