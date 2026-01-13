@@ -28,6 +28,7 @@ void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std
 Job* FileManager::request_file_location(Job* j){
     for(auto& [file,file_info]: j->input_files)
     {
+        if (!exists(file)) throw std::runtime_error("File:" +file+ " does not exist");
         file_info.first  = FileSizes.at(file);
         file_info.second = FileSites.at(file);
     }
