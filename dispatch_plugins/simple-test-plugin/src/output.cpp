@@ -28,7 +28,7 @@ void OUTPUT::createEventsTable()
         "STATUS TEXT NOT NULL, "
         "JOB_ID TEXT NOT NULL, "
         "TIME FLOAT NOT NULL, "
-        "PAYLOAD TEXT"
+        "METADATA TEXT"
         ");";
 
 
@@ -50,7 +50,7 @@ void OUTPUT::insert_event(
 {
     sqlite3_stmt* stmt;
     std::string sql_insert =
-        "INSERT INTO EVENTS (EVENT, STATE, JOB_ID, STATUS, TIME, PAYLOAD) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO EVENTS (EVENT, STATE, JOB_ID, STATUS, TIME, METADATA) VALUES (?, ?, ?, ?, ?, ?)";
 
     // Prepare the statement
     int rc = sqlite3_prepare_v2(db, sql_insert.c_str(), -1, &stmt, nullptr);

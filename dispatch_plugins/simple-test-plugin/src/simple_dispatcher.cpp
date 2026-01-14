@@ -32,11 +32,11 @@ sg4::Host* SIMPLE_DISPATCHER::findAvailableCPU(const std::vector<sg4::Host*>& cp
 
 Job* SIMPLE_DISPATCHER::assignJob(Job* job)
 {
-  job->comp_site = "AGLT2_site_0";
+  //job->comp_site = "AGLT2_site_0";
   sg4::Host* cpu = nullptr;
   auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(job->comp_site);
 
-  job->flops = std::stol(site->get_property("gflops"))*job->cpu_consumption_time*job->cores;
+  job->flops = std::stol(site->get_property("GFLOPS"))*job->cpu_consumption_time*job->cores;
   cpu   = findAvailableCPU(site->get_all_hosts(), job);
 
   if(cpu) {job->status = "assigned";}
