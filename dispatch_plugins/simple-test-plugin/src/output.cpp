@@ -25,6 +25,7 @@ void OUTPUT::createEventsTable()
         "_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
         "EVENT TEXT NOT NULL, "
         "STATE TEXT NOT NULL, "
+        "STATUS TEXT NOT NULL, "
         "JOB_ID TEXT NOT NULL, "
         "TIME FLOAT NOT NULL, "
         "PAYLOAD TEXT"
@@ -39,30 +40,42 @@ void OUTPUT::createEventsTable()
     }
 }
 
-void OUTPUT::insert_event(sqlite3_stmt* stmt,
+void OUTPUT::insert_event(
                   const std::string& event,
                   const std::string& state,
                   const std::string& job_id,
+                  const std::string& status,
                   double time,
                   const std::string& payload)
 {
+    sqlite3_stmt* stmt;
+    std::string sql_insert =
+        "INSERT INTO EVENTS (EVENT, STATE, JOB_ID, STATUS, TIME, PAYLOAD) VALUES (?, ?, ?, ?, ?, ?)";
+
+    // Prepare the statement
+    int rc = sqlite3_prepare_v2(db, sql_insert.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK)
+        throw std::runtime_error(std::string("SQLite prepare failed: ") + sqlite3_errmsg(db));
+
+    // Bind parameters (1-based indexing)
     sqlite3_bind_text(stmt, 1, event.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, state.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, job_id.c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_double(stmt, 4, time);
+    sqlite3_bind_text(stmt, 4, status.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_double(stmt, 5, time);
+    sqlite3_bind_text(stmt, 6, payload.c_str(), -1, SQLITE_TRANSIENT);
 
-    if (!payload.empty())
-        sqlite3_bind_text(stmt, 5, payload.c_str(), -1, SQLITE_TRANSIENT);
-    else
-        sqlite3_bind_null(stmt, 5);
-
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
-        throw std::runtime_error(sqlite3_errmsg(sqlite3_db_handle(stmt)));
+    // Execute the statement
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
+        sqlite3_finalize(stmt);  // Ensure cleanup before throwing
+        throw std::runtime_error(std::string("SQLite step failed: ") + sqlite3_errmsg(db));
     }
 
-    sqlite3_reset(stmt);
-    sqlite3_clear_bindings(stmt);
+    // Finalize the statement
+    sqlite3_finalize(stmt);
 }
+
 
 void OUTPUT::onSimulationStart()
 {
@@ -74,58 +87,193 @@ void OUTPUT::onSimulationEnd()
 
 }
 
-void OUTPUT::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
-{
-
-}
-
-void OUTPUT::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
-{
-
-}
-
 void OUTPUT::onJobTransferStart(Job* job, simgrid::s4u::Mess const& me)
 {
-
+    std::string payload =
+        "{"
+        "\"status\":\"" + job->status + "\","
+        "\"host\":\"" + job->comp_host + "\""
+        "}";
+    insert_event("Job", "TransferStart", std::to_string(job->jobid),
+                 job->status, sg4::Engine::get_clock(), payload);
 }
 
 void OUTPUT::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me)
 {
-
+    std::string payload =
+        "{"
+        "\"status\":\"" + job->status + "\","
+        "\"host\":\"" + job->comp_host + "\","
+        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
+        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) + ","
+        "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
+        "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) +
+        "}";
+    insert_event("Job", "TransferFinished", std::to_string(job->jobid),
+                 job->status, sg4::Engine::get_clock(), payload);
 }
 
-void OUTPUT::onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Comm const& co)
+void OUTPUT::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
+{
+    std::string payload =
+        "{"
+        "\"flops\":" + std::to_string(job->flops) + ","
+        "\"cores\":" + std::to_string(job->cores) + ","
+        "\"speed\":" + std::to_string(job->comp_host_speed) + ","
+        "\"start_time\":" + std::to_string(ex.get_start_time()) + ","
+        "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
+        "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) +
+        "}";
+    insert_event("JobExecution", "Start", std::to_string(job->jobid),
+                 job->status, ex.get_start_time(), payload);
+}
+
+void OUTPUT::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
+{
+    std::string payload =
+        "{"
+        "\"flops\":" + std::to_string(job->flops) + ","
+        "\"cores\":" + std::to_string(job->cores) + ","
+        "\"speed\":" + std::to_string(job->comp_host_speed) + ","
+        "\"cost\":" + std::to_string(ex.get_cost()) + ","
+        "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
+        "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) + ","
+        "\"duration\":" + std::to_string(ex.get_finish_time() - ex.get_start_time()) + ","
+        "\"retries\":" + std::to_string(job->retries) + ","
+        "\"queue_time\":" + std::to_string(ex.get_finish_time()) +
+        "}";
+    insert_event("JobExecution", "Finished", std::to_string(job->jobid),
+                 job->status, ex.get_finish_time(), payload);
+}
+
+void OUTPUT::onFileTransferStart(Job* job, const std::string& filename,
+                                 const long long filesize,
+                                 simgrid::s4u::Comm const& co,
+                                 const std::string& src_site,
+                                 const std::string& dst_site)
+{
+    auto link = get_link(src_site, dst_site);
+    std::string payload =
+        "{"
+        "\"file\":\"" + filename + "\","
+        "\"size\":" + std::to_string(filesize) + ","
+        "\"src_site\":\"" + src_site + "\","
+        "\"dst_site\":\"" + dst_site + "\","
+        "\"bandwidth\":" + std::to_string(link->get_bandwidth()) + ","
+        "\"latency\":" + std::to_string(link->get_latency()) + ","
+        "\"link_load\":" + std::to_string(link->get_load()) + ","
+        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
+        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
+        "}";
+    insert_event("FileTransfer", "Start", std::to_string(job->jobid),
+                 job->status, co.get_start_time(), payload);
+}
+
+void OUTPUT::onFileTransferEnd(Job* job, const std::string& filename,
+                               const long long filesize,
+                               simgrid::s4u::Comm const& co,
+                               const std::string& src_site,
+                               const std::string& dst_site)
+{
+    auto link = get_link(src_site, dst_site);
+    std::string payload =
+        "{"
+        "\"file\":\"" + filename + "\","
+        "\"size\":" + std::to_string(filesize) + ","
+        "\"src_site\":\"" + src_site + "\","
+        "\"dst_site\":\"" + dst_site + "\","
+        "\"duration\":" + std::to_string(co.get_finish_time() - co.get_start_time()) + ","
+        "\"bandwidth\":" + std::to_string(link->get_bandwidth()) + ","
+        "\"latency\":" + std::to_string(link->get_latency()) + ","
+        "\"link_load\":" + std::to_string(link->get_load()) + ","
+        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
+        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
+        "}";
+    insert_event("FileTransfer", "Finished", std::to_string(job->jobid),
+                 job->status, co.get_finish_time(), payload);
+}
+
+void OUTPUT::onFileReadStart(Job* job, const std::string& filename,
+                            const long long filesize, simgrid::s4u::Io const& io)
+{
+    std::string payload =
+        "{"
+        "\"file\":\"" + filename + "\","
+        "\"size\":" + std::to_string(filesize) + ","
+        "\"site\":\"" + job->comp_site + "\","
+        "\"host\":\"" + job->comp_host + "\","
+        "\"disk\":\"" + job->disk + "\","
+        "\"disk_read_bw\":" + std::to_string(job->disk_read_bw) +
+        "}";
+    insert_event("FileRead", "Start", std::to_string(job->jobid),
+                 job->status, io.get_start_time(), payload);
+}
+
+void OUTPUT::onFileReadEnd(Job* job, const std::string& filename,
+                           const long long filesize, simgrid::s4u::Io const& io)
+{
+    std::string payload =
+        "{"
+        "\"file\":\"" + filename + "\","
+        "\"size\":" + std::to_string(filesize) + ","
+        "\"site\":\"" + job->comp_site + "\","
+        "\"host\":\"" + job->comp_host + "\","
+        "\"disk\":\"" + job->disk + "\","
+        "\"disk_read_bw\":\"" + std::to_string(job->disk_read_bw) + "\","
+        "\"duration\":" + std::to_string(io.get_finish_time() - io.get_start_time()) +
+        "}";
+    insert_event("FileRead", "Finished", std::to_string(job->jobid),
+                 job->status, io.get_finish_time(), payload);
+}
+
+void OUTPUT::onFileWriteStart(Job* job, const std::string& filename,
+                             const long long filesize, simgrid::s4u::Io const& io)
+{
+    std::string payload =
+        "{"
+        "\"file\":\"" + filename + "\","
+        "\"size\":" + std::to_string(filesize) + ","
+        "\"site\":\"" + job->comp_site + "\","
+        "\"host\":\"" + job->comp_host + "\","
+        "\"disk\":\"" + job->disk + "\","
+        "\"disk_write_bw\":\"" + std::to_string(job->disk_write_bw) + "\","
+        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
+        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
+        "}";
+    insert_event("FileWrite", "Start", std::to_string(job->jobid),
+                 job->status, io.get_start_time(), payload);
+}
+
+void OUTPUT::onFileWriteEnd(Job* job, const std::string& filename,
+                           const long long filesize, simgrid::s4u::Io const& io)
+{
+    std::string payload =
+        "{"
+        "\"file\":\"" + filename + "\","
+        "\"size\":" + std::to_string(filesize) + ","
+        "\"site\":\"" + job->comp_site + "\","
+        "\"host\":\"" + job->comp_host + "\","
+        "\"duration\":" + std::to_string(io.get_finish_time() - io.get_start_time()) + ","
+        "\"disk\":\"" + job->disk + "\","
+        "\"disk_write_bw\":\"" + std::to_string(job->disk_write_bw) + "\","
+        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
+        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
+        "}";
+    insert_event("FileWrite", "Finished", std::to_string(job->jobid),
+                 job->status, io.get_finish_time(), payload);
+}
+
+sg4::Link* OUTPUT::get_link(const std::string& src_site, const std::string& dst_site)
 {
 
+    sg4::Link* link = sg4::Link::by_name_or_null("link_" + src_site + ":" + dst_site);
+    if (!link) link = sg4::Link::by_name_or_null("link_" + dst_site + ":" + src_site);
+    if (!link) throw std::runtime_error("Link not found");
+    return link;
 }
 
-void OUTPUT::onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Comm const& co)
+double OUTPUT::calculate_grid_cpu_util()
 {
-
-}
-
-void OUTPUT::onFileReadStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
-{
-
-}
-
-void OUTPUT::onFileReadEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
-{
-
-}
-
-void OUTPUT::onFileWriteStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
-{
-
-}
-
-void OUTPUT::onFileWriteEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
-{
-
-}
-
-
-double OUTPUT::calculate_grid_cpu_util() {
     double cores_used = 0;
     double total_cores = std::stoul(platform->get_property("grid_storage"));
     for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) {
@@ -134,7 +282,8 @@ double OUTPUT::calculate_grid_cpu_util() {
     return cores_used/total_cores;
 }
 
-double OUTPUT::calculate_site_cpu_util(std::string& site_name) {
+double OUTPUT::calculate_site_cpu_util(std::string& site_name)
+{
     auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_cores = std::stoul(site->get_property("total_cores"));
     double cores_used = 0;
@@ -144,13 +293,15 @@ double OUTPUT::calculate_site_cpu_util(std::string& site_name) {
     return cores_used/total_cores;
 }
 
-double OUTPUT::calculate_grid_storage_util() {
+double OUTPUT::calculate_grid_storage_util()
+{
     double total_storage = std::stoull(platform->get_property("grid_storage"));
     double remaining_storage = CGSim::FileManager::request_remaining_grid_storage();
     return (1.0-remaining_storage/total_storage);
 }
 
-double OUTPUT::calculate_site_storage_util(std::string& site_name) {
+double OUTPUT::calculate_site_storage_util(std::string& site_name)
+{
     auto   site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_storage = std::stoull(site->get_property("storage_capacity_bytes"));
     double remaining_storage = CGSim::FileManager::request_remaining_site_storage(site_name);

@@ -8,6 +8,6 @@
     {
 	"Num_of_Jobs": "50",
 	"jobs_file": "/Users/raekhan/CGSim/new_data/mimic_job.csv",
-	"output_file": "/Users/raekhan/CGSim/output/mimic_job.db"
+	"output_file": "/Users/raekhan/CGSim/new_output/mimic_job.db"
     }
 }

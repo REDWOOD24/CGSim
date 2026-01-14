@@ -14,13 +14,16 @@ sg4::Host* SIMPLE_DISPATCHER::findAvailableCPU(const std::vector<sg4::Host*>& cp
         if(cpu->get_name().find("_communication") != std::string::npos) continue;
         if(cpu->extension<HostExtensions>()->get_cores_available() < j->cores) continue;
         if(CGSim::FileManager::request_remaining_site_storage(cpu->get_englobing_zone()->get_name()) < storage_needed(j->output_files)) continue;
-        j->disk       =  (cpu->get_disks()[0])->get_name();
-        j->comp_host  =  cpu->get_name();
 
-        //std::cout << "Grid CPU UTIL: " << calculate_grid_cpu_util() << std::endl;
-        //std::cout << "Grid Storage UTIL: " << calculate_grid_storage_util() << std::endl;
-        //std::cout << "Site CPU UTIL: " << calculate_site_cpu_util(j->comp_site) << std::endl;
-        //std::cout << "Site Storage UTIL: " << calculate_site_storage_util(j->comp_site) << std::endl;
+        auto d = cpu->get_disks()[0]; //Change later
+
+        j->disk           =  d->get_name();
+        j->disk_read_bw   =  d->get_read_bandwidth();
+        j->disk_write_bw  =  d->get_write_bandwidth();
+
+        j->comp_host          =  cpu->get_name();
+        j->comp_host_speed    =  cpu->get_speed();
+
 
         return cpu;
     }

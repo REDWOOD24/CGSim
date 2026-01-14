@@ -21,6 +21,7 @@ public:
 
     static void register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files);
     static Job* request_file_location(Job* j);
+    static unsigned long long request_file_size(const std::string& filename);
     static unsigned long long request_remaining_site_storage(const std::string& sitename);
     static unsigned long long request_remaining_grid_storage();
     

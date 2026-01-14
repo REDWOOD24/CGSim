@@ -53,7 +53,7 @@ struct Job {
     std::string            dispatcher_error_code{}; // jobDispatcher error code
     std::string            taskbuffer_error_code{}; // taskBuffer error code
 
-    long long              jobid{}; // this equivalent to PANDAID in historical hjo
+    long long                                   jobid{}; // this equivalent to PANDAID in historical hjo
     std::string                                 status{};
     long long                                   flops{};
     int                                         cores{};
@@ -70,6 +70,10 @@ struct Job {
     double                                      memory_usage{};
     std::string                                 mount{};
     std::string                                 id{};
+    int                                         retries;
+    double                                      disk_read_bw;
+    double                                      disk_write_bw;
+    double                                      comp_host_speed;
     std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>     input_files{};
     std::unordered_map<std::string, long long>                                                 output_files{};
     bool operator<(const Job& other) const {if(priority == other.priority){return jobid > other.jobid;} return priority < other.priority;}

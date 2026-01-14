@@ -103,6 +103,7 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
             job->dispatcher_error_code = getColumn(row, column_map, "jobdispatchererrorcode", "");
             job->taskbuffer_error_code = getColumn(row, column_map, "taskbuffererrorcode", "");
             job->status                = "created";
+            job->retries                = 0;
 
             // ---- Parse input files JSON ----
             std::string json_str = getColumn(row, column_map, "files_info", "");

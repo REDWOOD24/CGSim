@@ -13,6 +13,21 @@ FileManager* FileManager::instance() {
     return &instance;
 }
 
+bool FileManager::exists(const std::string& filename)
+{
+return FileSizes.count(filename) > 0;
+}
+
+bool FileManager::exists(const std::string& filename, const std::string& sitename)
+{
+return SiteFiles.at(sitename).count(filename) > 0;
+}
+
+bool FileManager::remove(const std::string& filename, const std::string& sitename)
+{
+return (FileSizes.erase(filename) > 0 && SiteFiles.at(sitename).erase(filename) > 0 && FileSites.at(filename).erase(sitename) > 0);
+}
+
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
 
     const std::string& site_name = site->get_name();
@@ -35,6 +50,13 @@ Job* FileManager::request_file_location(Job* j){
         file_info.second = FileSites.at(file);
     }
     return j;
+}
+
+unsigned long long FileManager::request_file_size(const std::string& filename)
+{
+    if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");
+    return FileSizes.at(filename);
+
 }
 
 unsigned long long FileManager::request_remaining_grid_storage() {
@@ -85,18 +107,6 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
         if (!exists(filename,comp_sitename)) throw std::runtime_error("File: " +filename+
             " does not exist on Site: "+comp_sitename+" does not exist");});
     return read_activity;
-}
-
-bool FileManager::exists(const std::string& filename) {
-    return FileSizes.count(filename) > 0;
-}
-
-bool FileManager::exists(const std::string& filename, const std::string& sitename) {
-    return SiteFiles.at(sitename).count(filename) > 0;
-}
-
-bool FileManager::remove(const std::string& filename, const std::string& sitename) {
-    return (FileSizes.erase(filename) > 0 && SiteFiles.at(sitename).erase(filename) > 0 && FileSites.at(filename).erase(sitename) > 0);
 }
 
 } 

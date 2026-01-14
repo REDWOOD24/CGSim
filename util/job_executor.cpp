@@ -26,17 +26,16 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
 
     CGSim::FileManager::request_file_location(job);
     dispatcher->assignJob(job);
-    std::cout << "Event: Job, Type: Status, Job ID: " << job->jobid  << ", Status: " << job->status << ", Retries Count " << retry_counts[job] << ", Time: " << sg4::Engine::get_clock()  << std::endl;
 
     if (job->status == "assigned")
     {
+      std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << retry_counts[job] << " tries" <<std::endl;
       sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
       sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-      sg4::MessPtr act = mqueue->put_async(job)->set_name("Comm_send_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
-      act->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {
-        std::cout << "Event: Job, Type: Sending Job, Job ID: " << job->jobid  << " , Status: " << job->status << ", Host: " << job->comp_host <<
-            ", State: Started/Finished, Time: " << sg4::Engine::get_clock() << std::endl;});
-      pending_activities.push(act);
+      sg4::MessPtr transfer = mqueue->put_async(job)->set_name("Comm_send_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
+      transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
+      transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferEnd(job, me);});
+      pending_activities.push(transfer);
     }
     else if (job->status == "pending") pending_jobs.push_back(job);
   }
@@ -53,18 +52,17 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
       Job* job = *it;
       dispatcher->assignJob(job);
       retry_counts[job]++;
-      std::cout << "Event: Job, Type: Status, Job ID: " << job->jobid  << ", Status: " << job->status << ", Retries Count " << retry_counts[job] << ", Time: " << sg4::Engine::get_clock()  << std::endl;
+      job->retries++;
 
       if (job->status == "assigned")
       {
         sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
         std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << retry_counts[job] << " tries" <<std::endl;
         sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-        sg4::MessPtr act = mqueue->put_async(job)->set_name("Comm_send_Job_" + job->id + "_to_" + job->comp_host+"_from_JOB-SERVER");
-        act->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {
-          std::cout << "Event: Job, Type: Sending Job, Job ID: " << job->jobid  << " , Status: " << job->status << ", Host: " << job->comp_host <<
-              ", State: Started/Finished, Time: " << sg4::Engine::get_clock() << std::endl;});
-        pending_activities.push(act);
+        sg4::MessPtr transfer = mqueue->put_async(job)->set_name("Comm_send_Job_" + job->id + "_to_" + job->comp_host+"_from_JOB-SERVER");
+        transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
+        transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferEnd(job, me);});
+        pending_activities.push(transfer);
         it = pending_jobs.erase(it);
       }
       else ++it;

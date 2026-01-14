@@ -29,40 +29,40 @@ public:
   /*-------------------------------------------------------------------------------------------*/
 
   // Virtual function can be implemented to execute code on simulation start
-  virtual void onSimulationStart(){};
+  virtual void onSimulationStart(){}
 
   // Virtual function can be implemented to execute code on simulation end
-  virtual void onSimulationEnd(){};
+  virtual void onSimulationEnd(){}
 
   // Virtual function can be implemented when a job execution starts
-  virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex){};
+  virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex){}
 
   // Virtual function can be implemented when a job execution finishes
-  virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex){};
+  virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex){}
 
   // Virtual function can be implemented when a job transfer starts
-  virtual void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me){};
+  virtual void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me){}
 
   // Virtual function can be implemented when a job transfer ends
-  virtual void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me){};
+  virtual void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me){}
 
   // Virtual function can be implemented when a file transfer starts
-  virtual void onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Comm const& co){};
+  virtual void onFileTransferStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
   // Virtual function can be implemented when a file transfer ends
-  virtual void onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Comm const& co){};
+  virtual void onFileTransferEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
   // Virtual function can be implemented when a file read starts
-  virtual void onFileReadStart(Job* job,const std::string& filename, simgrid::s4u::Io const& io){};
+  virtual void onFileReadStart(Job* job,const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
 
   // Virtual function can be implemented when a file read ends
-  virtual void onFileReadEnd(Job* job,const std::string& filename, simgrid::s4u::Io const& io){};
+  virtual void onFileReadEnd(Job* job,const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
 
   // Virtual function can be implemented when a file write starts
-  virtual void onFileWriteStart(Job* job,const std::string& filename, simgrid::s4u::Io const& io){};
+  virtual void onFileWriteStart(Job* job,const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
 
   // Virtual function can be implemented when a file write ends
-  virtual void onFileWriteEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io){};
+  virtual void onFileWriteEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
 
 };
 
