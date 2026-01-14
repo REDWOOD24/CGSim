@@ -16,8 +16,8 @@ public:
     virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
     virtual void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me) final override;
     virtual void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me) final override;
-    virtual void onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Mess const& me) final override;
-    virtual void onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Mess const& me) final override;
+    virtual void onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Comm const& co) final override;
+    virtual void onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Comm const& co) final override;
     virtual void onFileReadStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io) final override;
     virtual void onFileReadEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io) final override;
     virtual void onFileWriteStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io) final override;
@@ -63,10 +63,10 @@ void SimpleDispatcherPlugin::onJobTransferStart(Job* job, simgrid::s4u::Mess con
 void SimpleDispatcherPlugin::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me){};
 
 // Virtual function can be implemented when a file transfer starts
-void SimpleDispatcherPlugin::onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Mess const& me){};
+void SimpleDispatcherPlugin::onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Comm const& co){};
 
 // Virtual function can be implemented when a file transfer ends
-void SimpleDispatcherPlugin::onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Mess const& me){};
+void SimpleDispatcherPlugin::onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Comm const& co){};
 
 // Virtual function can be implemented when a file read starts
 void SimpleDispatcherPlugin::onFileReadStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io){};

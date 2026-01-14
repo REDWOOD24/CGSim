@@ -24,6 +24,22 @@ public:
                   const std::string& job_id,
                   double time,
                   const std::string& payload);
+
+
+    void onSimulationStart();
+    void onSimulationEnd();
+    void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex);
+    void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex);
+    void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me);
+    void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me);
+    void onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Comm const& co);
+    void onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Comm const& co);
+    void onFileReadStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io);
+    void onFileReadEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io);
+    void onFileWriteStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io);
+    void onFileWriteEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io);
+
+
     double calculate_grid_cpu_util();
     double calculate_site_cpu_util(std::string& site_name);
     double calculate_grid_storage_util();

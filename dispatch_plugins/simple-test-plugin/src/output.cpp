@@ -64,6 +64,67 @@ void OUTPUT::insert_event(sqlite3_stmt* stmt,
     sqlite3_clear_bindings(stmt);
 }
 
+void OUTPUT::onSimulationStart()
+{
+
+}
+
+void OUTPUT::onSimulationEnd()
+{
+
+}
+
+void OUTPUT::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
+{
+
+}
+
+void OUTPUT::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
+{
+
+}
+
+void OUTPUT::onJobTransferStart(Job* job, simgrid::s4u::Mess const& me)
+{
+
+}
+
+void OUTPUT::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me)
+{
+
+}
+
+void OUTPUT::onFileTransferStart(Job* job, const std::string& filename, simgrid::s4u::Comm const& co)
+{
+
+}
+
+void OUTPUT::onFileTransferEnd(Job* job, const std::string& filename, simgrid::s4u::Comm const& co)
+{
+
+}
+
+void OUTPUT::onFileReadStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
+{
+
+}
+
+void OUTPUT::onFileReadEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
+{
+
+}
+
+void OUTPUT::onFileWriteStart(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
+{
+
+}
+
+void OUTPUT::onFileWriteEnd(Job* job, const std::string& filename, simgrid::s4u::Io const& io)
+{
+
+}
+
+
 double OUTPUT::calculate_grid_cpu_util() {
     double cores_used = 0;
     double total_cores = std::stoul(platform->get_property("grid_storage"));
