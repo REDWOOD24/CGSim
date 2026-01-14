@@ -1,0 +1,1491 @@
+{
+  "AGLT2": {
+    "RSE": {
+      "AGLT2_CALIBDISK": "269.54",
+      "AGLT2_DATADISK": "11239.99",
+      "AGLT2_LOCALGROUPDISK": "350.00",
+      "AGLT2_SCRATCHDISK": "170.00"
+    },
+    "GFLOPS": 28407840
+  },
+  "AGLT2_MERGE": {
+    "RSE": {
+      "AGLT2_CALIBDISK": "269.54",
+      "AGLT2_DATADISK": "11239.99",
+      "AGLT2_LOCALGROUPDISK": "350.00",
+      "AGLT2_SCRATCHDISK": "170.00"
+    },
+    "GFLOPS": 4679040
+  },
+  "AGLT2_VHIMEM": {
+    "RSE": {
+      "AGLT2_CALIBDISK": "269.54",
+      "AGLT2_DATADISK": "11239.99",
+      "AGLT2_LOCALGROUPDISK": "350.00",
+      "AGLT2_SCRATCHDISK": "170.00"
+    },
+    "GFLOPS": 330720
+  },
+  "ANALY_AGLT2_VP": {
+    "RSE": {
+      "AGLT2_SCRATCHDISK": "170.00",
+      "AGLT2_VP_DISK": "6027.41"
+    },
+    "GFLOPS": 8948640
+  },
+  "ANALY_ARNES_DIRECT": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79"
+    },
+    "GFLOPS": 20022400
+  },
+  "ANALY_BNL_VP": {
+    "RSE": {
+      "BNL-ATLAS_VP_DISK": "18800.01",
+      "BNL-OSG2_DATADISK": "30209.95",
+      "BNL-OSG2_SCRATCHDISK": "934.58"
+    },
+    "GFLOPS": 1412640
+  },
+  "ANALY_LRZ_VP": {
+    "RSE": {
+      "LRZ-LMU_SCRATCHDISK": "82.93",
+      "LRZ-LMU_VP_DISK": "0.00"
+    },
+    "GFLOPS": 3535200
+  },
+  "ANALY_SWT2_CPB_VP": {
+    "RSE": {
+      "SWT2_CPB_SCRATCHDISK": "500.00",
+      "SWT2_CPB_VP_DISK": "0.00"
+    },
+    "GFLOPS": 859200
+  },
+  "ANALY_SiGNET_DIRECT": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "SIGNET_LOCALGROUPDISK": "50.00"
+    },
+    "GFLOPS": 10517760
+  },
+  "ARC-TEST": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_PHYS-HIGGS": 0,
+      "NDGF-T1_PHYS-SUSY": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "NDGF-T1_TEST": "0.45",
+      "NDGF-T1_TRIG-DAQ": 0
+    },
+    "GFLOPS": 232960
+  },
+  "ARC-TEST_CONDOR": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_PHYS-HIGGS": 0,
+      "NDGF-T1_PHYS-SUSY": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "NDGF-T1_TEST": "0.45",
+      "NDGF-T1_TRIG-DAQ": 0
+    },
+    "GFLOPS": 2720
+  },
+  "ARNES": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79"
+    },
+    "GFLOPS": 15856800
+  },
+  "BEIJING-LCG2": {
+    "RSE": {
+      "BEIJING-LCG2-EOS_DATADISK": "375.00",
+      "BEIJING-LCG2-EOS_LOCALGROUPDISK": "20.00",
+      "BEIJING-LCG2-EOS_SCRATCHDISK": "1.40"
+    },
+    "GFLOPS": 4035600
+  },
+  "BNL-ATLAS": {
+    "RSE": {
+      "BNL-OSG2_DATADISK": "30209.95",
+      "BNL-OSG2_DATATAPE": 0,
+      "BNL-OSG2_DET-SLHC": 0,
+      "BNL-OSG2_LOCALGROUPDISK": "3881.65",
+      "BNL-OSG2_MCTAPE": 0,
+      "BNL-OSG2_PHYS-HI": 0,
+      "BNL-OSG2_SCRATCHDISK": "934.58"
+    },
+    "GFLOPS": 37210560
+  },
+  "BNL-ATLAS-OPP": {
+    "RSE": {
+      "BNL-ATLAS_TAPE-TEST": "300.00",
+      "BNL-OSG2_DATADISK": "30209.95",
+      "BNL-OSG2_DET-SLHC": 0,
+      "BNL-OSG2_LOCALGROUPDISK": "3881.65",
+      "BNL-OSG2_PHYS-HI": 0,
+      "BNL-OSG2_SCRATCHDISK": "934.58"
+    },
+    "GFLOPS": 3810800
+  },
+  "BNL_OPP_TEST": {
+    "RSE": {
+      "BNL-ATLAS_TAPE-TEST": "300.00",
+      "BNL-OSG2_SCRATCHDISK": "934.58"
+    },
+    "GFLOPS": 3508000
+  },
+  "BNL_PROD_INTEL": {
+    "RSE": {
+      "BNL-OSG2_DATADISK": "30209.95",
+      "BNL-OSG2_DATATAPE": 0,
+      "BNL-OSG2_DET-SLHC": 0,
+      "BNL-OSG2_LOCALGROUPDISK": "3881.65",
+      "BNL-OSG2_MCTAPE": 0,
+      "BNL-OSG2_PHYS-HI": 0,
+      "BNL-OSG2_SCRATCHDISK": "934.58"
+    },
+    "GFLOPS": 4201920
+  },
+  "BNL_VHIMEM": {
+    "RSE": {
+      "BNL-OSG2_DATADISK": "30209.95",
+      "BNL-OSG2_DATATAPE": 0,
+      "BNL-OSG2_DET-SLHC": 0,
+      "BNL-OSG2_LOCALGROUPDISK": "3881.65",
+      "BNL-OSG2_MCTAPE": 0,
+      "BNL-OSG2_PHYS-HI": 0,
+      "BNL-OSG2_SCRATCHDISK": "934.58"
+    },
+    "GFLOPS": 402240
+  },
+  "BOINC-TEST": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "NDGF-T1_DATADISK": "24769.80"
+    },
+    "GFLOPS": 1276800
+  },
+  "CA-IAAS-T3": {
+    "RSE": {
+      "CA-VICTORIA-WESTGRID-T2_DATADISK": "1915.17"
+    },
+    "GFLOPS": 1255520
+  },
+  "CA-SFU-T2": {
+    "RSE": {
+      "CA-SFU-T2_DATADISK": "4800.00",
+      "CA-SFU-T2_LOCALGROUPDISK": "300.00",
+      "CA-SFU-T2_SCRATCHDISK": "120.00"
+    },
+    "GFLOPS": 19702240
+  },
+  "CA-SFU-T2_TEST": {
+    "RSE": {
+      "CA-SFU-T2_DATADISK": "4800.00",
+      "CA-SFU-T2_LOCALGROUPDISK": "300.00",
+      "CA-SFU-T2_SCRATCHDISK": "120.00"
+    },
+    "GFLOPS": 44241120
+  },
+  "CA-TRIUMF-DISKLESS": {
+    "RSE": {
+      "TRIUMF-LCG2_DATADISK": "13000.00"
+    },
+    "GFLOPS": 432000
+  },
+  "CA-VICTORIA-WESTGRID-T2": {
+    "RSE": {
+      "CA-VICTORIA-WESTGRID-T2_DATADISK": "1915.17",
+      "CA-VICTORIA-WESTGRID-T2_LOCALGROUPDISK": "20.00",
+      "CA-VICTORIA-WESTGRID-T2_SCRATCHDISK": "80.00"
+    },
+    "GFLOPS": 38846720
+  },
+  "CA-VICTORIA-K8S-TEST-T2": {
+    "RSE": {
+      "CA-VICTORIA-WESTGRID-T2_DATADISK": "1915.17",
+      "CA-VICTORIA-WESTGRID-T2_LOCALGROUPDISK": "20.00",
+      "CA-VICTORIA-WESTGRID-T2_SCRATCHDISK": "80.00"
+    },
+    "GFLOPS": 6267360
+  },
+  "CA-WATERLOO-T2": {
+    "RSE": {
+      "CA-WATERLOO-T2_DATADISK": "2174.00",
+      "CA-WATERLOO-T2_LOCALGROUPDISK": "30.14",
+      "CA-WATERLOO-T2_SCRATCHDISK": "50.00"
+    },
+    "GFLOPS": 7382640
+  },
+  "CERN": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DERIVED": "2272.21",
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_RAW": "2272.21",
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00",
+      "CERN-PROD_TZERO": "2272.21"
+    },
+    "GFLOPS": 20778800
+  },
+  "CERN-BACKFILL": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00"
+    },
+    "GFLOPS": 1251600
+  },
+  "CERN-IPV6": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00"
+    },
+    "GFLOPS": 1040000
+  },
+  "CERN-P1_SPECIAL": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-MUONS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-BEAUTY": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HDBS": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00"
+    },
+    "GFLOPS": 859520
+  },
+  "CERN-PROD_EOS": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00"
+    },
+    "GFLOPS": 3016000
+  },
+  "CERN-T0": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DERIVED": "2272.21",
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00"
+    },
+    "GFLOPS": 26078880
+  },
+  "CERN-T0_VHIMEM": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00"
+    },
+    "GFLOPS": 2108160
+  },
+  "CERN_TEST": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "CERN-PROD_DATAPREP": 0,
+      "CERN-PROD_DATATAPE": 0,
+      "CERN-PROD_DERIVED": "2272.21",
+      "CERN-PROD_DET-FWD": 0,
+      "CERN-PROD_DET-IBL": 0,
+      "CERN-PROD_DET-INDET": 0,
+      "CERN-PROD_DET-LARG": 0,
+      "CERN-PROD_DET-MUON": 0,
+      "CERN-PROD_DET-SLHC": 0,
+      "CERN-PROD_DET-TILE": 0,
+      "CERN-PROD_HOTDISK": "5.00",
+      "CERN-PROD_LOCALGROUPDISK": "1640.00",
+      "CERN-PROD_MCTAPE": 0,
+      "CERN-PROD_PERF-EGAMMA": 0,
+      "CERN-PROD_PERF-FLAVTAG": 0,
+      "CERN-PROD_PERF-IDTRACKING": 0,
+      "CERN-PROD_PERF-JETS": 0,
+      "CERN-PROD_PERF-TAU": 0,
+      "CERN-PROD_PHYS-EXOTICS": 0,
+      "CERN-PROD_PHYS-GENER": 0,
+      "CERN-PROD_PHYS-HI": 0,
+      "CERN-PROD_PHYS-HIGGS": 0,
+      "CERN-PROD_PHYS-SM": 0,
+      "CERN-PROD_PHYS-SUSY": 0,
+      "CERN-PROD_PHYS-TOP": 0,
+      "CERN-PROD_PROJ-SIT": 0,
+      "CERN-PROD_RAW": "2272.21",
+      "CERN-PROD_SCRATCHDISK": "750.00",
+      "CERN-PROD_SOFT-SIMUL": 0,
+      "CERN-PROD_TRIG-DAQ": 0,
+      "CERN-PROD_TRIG-HLT": 0,
+      "CERN-PROD_TZDISK": "10000.00",
+      "CERN-PROD_TZERO": "2272.21"
+    },
+    "GFLOPS": 1164000
+  },
+  "CSCS-LCG2": {
+    "RSE": {
+      "CSCS-LCG2_DATADISK": "4724.71",
+      "CSCS-LCG2_LOCALGROUPDISK": "64.00",
+      "CSCS-LCG2_SCRATCHDISK": "64.00"
+    },
+    "GFLOPS": 4540320
+  },
+  "CSCS-LCG2-ALPS": {
+    "RSE": {
+      "CSCS-LCG2_DATADISK": "4724.71",
+      "CSCS-LCG2_LOCALGROUPDISK": "64.00",
+      "CSCS-LCG2_SCRATCHDISK": "64.00"
+    },
+    "GFLOPS": 25879040
+  },
+  "CYFRONET-LCG2": {
+    "RSE": {
+      "CYFRONET-LCG2-EOS_DATADISK": "2000.00",
+      "CYFRONET-LCG2-EOS_SCRATCHDISK": "100.00"
+    },
+    "GFLOPS": 6842880
+  },
+  "DCSC": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_PHYS-HIGGS": 0,
+      "NDGF-T1_PHYS-SUSY": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "NDGF-T1_TEST": "0.45",
+      "NDGF-T1_TRIG-DAQ": 0
+    },
+    "GFLOPS": 9918720
+  },
+  "DE-TARDIS": {
+    "RSE": {
+      "FZK-LCG2_DATADISK": "16750.00",
+      "FZK-LCG2_DATATAPE": 0,
+      "FZK-LCG2_MCTAPE": 0,
+      "FZK-LCG2_SCRATCHDISK": "250.00"
+    },
+    "GFLOPS": 4818960
+  },
+  "DE-TARDIS_SHORT": {
+    "RSE": {
+      "FZK-LCG2_DATADISK": "16750.00",
+      "FZK-LCG2_DATATAPE": 0,
+      "FZK-LCG2_MCTAPE": 0,
+      "FZK-LCG2_SCRATCHDISK": "250.00"
+    },
+    "GFLOPS": 39840
+  },
+  "DESY-HH": {
+    "RSE": {
+      "DESY-HH_DATADISK": "2835.33",
+      "DESY-HH_LOCALGROUPDISK": "3350.00",
+      "DESY-HH_SCRATCHDISK": "140.00"
+    },
+    "GFLOPS": 23115120
+  },
+  "DESY-ZN": {
+    "RSE": {
+      "DESY-ZN_DATADISK": "2750.00",
+      "DESY-ZN_LOCALGROUPDISK": "500.00",
+      "DESY-ZN_PHYS-TOP": 0,
+      "DESY-ZN_SCRATCHDISK": "50.00"
+    },
+    "GFLOPS": 33081600
+  },
+  "EELA-UTFSM": {
+    "RSE": {
+      "EELA-UTFSM_DATADISK": "300.00",
+      "EELA-UTFSM_LOCALGROUPDISK": "18.20",
+      "EELA-UTFSM_SCRATCHDISK": "25.60"
+    },
+    "GFLOPS": 180400
+  },
+  "FMPhI-UNIBA": {
+    "RSE": {
+      "FMPHI-UNIBA_DATADISK": "1129.02",
+      "FMPHI-UNIBA_LOCALGROUPDISK": "110.00",
+      "FMPHI-UNIBA_SCRATCHDISK": "54.98"
+    },
+    "GFLOPS": 2068800
+  },
+  "FZK-LCG2": {
+    "RSE": {
+      "FZK-LCG2_DATADISK": "16750.00",
+      "FZK-LCG2_DATATAPE": 0,
+      "FZK-LCG2_MCTAPE": 0,
+      "FZK-LCG2_PERF-EGAMMA": 0,
+      "FZK-LCG2_PERF-IDTRACKING": 0,
+      "FZK-LCG2_PERF-TAU": 0,
+      "FZK-LCG2_SCRATCHDISK": "250.00"
+    },
+    "GFLOPS": 63436800
+  },
+  "FZK-LCG2_TEST": {
+    "RSE": {
+      "FZK-LCG2_DATADISK": "16750.00",
+      "FZK-LCG2_DATATAPE": 0,
+      "FZK-LCG2_MCTAPE": 0,
+      "FZK-LCG2_PERF-EGAMMA": 0,
+      "FZK-LCG2_PERF-IDTRACKING": 0,
+      "FZK-LCG2_PERF-TAU": 0,
+      "FZK-LCG2_SCRATCHDISK": "250.00"
+    },
+    "GFLOPS": 2050560
+  },
+  "GRIF-IRFU": {
+    "RSE": {
+      "GRIF_DATADISK": "5900.00",
+      "GRIF_LOCALGROUPDISK": "700.00",
+      "GRIF_SCRATCHDISK": "150.00"
+    },
+    "GFLOPS": 8208000
+  },
+  "GRIF-LAL": {
+    "RSE": {
+      "GRIF_DATADISK": "5900.00",
+      "GRIF_LOCALGROUPDISK": "700.00",
+      "GRIF_SCRATCHDISK": "150.00"
+    },
+    "GFLOPS": 11068640
+  },
+  "GRIF-LPNHE": {
+    "RSE": {
+      "GRIF_DATADISK": "5900.00",
+      "GRIF_LOCALGROUPDISK": "700.00",
+      "GRIF_SCRATCHDISK": "150.00"
+    },
+    "GFLOPS": 14907000
+  },
+  "GoeGrid": {
+    "RSE": {
+      "GOEGRID_DATADISK": "2450.00",
+      "GOEGRID_DET-INDET": 0,
+      "GOEGRID_LOCALGROUPDISK": "150.00",
+      "GOEGRID_SCRATCHDISK": "151.64"
+    },
+    "GFLOPS": 40918080
+  },
+  "GoeGrid_LODISK": {
+    "RSE": {
+      "GOEGRID_DATADISK": "2450.00",
+      "GOEGRID_DET-INDET": 0,
+      "GOEGRID_LOCALGROUPDISK": "150.00",
+      "GOEGRID_SCRATCHDISK": "151.64"
+    },
+    "GFLOPS": 28840800
+  },
+  "GoeGrid_NHR": {
+    "RSE": {
+      "GOEGRID_DATADISK": "2450.00",
+      "GOEGRID_DET-INDET": 0,
+      "GOEGRID_LOCALGROUPDISK": "150.00",
+      "GOEGRID_SCRATCHDISK": "151.64"
+    },
+    "GFLOPS": 4145600
+  },
+  "HEPHY-UIBK": {
+    "RSE": {
+      "LRZ-LMU_DATADISK": "2734.07"
+    },
+    "GFLOPS": 1930240
+  },
+  "HK-LCG2": {
+    "RSE": {
+      "HK-LCG2_DATADISK": "945.58"
+    },
+    "GFLOPS": 1960000
+  },
+  "HPC2N": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_PHYS-HIGGS": 0,
+      "NDGF-T1_PHYS-SUSY": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "NDGF-T1_TEST": "0.45",
+      "NDGF-T1_TRIG-DAQ": 0
+    },
+    "GFLOPS": 13849920
+  },
+  "IEPSAS-Kosice": {
+    "RSE": {
+      "IEPSAS-KOSICE_DATADISK": "1132.54",
+      "IEPSAS-KOSICE_LOCALGROUPDISK": "122.03",
+      "IEPSAS-KOSICE_SCRATCHDISK": "104.86"
+    },
+    "GFLOPS": 3465600
+  },
+  "IFIC-LCG2": {
+    "RSE": {
+      "IFIC-LCG2_CALIBDISK": "22.00",
+      "IFIC-LCG2_DATADISK": "3400.00",
+      "IFIC-LCG2_LOCALGROUPDISK": "250.00",
+      "IFIC-LCG2_SCRATCHDISK": "100.00"
+    },
+    "GFLOPS": 15464160
+  },
+  "RU-Protvino-IHEP": {
+    "RSE": {
+      "RU-PROTVINO-IHEP_DATADISK": "1027.78",
+      "RU-PROTVINO-IHEP_LOCALGROUPDISK": "50.00",
+      "RU-PROTVINO-IHEP_SCRATCHDISK": "50.00"
+    },
+    "GFLOPS": 3488640
+  },
+  "IL-TAU": {
+    "RSE": {
+      "TECHNION-HEP_DATADISK": "2675.00",
+      "TECHNION-HEP_SCRATCHDISK": "25.00"
+    },
+    "GFLOPS": 12484000
+  },
+  "IN2P3-CC": {
+    "RSE": {
+      "IN2P3-CC_DATADISK": "18832.44",
+      "IN2P3-CC_DATATAPE": 0,
+      "IN2P3-CC_LOCALGROUPDISK": "524.47",
+      "IN2P3-CC_LOCALGROUPDISK-MW": 0,
+      "IN2P3-CC_MCTAPE": 0,
+      "IN2P3-CC_PERF-FLAVTAG": 0,
+      "IN2P3-CC_PHYS-HIGGS": 0,
+      "IN2P3-CC_PHYS-SM": 0,
+      "IN2P3-CC_SCRATCHDISK": "166.03"
+    },
+    "GFLOPS": 26275760
+  },
+  "IN2P3-CPPM": {
+    "RSE": {
+      "IN2P3-CPPM_DATADISK": "2232.01",
+      "IN2P3-CPPM_LOCALGROUPDISK": "245.19",
+      "IN2P3-CPPM_SCRATCHDISK": "32.21"
+    },
+    "GFLOPS": 17908880
+  },
+  "IN2P3-LAPP": {
+    "RSE": {
+      "IN2P3-LAPP-DCACHE_DATADISK": "7050.00",
+      "IN2P3-LAPP-DCACHE_LOCALGROUPDISK": "59.00",
+      "IN2P3-LAPP-DCACHE_SCRATCHDISK": "50.00"
+    },
+    "GFLOPS": 10529640
+  },
+  "IN2P3-LPC": {
+    "RSE": {
+      "IN2P3-LPC_DATADISK": "2860.93",
+      "IN2P3-LPC_LOCALGROUPDISK": "28.43",
+      "IN2P3-LPC_SCRATCHDISK": "52.78"
+    },
+    "GFLOPS": 4359080
+  },
+  "INFN-T1": {
+    "RSE": {
+      "INFN-T1_DATADISK": "9418.07",
+      "INFN-T1_DATATAPE": 0,
+      "INFN-T1_MCTAPE": 0,
+      "INFN-T1_SCRATCHDISK": "200.00"
+    },
+    "GFLOPS": 23465200
+  },
+  "INFN-FRASCATI": {
+    "RSE": {
+      "INFN-FRASCATI_DATADISK": "1979.12",
+      "INFN-FRASCATI_LOCALGROUPDISK": "38.48",
+      "INFN-FRASCATI_SCRATCHDISK": "43.98"
+    },
+    "GFLOPS": 12092520
+  },
+  "INFN-GENOVA": {
+    "RSE": {
+      "INFN-GENOVA_DATADISK": "8.80",
+      "INFN-GENOVA_LOCALGROUPDISK": "32.99",
+      "INFN-GENOVA_SCRATCHDISK": "8.80"
+    },
+    "GFLOPS": 1245200
+  },
+  "INFN-LECCE": {
+    "RSE": {
+      "INFN-LECCE_LOCALGROUPDISK": "36.33",
+      "INFN-LECCE_SCRATCHDISK": "17.45",
+      "INFN-NAPOLI-ATLAS_DATADISK": "5603.60"
+    },
+    "GFLOPS": 2287200
+  },
+  "INFN-MILANO-ATLASC": {
+    "RSE": {
+      "INFN-MILANO-ATLASC_DATADISK": "1956.47",
+      "INFN-MILANO-ATLASC_LOCALGROUPDISK": "307.97",
+      "INFN-MILANO-ATLASC_SCRATCHDISK": "25.77"
+    },
+    "GFLOPS": 6247200
+  },
+  "INFN-NAPOLI-ATLAS": {
+    "RSE": {
+      "INFN-LECCE_SCRATCHDISK": "17.45",
+      "INFN-NAPOLI-ATLAS_DATADISK": "5603.60",
+      "INFN-NAPOLI-ATLAS_LOCALGROUPDISK": "54.98",
+      "INFN-NAPOLI-ATLAS_SCRATCHDISK": "76.97",
+      "INFN-NAPOLI-ATLAS_TRIG-DAQ": 0
+    },
+    "GFLOPS": 19862640
+  },
+  "INFN-ROMA1": {
+    "RSE": {
+      "INFN-ROMA1_CALIBDISK": "65.97",
+      "INFN-ROMA1_DATADISK": "1594.29",
+      "INFN-ROMA1_LOCALGROUPDISK": "164.93",
+      "INFN-ROMA1_SCRATCHDISK": "87.96"
+    },
+    "GFLOPS": 7621200
+  },
+  "INFN-ROMA3": {
+    "RSE": {
+      "CERN-PROD_DATADISK": "23151.00",
+      "INFN-ROMA3_DATADISK": "2.00",
+      "INFN-ROMA3_LOCALGROUPDISK": "36.00",
+      "INFN-ROMA3_SCRATCHDISK": "3.20"
+    },
+    "GFLOPS": 562400
+  },
+  "ITEP_PROD": {
+    "RSE": {
+      "RRC-KI-T1_DATADISK": "4563.13"
+    },
+    "GFLOPS": 31400
+  },
+  "JINR-LCG2": {
+    "RSE": {
+      "JINR-LCG2_DATADISK": "920.00",
+      "JINR-LCG2_LOCALGROUPDISK": "50.00",
+      "JINR-LCG2_SCRATCHDISK": "50.12"
+    },
+    "GFLOPS": 4613760
+  },
+  "LRZ-LMU": {
+    "RSE": {
+      "LRZ-LMU_CALIBDISK": "52.66",
+      "LRZ-LMU_DATADISK": "2734.07",
+      "LRZ-LMU_LOCALGROUPDISK": "376.58",
+      "LRZ-LMU_SCRATCHDISK": "82.93",
+      "LRZ-LMU_VOLATILE": "64.20"
+    },
+    "GFLOPS": 8444880
+  },
+  "LRZ-LMU_CLOUD": {
+    "RSE": {
+      "LRZ-LMU_CALIBDISK": "52.66",
+      "LRZ-LMU_DATADISK": "2734.07",
+      "LRZ-LMU_LOCALGROUPDISK": "376.58",
+      "LRZ-LMU_SCRATCHDISK": "82.93"
+    },
+    "GFLOPS": 539100
+  },
+  "LRZ-LMU_K8S": {
+    "RSE": {
+      "LRZ-LMU_DATADISK": "2734.07",
+      "LRZ-LMU_SCRATCHDISK": "82.93"
+    },
+    "GFLOPS": 173880
+  },
+  "LRZ-LMU_SIM": {
+    "RSE": {
+      "LRZ-LMU_DATADISK": "2734.07"
+    },
+    "GFLOPS": 1996920
+  },
+  "LRZ-LMU_TEST": {
+    "RSE": {
+      "LRZ-LMU_DATADISK": "2734.07",
+      "LRZ-LMU_SCRATCHDISK": "82.93"
+    },
+    "GFLOPS": 150480
+  },
+  "NDGF-T1": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79"
+    },
+    "GFLOPS": 1478400
+  },
+  "MPPMU": {
+    "RSE": {
+      "MPPMU_CALIBDISK": "35.00",
+      "MPPMU_DATADISK": "3000.00",
+      "MPPMU_LOCALGROUPDISK": "540.00",
+      "MPPMU_PERF-JETS": 0,
+      "MPPMU_PERF-MUONS": 0,
+      "MPPMU_SCRATCHDISK": "100.00"
+    },
+    "GFLOPS": 16153280
+  },
+  "MWT2": {
+    "RSE": {
+      "MWT2_DATADISK": "20000.00",
+      "MWT2_UC_LOCALGROUPDISK": "600.00",
+      "MWT2_UC_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 37619120
+  },
+  "MWT2_VHIMEM_UCORE": {
+    "RSE": {
+      "MWT2_DATADISK": "20000.00",
+      "MWT2_UC_LOCALGROUPDISK": "600.00"
+    },
+    "GFLOPS": 441320
+  },
+  "NCG-INGRID-PT": {
+    "RSE": {
+      "NCG-INGRID-PT_DATADISK": "500.00",
+      "NCG-INGRID-PT_LOCALGROUPDISK": "60.00",
+      "NCG-INGRID-PT_SCRATCHDISK": "10.00"
+    },
+    "GFLOPS": 1817600
+  },
+  "NET2_Amherst": {
+    "RSE": {
+      "NET2_DATADISK": "7924.62",
+      "NET2_LOCALGROUPDISK": "150.00",
+      "NET2_SCRATCHDISK": "70.00"
+    },
+    "GFLOPS": 1747200
+  },
+  "NIKHEF": {
+    "RSE": {
+      "NIKHEF_DATADISK": "3885.80",
+      "NIKHEF_SCRATCHDISK": "55.62"
+    },
+    "GFLOPS": 31528000
+  },
+  "NSC": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_PHYS-HIGGS": 0,
+      "NDGF-T1_PHYS-SUSY": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "NDGF-T1_TEST": "0.45",
+      "NDGF-T1_TRIG-DAQ": 0
+    },
+    "GFLOPS": 4360800
+  },
+  "OU_OSCER_ATLAS": {
+    "RSE": {
+      "OU_OSCER_ATLAS_DATADISK": "500.00"
+    },
+    "GFLOPS": 878680
+  },
+  "OU_OSCER_ATLAS_OPP": {
+    "RSE": {
+      "OU_OSCER_ATLAS_DATADISK": "500.00"
+    },
+    "GFLOPS": 2453880
+  },
+  "OU_OSCER_ATLAS_TEST": {
+    "RSE": {
+      "OU_OSCER_ATLAS_DATADISK": "500.00"
+    },
+    "GFLOPS": 1459920
+  },
+  "PNPI_PROD": {
+    "RSE": {
+      "JINR-LCG2_DATADISK": "920.00",
+      "RRC-KI-T1_DATADISK": "4563.13"
+    },
+    "GFLOPS": 271200
+  },
+  "RAL-LCG2-ECHO": {
+    "RSE": {
+      "RAL-LCG2-ECHO_DATADISK": "20576.00",
+      "RAL-LCG2-ECHO_SCRATCHDISK": "250.00",
+      "RAL-LCG2_DATATAPE": 0,
+      "RAL-LCG2_MCTAPE": 0
+    },
+    "GFLOPS": 45936000
+  },
+  "RAL-LCG2_MCORE": {
+    "RSE": {
+      "RAL-LCG2-ECHO_DATADISK": "20576.00",
+      "RAL-LCG2_DATATAPE": 0,
+      "RAL-LCG2_MCTAPE": 0
+    },
+    "GFLOPS": 14776800
+  },
+  "RAL-LCG2_TEST": {
+    "RSE": {
+      "RAL-LCG2-ECHO_DATADISK": "20576.00",
+      "RAL-LCG2-ECHO_SCRATCHDISK": "250.00",
+      "RAL-LCG2_DATATAPE": 0,
+      "RAL-LCG2_MCTAPE": 0
+    },
+    "GFLOPS": 1570560
+  },
+  "RIVR.UM": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0
+    },
+    "GFLOPS": 1093120
+  },
+  "RO-14-ITIM": {
+    "RSE": {
+      "RO-07-NIPNE_DATADISK": "4100.00",
+      "RO-07-NIPNE_SCRATCHDISK": "109.95"
+    },
+    "GFLOPS": 3820320
+  },
+  "RO-16-UAIC": {
+    "RSE": {
+      "RO-07-NIPNE_DATADISK": "4100.00",
+      "RO-07-NIPNE_SCRATCHDISK": "109.95"
+    },
+    "GFLOPS": 3027600
+  },
+  "RO-07-NIPNE": {
+    "RSE": {
+      "RO-07-NIPNE_DATADISK": "4100.00",
+      "RO-07-NIPNE_SCRATCHDISK": "109.95"
+    },
+    "GFLOPS": 15026400
+  },
+  "RRC-KI-T1": {
+    "RSE": {
+      "RRC-KI-T1_DATADISK": "4563.13",
+      "RRC-KI-T1_DATATAPE": 0,
+      "RRC-KI-T1_LOCALGROUPDISK": "5.15",
+      "RRC-KI-T1_MCTAPE": 0,
+      "RRC-KI-T1_SCRATCHDISK": "95.45"
+    },
+    "GFLOPS": 8254800
+  },
+  "SAMPA": {
+    "RSE": {
+      "PIC_DATADISK": "4900.00",
+      "SAMPA_DATADISK": "256.00",
+      "SAMPA_SCRATCHDISK": "156.00"
+    },
+    "GFLOPS": 2739360
+  },
+  "SARA-MATRIX": {
+    "RSE": {
+      "SARA-MATRIX_DATADISK": "5220.71",
+      "SARA-MATRIX_DATATAPE": 0,
+      "SARA-MATRIX_MCTAPE": 0,
+      "SARA-MATRIX_SCRATCHDISK": "109.92"
+    },
+    "GFLOPS": 23263820
+  },
+  "SARA-MATRIX_VHIMEM": {
+    "RSE": {
+      "SARA-MATRIX_DATADISK": "5220.71",
+      "SARA-MATRIX_DATATAPE": 0,
+      "SARA-MATRIX_MCTAPE": 0,
+      "SARA-MATRIX_SCRATCHDISK": "109.92"
+    },
+    "GFLOPS": 2326280
+  },
+  "SLAC": {
+    "RSE": {
+      "SLACXRD_DATADISK": "100.00",
+      "SLACXRD_LOCALGROUPDISK": "150.00",
+      "SLACXRD_SCRATCHDISK": "100.00"
+    },
+    "GFLOPS": 3126400
+  },
+  "SWT2_CPB": {
+    "RSE": {
+      "SWT2_CPB_DATADISK": "11700.00",
+      "SWT2_CPB_LOCALGROUPDISK": "800.00",
+      "SWT2_CPB_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 22775520
+  },
+  "SWT2_CPB_K8S": {
+    "RSE": {
+      "SWT2_CPB_DATADISK": "11700.00",
+      "SWT2_CPB_LOCALGROUPDISK": "800.00",
+      "SWT2_CPB_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 2627040
+  },
+  "SiGNET": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "SIGNET_LOCALGROUPDISK": "50.00"
+    },
+    "GFLOPS": 2257920
+  },
+  "SiGNET-NSC": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "SIGNET_LOCALGROUPDISK": "50.00"
+    },
+    "GFLOPS": 1406880
+  },
+  "TECHNION-HEP": {
+    "RSE": {
+      "TECHNION-HEP_DATADISK": "2675.00",
+      "TECHNION-HEP_SCRATCHDISK": "25.00"
+    },
+    "GFLOPS": 17692840
+  },
+  "TOKYO-LCG2": {
+    "RSE": {
+      "TOKYO-LCG2_DATADISK": "10600.00",
+      "TOKYO-LCG2_DET-MUON": 0,
+      "TOKYO-LCG2_LOCALGROUPDISK": "2000.00",
+      "TOKYO-LCG2_PERF-MUONS": 0,
+      "TOKYO-LCG2_PHYS-EXOTICS": 0,
+      "TOKYO-LCG2_SCRATCHDISK": "400.00"
+    },
+    "GFLOPS": 42566160
+  },
+  "TR-10-ULAKBIM_UCORE": {
+    "RSE": {
+      "TR-10-ULAKBIM_DATADISK": "791.65"
+    },
+    "GFLOPS": 660960
+  },
+  "TRIUMF-LCG2": {
+    "RSE": {
+      "TRIUMF-LCG2_DATADISK": "13000.00",
+      "TRIUMF-LCG2_DATATAPE": 0,
+      "TRIUMF-LCG2_LOCALGROUPDISK": "75.00",
+      "TRIUMF-LCG2_MCTAPE": 0,
+      "TRIUMF-LCG2_PERF-JETS": 0,
+      "TRIUMF-LCG2_PERF-TAU": 0,
+      "TRIUMF-LCG2_SCRATCHDISK": "600.00"
+    },
+    "GFLOPS": 32126720
+  },
+  "TRIUMF_SIM": {
+    "RSE": {
+      "TRIUMF-LCG2_DATADISK": "13000.00",
+      "TRIUMF-LCG2_DATATAPE": 0,
+      "TRIUMF-LCG2_LOCALGROUPDISK": "75.00",
+      "TRIUMF-LCG2_MCTAPE": 0,
+      "TRIUMF-LCG2_PERF-JETS": 0,
+      "TRIUMF-LCG2_PERF-TAU": 0,
+      "TRIUMF-LCG2_SCRATCHDISK": "600.00"
+    },
+    "GFLOPS": 1513920
+  },
+  "TW-FTT": {
+    "RSE": {
+      "TW-LCG2_DATADISK": "2199.02"
+    },
+    "GFLOPS": 1013600
+  },
+  "Taiwan-LCG2": {
+    "RSE": {
+      "TW-LCG2_DATADISK": "2199.02"
+    },
+    "GFLOPS": 620400
+  },
+  "Taiwan-LCG2-HPC2_Unified": {
+    "RSE": {
+      "TW-LCG2_DATADISK": "2199.02"
+    },
+    "GFLOPS": 1390080
+  },
+  "Taiwan-LCG2-HPC_Unified": {
+    "RSE": {
+      "TW-LCG2_DATADISK": "2199.02"
+    },
+    "GFLOPS": 1547520
+  },
+  "UAM-LCG2": {
+    "RSE": {
+      "UAM-LCG2_DATADISK": "1144.20",
+      "UAM-LCG2_LOCALGROUPDISK": "40.00",
+      "UAM-LCG2_SCRATCHDISK": "25.00"
+    },
+    "GFLOPS": 3949920
+  },
+  "NO-NORGRID-T2": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_PHYS-HIGGS": 0,
+      "NDGF-T1_PHYS-SUSY": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "NDGF-T1_TRIG-DAQ": 0,
+      "NO-NORGRID-T2_LOCALGROUPDISK": "25.00"
+    },
+    "GFLOPS": 409360
+  },
+  "UKI-LT2-Brunel": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00",
+      "UKI-LT2-QMUL_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 674080
+  },
+  "UKI-LT2-IC-HEP_SL7_UCORE": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00"
+    },
+    "GFLOPS": 1773600
+  },
+  "UKI-LT2-QMUL": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00",
+      "UKI-LT2-QMUL_LOCALGROUPDISK": "1000.00",
+      "UKI-LT2-QMUL_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 46612800
+  },
+  "UKI-LT2-RHUL": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00",
+      "UKI-LT2-QMUL_LOCALGROUPDISK": "1000.00",
+      "UKI-LT2-QMUL_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 4064800
+  },
+  "UKI-NORTHGRID-LANCS-HEP-CEPH": {
+    "RSE": {
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_DATADISK": "5000.00",
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_LOCALGROUPDISK": "501.00",
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_PHYS-BEAUTY": 0,
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_SCRATCHDISK": "750.00"
+    },
+    "GFLOPS": 35144400
+  },
+  "UKI-NORTHGRID-LANCS-HEP-CEPH_TEST": {
+    "RSE": {
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_DATADISK": "5000.00",
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_LOCALGROUPDISK": "501.00",
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_PHYS-BEAUTY": 0,
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_SCRATCHDISK": "750.00"
+    },
+    "GFLOPS": 3938400
+  },
+  "UKI-NORTHGRID-LIV-HEP": {
+    "RSE": {
+      "UKI-NORTHGRID-LIV-HEP_DATADISK": "448.22",
+      "UKI-NORTHGRID-LIV-HEP_LOCALGROUPDISK": "0.23",
+      "UKI-NORTHGRID-LIV-HEP_SCRATCHDISK": "43.98"
+    },
+    "GFLOPS": 922400
+  },
+  "UKI-NORTHGRID-MAN-HEP": {
+    "RSE": {
+      "UKI-NORTHGRID-MAN-HEP_DATADISK": "4947.80",
+      "UKI-NORTHGRID-MAN-HEP_LOCALGROUPDISK": "736.67",
+      "UKI-NORTHGRID-MAN-HEP_SCRATCHDISK": "164.93"
+    },
+    "GFLOPS": 34511840
+  },
+  "UKI-NORTHGRID-MAN-HEP_TEST": {
+    "RSE": {
+      "UKI-NORTHGRID-MAN-HEP_DATADISK": "4947.80",
+      "UKI-NORTHGRID-MAN-HEP_LOCALGROUPDISK": "736.67",
+      "UKI-NORTHGRID-MAN-HEP_SCRATCHDISK": "164.93"
+    },
+    "GFLOPS": 3719320
+  },
+  "UKI-NORTHGRID-SHEF-HEP": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00",
+      "UKI-LT2-QMUL_LOCALGROUPDISK": "1000.00",
+      "UKI-LT2-QMUL_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 7169760
+  },
+  "UKI-SCOTGRID-DURHAM-CEPH": {
+    "RSE": {
+      "UKI-NORTHGRID-LANCS-HEP-CEPH_DATADISK": "5000.00"
+    },
+    "GFLOPS": 6471920
+  },
+  "UKI-SCOTGRID-ECDF": {
+    "RSE": {
+      "UKI-SCOTGRID-GLASGOW-CEPH_DATADISK": "4500.00",
+      "UKI-SCOTGRID-GLASGOW-CEPH_LOCALGROUPDISK": "210.00"
+    },
+    "GFLOPS": 8916160
+  },
+  "UKI-SCOTGRID-ECDF_CLOUD": {
+    "RSE": {
+      "UKI-SCOTGRID-GLASGOW-CEPH_DATADISK": "4500.00",
+      "UKI-SCOTGRID-GLASGOW-CEPH_SCRATCHDISK": "600.00"
+    },
+    "GFLOPS": 2626160
+  },
+  "UKI-SCOTGRID-GLASGOW_CEPH": {
+    "RSE": {
+      "UKI-SCOTGRID-GLASGOW-CEPH_DATADISK": "4500.00",
+      "UKI-SCOTGRID-GLASGOW-CEPH_SCRATCHDISK": "600.00"
+    },
+    "GFLOPS": 19072960
+  },
+  "UKI-SOUTHGRID-BHAM-HEP": {
+    "RSE": {
+      "UKI-NORTHGRID-MAN-HEP_DATADISK": "4947.80",
+      "UKI-NORTHGRID-MAN-HEP_LOCALGROUPDISK": "736.67",
+      "UKI-NORTHGRID-MAN-HEP_SCRATCHDISK": "164.93"
+    },
+    "GFLOPS": 650400
+  },
+  "UKI-SOUTHGRID-OX-HEP": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00",
+      "UKI-LT2-QMUL_LOCALGROUPDISK": "1000.00",
+      "UKI-LT2-QMUL_SCRATCHDISK": "500.00"
+    },
+    "GFLOPS": 20956600
+  },
+  "UKI-SOUTHGRID-RALPP": {
+    "RSE": {
+      "UKI-SOUTHGRID-RALPP_DATADISK": "700.00",
+      "UKI-SOUTHGRID-RALPP_LOCALGROUPDISK": "150.00",
+      "UKI-SOUTHGRID-RALPP_SCRATCHDISK": "25.00"
+    },
+    "GFLOPS": 8839200
+  },
+  "UKI-SOUTHGRID-SUSX_UCORE": {
+    "RSE": {
+      "UKI-LT2-QMUL_DATADISK": "9000.00",
+      "UKI-LT2-QMUL_LOCALGROUPDISK": "1000.00"
+    },
+    "GFLOPS": 2777760
+  },
+  "UM6P": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "RAL-LCG2-ECHO_DATADISK": "20576.00"
+    },
+    "GFLOPS": 14067200
+  },
+  "UNI-FREIBURG": {
+    "RSE": {
+      "UNI-FREIBURG_DATADISK": "3250.00",
+      "UNI-FREIBURG_LOCALGROUPDISK": "650.00",
+      "UNI-FREIBURG_SCRATCHDISK": "60.00"
+    },
+    "GFLOPS": 7042000
+  },
+  "UNI-FREIBURG_MCORE": {
+    "RSE": {
+      "UNI-FREIBURG_DATADISK": "3250.00",
+      "UNI-FREIBURG_LOCALGROUPDISK": "650.00",
+      "UNI-FREIBURG_SCRATCHDISK": "60.00"
+    },
+    "GFLOPS": 7044000
+  },
+  "UNI-SIEGEN-HEP": {
+    "RSE": {
+      "WUPPERTALPROD_DATADISK": "2824.94",
+      "WUPPERTALPROD_SCRATCHDISK": "45.10"
+    },
+    "GFLOPS": 37600
+  },
+  "UNIBE-LHEP": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "UNIBE-LHEP_LOCALGROUPDISK": "180.00"
+    },
+    "GFLOPS": 3060960
+  },
+  "UNIBE-LHEP-UBELIX": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "UNIBE-LHEP_LOCALGROUPDISK": "180.00"
+    },
+    "GFLOPS": 10389120
+  },
+  "UNIGE-BAOBAB": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "UNIBE-LHEP_LOCALGROUPDISK": "180.00"
+    },
+    "GFLOPS": 23392040
+  },
+  "Vega": {
+    "RSE": {
+      "NDGF-T1_DATADISK": "24769.80",
+      "NDGF-T1_DATATAPE": 0,
+      "NDGF-T1_MCTAPE": 0,
+      "NDGF-T1_SCRATCHDISK": "235.79",
+      "SIGNET_LOCALGROUPDISK": "50.00"
+    },
+    "GFLOPS": 32318720
+  },
+  "WEIZMANN-LCG2": {
+    "RSE": {
+      "TECHNION-HEP_DATADISK": "2675.00",
+      "TECHNION-HEP_SCRATCHDISK": "25.00"
+    },
+    "GFLOPS": 28696360
+  },
+  "ifae": {
+    "RSE": {
+      "IFAE_DATADISK": "600.00",
+      "IFAE_LOCALGROUPDISK": "150.00",
+      "IFAE_SCRATCHDISK": "800.00"
+    },
+    "GFLOPS": 15608840
+  },
+  "pic": {
+    "RSE": {
+      "PIC_DATADISK": "4900.00",
+      "PIC_DATATAPE": 0,
+      "PIC_MCTAPE": 0,
+      "PIC_SCRATCHDISK": "200.00"
+    },
+    "GFLOPS": 19732960
+  },
+  "praguelcg2": {
+    "RSE": {
+      "PRAGUELCG2_DATADISK": "3738.34",
+      "PRAGUELCG2_LOCALGROUPDISK": "659.71",
+      "PRAGUELCG2_PHYS-HI": 0,
+      "PRAGUELCG2_SCRATCHDISK": "109.95"
+    },
+    "GFLOPS": 20385680
+  },
+  "praguelcg2_fzu_TEST": {
+    "RSE": {
+      "PRAGUELCG2_DATADISK": "3738.34",
+      "PRAGUELCG2_LOCALGROUPDISK": "659.71",
+      "PRAGUELCG2_PHYS-HI": 0,
+      "PRAGUELCG2_SCRATCHDISK": "109.95"
+    },
+    "GFLOPS": 2010400
+  },
+  "wuppertal": {
+    "RSE": {
+      "WUPPERTALPROD_DATADISK": "2824.94",
+      "WUPPERTALPROD_LOCALGROUPDISK": "388.66",
+      "WUPPERTALPROD_SCRATCHDISK": "45.10"
+    },
+    "GFLOPS": 15228000
+  },
+  "wuppertalprod_TEST": {
+    "RSE": {
+      "WUPPERTALPROD_DATADISK": "2824.94",
+      "WUPPERTALPROD_LOCALGROUPDISK": "388.66",
+      "WUPPERTALPROD_SCRATCHDISK": "45.10"
+    },
+    "GFLOPS": 940800
+  }
+}

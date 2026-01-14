@@ -1,0 +1,12 @@
+/home/akman/CGSim/install/lib/libCGSim.so
+/home/akman/CGSim/install/include/CGSim/CGSim.h
+/home/akman/CGSim/install/include/CGSim/file_manager.h
+/home/akman/CGSim/install/include/CGSim/logger.h
+/home/akman/CGSim/install/include/CGSim/job.h
+/home/akman/CGSim/install/include/CGSim/DispatcherPlugin.h
+/home/akman/CGSim/install/include/CGSim/host_extensions.h
+/home/akman/CGSim/install/bin/cg-sim
+/home/akman/CGSim/install/share/cmake/CGSim/CGSimTargets.cmake
+/home/akman/CGSim/install/share/cmake/CGSim/CGSimTargets-release.cmake
+/home/akman/CGSim/install/share/cmake/CGSim/CGSimConfig.cmake
+/home/akman/CGSim/install/share/cmake/CGSim/CGSimConfigVersion.cmake

@@ -1,0 +1,11 @@
+# ninja log v5
+1	2330	1768337047033606951	CMakeFiles/CGSim.dir/util/host_extensions.cpp.o	275f13f6d99b800
+1	2613	1768337047315607459	CMakeFiles/CGSim.dir/util/file_manager.cpp.o	a6af76bd131e0d8e
+1	3186	1768337047886608488	CMakeFiles/CGSim.dir/util/actions.cpp.o	5dd8c5ec83a0b551
+1	3641	1768337048344609316	CMakeFiles/CGSim.dir/util/job_executor.cpp.o	7d8d89e398eb6da9
+2	3750	1768337048453609514	CMakeFiles/CGSim.dir/util/platform.cpp.o	9f86d0929494c456
+2	5225	1768337049929612197	CMakeFiles/CGSim.dir/util/parser.cpp.o	37b58cb7785822f6
+5225	5296	1768337049999612324	libCGSim.so	5fa89c7612cd2124
+7451	7490	1768337052195616358	cg-sim	e1211241a97e3fa0
+3	7451	1768337052154616282	CMakeFiles/cg-sim.dir/src/main.cpp.o	7bf1432dd1a196dd
+20	32	0	CMakeFiles/install.util	8af5747975a2e4f0

@@ -1,11 +1,11 @@
 {
     "Grid_Name": "ATLAS-GRID",
-    "Sites_Information": "/Users/raekhan/CGSim/data/site_info_cpu.json",
+    "Sites_Information": "/home/akman/CGSim/config-files/site_info.json",
     "Sites": ["BNL"],
-    "Sites_Connection_Information": "/Users/raekhan/CGSim/data/site_conn_info.json",
-    "Dispatcher_Plugin": "/Users/raekhan/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
-    "Output_DB": "/Users/raekhan/CGSim/output/jan_100_BNL.db",
-    "Input_Job_CSV": "/Users/raekhan/CGSim/data/jan_100_BNL.csv",
+    "Sites_Connection_Information": "/home/akman/CGSim/config-files/site_conn_info.json",
+    "Dispatcher_Plugin": "/home/akman/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.so",
+    "Output_DB": "/home/akman/CGSim/output/jan_100_BNL.db",
+    "Input_Job_CSV": "/home/akman/CGSim/config-files/jan_100_BNL.csv",
     "Num_of_Jobs": -1,
     "cpu_min_max": [
         5,

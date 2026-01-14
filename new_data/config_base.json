@@ -1,8 +1,8 @@
 {
     "Grid_Name": "ATLAS-GRID",
-    "Sites_Information": "/Users/raekhan/CGSim/new_data/new_site_info.json",
+    "Sites_Information": "/home/akman/CGSim/new_data/new_site_info.json",
     "Sites": [],
-    "Sites_Connection_Information": "/Users/raekhan/CGSim/new_data/new_site_conn_info.json",
-    "Dispatcher_Plugin": "/Users/raekhan/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
+    "Sites_Connection_Information": "/home/akman/CGSim/new_data/new_site_conn_info.json",
+    "Dispatcher_Plugin": "/home/akman/CGSim/dispatch_plugins/RL-test-plugin/build/libRL_DISPATCHER.so",
     "Num_of_Jobs": 50
 }

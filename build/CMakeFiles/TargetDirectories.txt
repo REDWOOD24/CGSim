@@ -1,0 +1,14 @@
+/home/akman/CGSim/build/CMakeFiles/CGSim.dir
+/home/akman/CGSim/build/CMakeFiles/cg-sim.dir
+/home/akman/CGSim/build/CMakeFiles/edit_cache.dir
+/home/akman/CGSim/build/CMakeFiles/rebuild_cache.dir
+/home/akman/CGSim/build/CMakeFiles/list_install_components.dir
+/home/akman/CGSim/build/CMakeFiles/install.dir
+/home/akman/CGSim/build/CMakeFiles/install/local.dir
+/home/akman/CGSim/build/CMakeFiles/install/strip.dir
+/home/akman/CGSim/build/json/CMakeFiles/edit_cache.dir
+/home/akman/CGSim/build/json/CMakeFiles/rebuild_cache.dir
+/home/akman/CGSim/build/json/CMakeFiles/list_install_components.dir
+/home/akman/CGSim/build/json/CMakeFiles/install.dir
+/home/akman/CGSim/build/json/CMakeFiles/install/local.dir
+/home/akman/CGSim/build/json/CMakeFiles/install/strip.dir
