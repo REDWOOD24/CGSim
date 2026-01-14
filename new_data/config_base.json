@@ -1,8 +1,13 @@
 {
     "Grid_Name": "ATLAS-GRID",
     "Sites_Information": "/Users/raekhan/CGSim/new_data/new_site_info.json",
-    "Sites": [],
     "Sites_Connection_Information": "/Users/raekhan/CGSim/new_data/new_site_conn_info.json",
     "Dispatcher_Plugin": "/Users/raekhan/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
-    "Num_of_Jobs": 50
+    "Limited_Sites": [],
+    "Custom_Parameters":
+    {
+	"Num_of_Jobs": "50",
+	"jobs_file": "/Users/raekhan/CGSim/new_data/mimic_job.csv",
+	"output_file": "/Users/raekhan/CGSim/output/mimic_job.db"
+    }
 }

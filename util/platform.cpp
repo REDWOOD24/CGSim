@@ -11,10 +11,13 @@ Platform::Platform(const std::string&  platform_name, std::vector<SiteInfo>& all
 void Platform::create_platform(const std::string& platform_name, const std::vector<SiteInfo>& all_site_info)
 {
     platform = sg4::create_full_zone(platform_name);
-    Platform::initialize_simgrid_plugins();
+    initialize_simgrid_plugins();
+    long grid_cores = 0;
+    long long grid_storage = 0;
     for (auto& site_info : all_site_info){
         auto* site = sg4::create_star_zone(site_info.name);
         site->set_parent(platform);
+        long site_cores = 0;
         for (const auto& [key,value] : site_info.properties){site->set_property(key,value);}
         int cpu_counter = 0;
         for (const auto& cpu_clusters : site_info.cpu_info) {
@@ -22,6 +25,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
                 std::string cpu_name = site_info.name + "_cpu-" + std::to_string(cpu_counter);
                 sg4::Host* host = site->create_host(cpu_name, cpu_clusters.speed);
                 host->set_core_count(cpu_clusters.cores);
+                site_cores += cpu_clusters.cores;
                 for (const auto& [key,value] : cpu_clusters.properties){host->set_property(key,value);}
                 const sg4::Link* link = site->create_split_duplex_link("link_" + cpu_name,
                     cpu_clusters.BW_CPU)->set_latency(cpu_clusters.LAT_CPU)->seal();
@@ -49,8 +53,15 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         comm_host->seal();
 
         CGSim::FileManager::register_site(site,site_info.files);
+        site->set_property("total_cores",std::to_string(site_cores));
         sites[site_info.name] = site;
+
+        grid_storage += std::stoll(site->get_property("storage_capacity_bytes"));
+        grid_cores   += site_cores;
     }
+    platform->set_property("grid_cores",  std::to_string(grid_cores));
+    platform->set_property("grid_storage",std::to_string(grid_storage));
+
 }
 
 void Platform::initialize_site_connections(std::vector<SiteConnInfo>& site_conn_info)

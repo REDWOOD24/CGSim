@@ -21,10 +21,7 @@ public:
   DispatcherPlugin& operator=(DispatcherPlugin&&) = delete;
 
   //Pure virtual function must be implemented by derived classes to get the Workload
-  virtual JobQueue getWorkload(long num_of_jobs) = 0;
-
-  // Pure virtual function must be implemented by derived classes to assign Resources
-  virtual void getResourceInformation(simgrid::s4u::NetZone* platform) = 0;
+  virtual JobQueue getWorkload() = 0;
   
   // Pure virtual function must be implemented by derived classes to assign Jobs
   virtual Job* assignJob(Job* job) = 0;
@@ -66,27 +63,6 @@ public:
 
   // Virtual function can be implemented when a file write ends
   virtual void onFileWriteEnd(const std::string& filename, simgrid::s4u::Io const& io){};
-
-
-
-
-  /*------------------------------------------------------------------------------*/
-
-  // CGSim Initialization Level
-  //virtual void onProgramStart(std::string& config_file){};
-  //virtual void onPlatformCreation(std::string& config_file){};
-
-  //CGSim Job level
-  //virtual void onJobStatusAssignment(Job* job){};
-  //virtual void onJobInPending(Job* job){};
-  //virtual void onJobDispatch(Job* job){};
-
-
-
-  //Hook to SimGrid activities
-  // virtual void onReadActivityFinish (simgrid::s4u::Io   const& io,  std::string const& message) {};
-  //virtual void onWriteActivityFinish(simgrid::s4u::Io   const& io,  std::string const& message) {};
-  //virtual void onExecActivityFinish (simgrid::s4u::Exec const& ex,  std::string const& message) {};
 
 };
 

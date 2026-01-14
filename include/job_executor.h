@@ -16,14 +16,13 @@ public:
     ~JOB_EXECUTOR()= default;
 
 
-    static void set_dispatcher(std::unique_ptr<DispatcherPlugin>& d){dispatcher = std::move(d);}
-    static void start_server(JobQueue jobs);
-    static void execute_job(Job* j);
-    static void start_job_execution(long num_of_jobs_to_run);
-    static void receiver(const std::string& MQ_name);
-    static void start_receivers();
-    static void attach_callbacks();
-
+    static void   set_dispatcher(std::unique_ptr<DispatcherPlugin>& d){dispatcher = std::move(d);}
+    static void   start_server(JobQueue jobs);
+    static void   execute_job(Job* j);
+    static void   start_job_execution();
+    static void   receiver(const std::string& MQ_name);
+    static void   start_receivers();
+    static void   attach_callbacks();
 
 private:
     static   std::unique_ptr<DispatcherPlugin>      dispatcher;

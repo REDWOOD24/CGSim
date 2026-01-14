@@ -1,10 +1,10 @@
 #include "host_extensions.h"
-
+#include <iostream>
 simgrid::xbt::Extension<simgrid::s4u::Host, HostExtensions> HostExtensions::EXTENSION_ID;
 
 void HostExtensions::registerJob(Job* j) {
     simgrid::kernel::actor::simcall_answered([this, j] {
-        job_ids.insert(j->id);
+        job_ids.insert(std::to_string(j->jobid));
         cores_used      += j->cores;
         cores_available -= j->cores;
     });
@@ -12,7 +12,7 @@ void HostExtensions::registerJob(Job* j) {
 
 void HostExtensions::onJobFinish(Job* j) {
     simgrid::kernel::actor::simcall_answered([this, j] {
-        job_ids.erase(j->id);
+        job_ids.erase(std::to_string(j->jobid));
         cores_used      -= j->cores;
         cores_available += j->cores;
     });

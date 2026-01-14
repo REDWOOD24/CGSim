@@ -1,51 +1,44 @@
 #include "DispatcherPlugin.h"
 #include "simple_dispatcher.h"
+#include "workload_manager.h"
+#include "output.h"
 
 class SimpleDispatcherPlugin : public DispatcherPlugin {
 
 public:
     SimpleDispatcherPlugin();
-    virtual JobQueue getWorkload(long num_of_jobs) override;
+    virtual JobQueue getWorkload() override;
     virtual Job* assignJob(Job* job) final override;
-    virtual void getResourceInformation(simgrid::s4u::NetZone* platform) final override;
     virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
     virtual void onSimulationEnd() final override;
 
 private:
     std::unique_ptr<SIMPLE_DISPATCHER> sd = std::make_unique<SIMPLE_DISPATCHER>();
+    std::unique_ptr<WORKLOAD_MANAGER>  wm = std::make_unique<WORKLOAD_MANAGER>();
+    std::unique_ptr<OUTPUT>            ou = std::make_unique<OUTPUT>();
+
 };
 
 SimpleDispatcherPlugin::SimpleDispatcherPlugin()
 {
-  //LOG_INFO("Loading the Job Dispatcher from Simple Dispatcher Plugin ....");
 }
 
-JobQueue SimpleDispatcherPlugin::getWorkload(long num_of_jobs)
+JobQueue SimpleDispatcherPlugin::getWorkload()
 {
-  return sd->getJobs(num_of_jobs);
-}
-
-void SimpleDispatcherPlugin::getResourceInformation(simgrid::s4u::NetZone* platform)
-{
-  //LOG_INFO("Inside the Resource information");
-  sd->setPlatform(platform);  
-  //LOG_INFO("Finished getting the Resource information");
+  return wm->getWorkload();
 }
 
 Job* SimpleDispatcherPlugin::assignJob(Job* job)
 {
-  //LOG_DEBUG("Inside the assign job: {}", job->comp_site);
-  return sd->assignJobToResource(job);
+  return sd->assignJob(job);
 }
 
 void SimpleDispatcherPlugin::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
 {
-    sd->free(job);
 }
 
 void SimpleDispatcherPlugin::onSimulationEnd()
 {
-    sd->cleanup();
 }
 
 extern "C" SimpleDispatcherPlugin* createSimpleDispatcherPlugin()

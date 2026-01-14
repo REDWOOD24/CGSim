@@ -35,8 +35,7 @@ int main(int argc, char** argv)
     const std::string siteInfoFile                 = j["Sites_Information"];
     const std::string siteConnInfoFile             = j["Sites_Connection_Information"];
     const std::string dispatcherPath               = j["Dispatcher_Plugin"];
-    const long        num_of_jobs                  = j["Num_of_Jobs"];
-    const std::set<std::string> filteredSiteList   = j["Sites"].get<std::set<std::string>>();
+    const std::set<std::string> filteredSiteList   = j["Limited_Sites"].get<std::set<std::string>>();
 
     //Parse Input
     std::unique_ptr<Parser> parser = std::make_unique<Parser>(siteConnInfoFile, siteInfoFile, filteredSiteList);
@@ -49,15 +48,15 @@ int main(int argc, char** argv)
     // Create the platform
     std::unique_ptr<Platform> pf = std::make_unique<Platform>(gridName, sitesInfo, siteConnInfo);
     auto* platform = pf->get_simgrid_platform();
+    for (auto& [key, value] : j["Custom_Parameters"].items()) {platform->set_property(key,value.get<std::string>());}
 
     PluginLoader<DispatcherPlugin> plugin_loader;
     auto dispatcher = plugin_loader.load(dispatcherPath);
-    dispatcher->getResourceInformation(platform);
 
     // Create and set up executor
     JOB_EXECUTOR::set_dispatcher(dispatcher);
     JOB_EXECUTOR::start_receivers();
-    JOB_EXECUTOR::start_job_execution(num_of_jobs);
+    JOB_EXECUTOR::start_job_execution();
 
     // Print version
     CG_SIM_LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);

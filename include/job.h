@@ -71,7 +71,7 @@ struct Job {
     std::string                                 mount{};
     std::string                                 id{};
     std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>     input_files{};
-    std::unordered_map<std::string, long long>                                                  output_files{};
+    std::unordered_map<std::string, long long>                                                 output_files{};
     bool operator<(const Job& other) const {if(priority == other.priority){return jobid > other.jobid;} return priority < other.priority;}
   
   };

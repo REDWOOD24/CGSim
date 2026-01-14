@@ -10,20 +10,30 @@
 #include "CGSim.h"
 
 
-class Output {
-    bool initialized = false;
-    std::string file_name;
-    sqlite3 *db;
-    void initialize();
+class OUTPUT {
 
 public:
-     Output(){};
-    ~Output() { sqlite3_close_v2(db); }
+     OUTPUT(){initialize();};
+    ~OUTPUT() {sqlite3_close_v2(db);}
 
-    void setFilePath(const std::string& file);
+    void initialize();
     void createEventsTable();
-    void exportJobsToCSV();
+    void insert_event(sqlite3_stmt* stmt,
+                  const std::string& event,
+                  const std::string& state,
+                  const std::string& job_id,
+                  double time,
+                  const std::string& payload);
+    double calculate_grid_cpu_util();
+    double calculate_site_cpu_util(std::string& site_name);
+    double calculate_grid_storage_util();
+    double calculate_site_storage_util(std::string& site_name);
 
+
+private:
+    bool initialized = false;
+    sqlite3 *db;
+    sg4::NetZone* platform = sg4::Engine::get_instance()->get_netzone_root();
 };
 
 #endif

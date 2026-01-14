@@ -7,12 +7,12 @@ JobQueue                            JOB_EXECUTOR::jobs;
 std::unordered_map<Job*, int>       JOB_EXECUTOR::retry_counts;
 unsigned long                       JOB_EXECUTOR::MAX_RETRIES;
 
-void JOB_EXECUTOR::start_job_execution(long num_of_jobs_to_run)
+void JOB_EXECUTOR::start_job_execution()
 {
   attach_callbacks();
   sg4::Host* job_server = sg4::Host::by_name("JOB-SERVER_cpu-0");
   if (!job_server) {throw std::runtime_error("JOB-SERVER not initialized properly");}
-  JobQueue jobs = dispatcher->getWorkload(num_of_jobs_to_run);
+  JobQueue jobs = dispatcher->getWorkload();
   sg4::Actor::create("JOB-EXECUTOR-actor",job_server,start_server,jobs);
   sg4::Engine::get_instance()->run();
 }
@@ -30,6 +30,7 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
 
     if (job->status == "assigned")
     {
+      sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
       sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
       sg4::MessPtr act = mqueue->put_async(job)->set_name("Comm_send_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
       act->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {
@@ -56,6 +57,7 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
 
       if (job->status == "assigned")
       {
+        sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
         std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << retry_counts[job] << " tries" <<std::endl;
         sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
         sg4::MessPtr act = mqueue->put_async(job)->set_name("Comm_send_Job_" + job->id + "_to_" + job->comp_host+"_from_JOB-SERVER");
@@ -150,3 +152,4 @@ void JOB_EXECUTOR::attach_callbacks()
   sg4::Engine::on_simulation_start_cb([](){});
   sg4::Engine::on_simulation_end_cb([]() {dispatcher->onSimulationEnd();});
 }
+
