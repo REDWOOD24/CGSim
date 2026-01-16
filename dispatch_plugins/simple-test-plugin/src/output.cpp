@@ -92,9 +92,10 @@ void OUTPUT::onJobTransferStart(Job* job, simgrid::s4u::Mess const& me)
     std::string payload =
         "{"
         "\"status\":\"" + job->status + "\","
+        "\"site\":\"" + job->comp_site + "\","
         "\"host\":\"" + job->comp_host + "\""
         "}";
-    insert_event("Job", "TransferStart", std::to_string(job->jobid),
+    insert_event("JobAllocation", "AllocationStart", std::to_string(job->jobid),
                  job->status, sg4::Engine::get_clock(), payload);
 }
 
@@ -103,13 +104,14 @@ void OUTPUT::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me)
     std::string payload =
         "{"
         "\"status\":\"" + job->status + "\","
+        "\"site\":\"" + job->comp_site + "\","
         "\"host\":\"" + job->comp_host + "\","
         "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
         "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) + ","
         "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
         "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) +
         "}";
-    insert_event("Job", "TransferFinished", std::to_string(job->jobid),
+    insert_event("JobAllocation", "AllocationFinished", std::to_string(job->jobid),
                  job->status, sg4::Engine::get_clock(), payload);
 }
 
@@ -118,6 +120,8 @@ void OUTPUT::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
     std::string payload =
         "{"
         "\"flops\":" + std::to_string(job->flops) + ","
+        "\"site\":\"" + job->comp_site + "\","
+        "\"host\":\"" + job->comp_host + "\","
         "\"cores\":" + std::to_string(job->cores) + ","
         "\"speed\":" + std::to_string(job->comp_host_speed) + ","
         "\"start_time\":" + std::to_string(ex.get_start_time()) + ","
@@ -134,13 +138,15 @@ void OUTPUT::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
         "{"
         "\"flops\":" + std::to_string(job->flops) + ","
         "\"cores\":" + std::to_string(job->cores) + ","
+        "\"site\":\"" + job->comp_site + "\","
+        "\"host\":\"" + job->comp_host + "\","
         "\"speed\":" + std::to_string(job->comp_host_speed) + ","
         "\"cost\":" + std::to_string(ex.get_cost()) + ","
         "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
         "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) + ","
         "\"duration\":" + std::to_string(ex.get_finish_time() - ex.get_start_time()) + ","
         "\"retries\":" + std::to_string(job->retries) + ","
-        "\"queue_time\":" + std::to_string(ex.get_finish_time()) +
+        "\"queue_time\":" + std::to_string(ex.get_start_time()) +
         "}";
     insert_event("JobExecution", "Finished", std::to_string(job->jobid),
                  job->status, ex.get_finish_time(), payload);
@@ -157,8 +163,8 @@ void OUTPUT::onFileTransferStart(Job* job, const std::string& filename,
         "{"
         "\"file\":\"" + filename + "\","
         "\"size\":" + std::to_string(filesize) + ","
-        "\"src_site\":\"" + src_site + "\","
-        "\"dst_site\":\"" + dst_site + "\","
+        "\"source_site\":\"" + src_site + "\","
+        "\"destination_site\":\"" + dst_site + "\","
         "\"bandwidth\":" + std::to_string(link->get_bandwidth()) + ","
         "\"latency\":" + std::to_string(link->get_latency()) + ","
         "\"link_load\":" + std::to_string(link->get_load()) + ","
@@ -180,8 +186,8 @@ void OUTPUT::onFileTransferEnd(Job* job, const std::string& filename,
         "{"
         "\"file\":\"" + filename + "\","
         "\"size\":" + std::to_string(filesize) + ","
-        "\"src_site\":\"" + src_site + "\","
-        "\"dst_site\":\"" + dst_site + "\","
+        "\"source_site\":\"" + src_site + "\","
+        "\"destination_site\":\"" + dst_site + "\","
         "\"duration\":" + std::to_string(co.get_finish_time() - co.get_start_time()) + ","
         "\"bandwidth\":" + std::to_string(link->get_bandwidth()) + ","
         "\"latency\":" + std::to_string(link->get_latency()) + ","
