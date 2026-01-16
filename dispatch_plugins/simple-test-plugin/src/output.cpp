@@ -95,7 +95,7 @@ void OUTPUT::onJobTransferStart(Job* job, simgrid::s4u::Mess const& me)
         "\"site\":\"" + job->comp_site + "\","
         "\"host\":\"" + job->comp_host + "\""
         "}";
-    insert_event("JobAllocation", "AllocationStart", std::to_string(job->jobid),
+    insert_event("JobAllocation", "Start", std::to_string(job->jobid),
                  job->status, sg4::Engine::get_clock(), payload);
 }
 
@@ -111,7 +111,7 @@ void OUTPUT::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me)
         "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
         "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) +
         "}";
-    insert_event("JobAllocation", "AllocationFinished", std::to_string(job->jobid),
+    insert_event("JobAllocation", "Finished", std::to_string(job->jobid),
                  job->status, sg4::Engine::get_clock(), payload);
 }
 
