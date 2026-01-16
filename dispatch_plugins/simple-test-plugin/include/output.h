@@ -8,7 +8,8 @@
 #include <vector>
 #include <sstream>
 #include "CGSim.h"
-
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class OUTPUT {
 

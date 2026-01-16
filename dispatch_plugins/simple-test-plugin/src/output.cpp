@@ -87,187 +87,228 @@ void OUTPUT::onSimulationEnd()
 
 }
 
-void OUTPUT::onJobTransferStart(Job* job, simgrid::s4u::Mess const& me)
+void OUTPUT::onJobTransferStart(Job* job, sg4::Mess const& me)
 {
-    std::string payload =
-        "{"
-        "\"status\":\"" + job->status + "\","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\""
-        "}";
-    insert_event("JobAllocation", "Start", std::to_string(job->jobid),
-                 job->status, sg4::Engine::get_clock(), payload);
+    json payload = {
+        {"site", job->comp_site},
+        {"host", job->comp_host}
+    };
+
+    insert_event("JobAllocation", "Start",
+                 std::to_string(job->jobid),
+                 job->status,
+                 sg4::Engine::get_clock(),
+                 payload.dump());
 }
 
-void OUTPUT::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me)
+void OUTPUT::onJobTransferEnd(Job* job, sg4::Mess const& me)
 {
-    std::string payload =
-        "{"
-        "\"status\":\"" + job->status + "\","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
-        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) + ","
-        "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
-        "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) +
-        "}";
-    insert_event("JobAllocation", "Finished", std::to_string(job->jobid),
-                 job->status, sg4::Engine::get_clock(), payload);
+    json payload = {
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"site_storage_util", calculate_site_storage_util(job->comp_site)},
+        {"grid_storage_util", calculate_grid_storage_util()},
+        {"site_cpu_util", calculate_site_cpu_util(job->comp_site)},
+        {"grid_cpu_util", calculate_grid_cpu_util()}
+    };
+
+    insert_event("JobAllocation", "Finished",
+                 std::to_string(job->jobid),
+                 job->status,
+                 sg4::Engine::get_clock(),
+                 payload.dump());
 }
 
-void OUTPUT::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
+void OUTPUT::onJobExecutionStart(Job* job, sg4::Exec const& ex)
 {
-    std::string payload =
-        "{"
-        "\"flops\":" + std::to_string(job->flops) + ","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"cores\":" + std::to_string(job->cores) + ","
-        "\"speed\":" + std::to_string(job->comp_host_speed) + ","
-        "\"start_time\":" + std::to_string(ex.get_start_time()) + ","
-        "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
-        "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) +
-        "}";
-    insert_event("JobExecution", "Start", std::to_string(job->jobid),
-                 job->status, ex.get_start_time(), payload);
+    json payload = {
+        {"flops", job->flops},
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"cores", job->cores},
+        {"speed", job->comp_host_speed},
+        {"start_time", ex.get_start_time()},
+        {"site_cpu_util", calculate_site_cpu_util(job->comp_site)},
+        {"grid_cpu_util", calculate_grid_cpu_util()}
+    };
+
+    insert_event("JobExecution", "Start",
+                 std::to_string(job->jobid),
+                 job->status,
+                 ex.get_start_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
+void OUTPUT::onJobExecutionEnd(Job* job, sg4::Exec const& ex)
 {
-    std::string payload =
-        "{"
-        "\"flops\":" + std::to_string(job->flops) + ","
-        "\"cores\":" + std::to_string(job->cores) + ","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"speed\":" + std::to_string(job->comp_host_speed) + ","
-        "\"cost\":" + std::to_string(ex.get_cost()) + ","
-        "\"site_cpu_util\":" + std::to_string(calculate_site_cpu_util(job->comp_site)) + ","
-        "\"grid_cpu_util\":" + std::to_string(calculate_grid_cpu_util()) + ","
-        "\"duration\":" + std::to_string(ex.get_finish_time() - ex.get_start_time()) + ","
-        "\"retries\":" + std::to_string(job->retries) + ","
-        "\"queue_time\":" + std::to_string(ex.get_start_time()) +
-        "}";
-    insert_event("JobExecution", "Finished", std::to_string(job->jobid),
-                 job->status, ex.get_finish_time(), payload);
+    json payload = {
+        {"flops", job->flops},
+        {"cores", job->cores},
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"speed", job->comp_host_speed},
+        {"cost", ex.get_cost()},
+        {"site_cpu_util", calculate_site_cpu_util(job->comp_site)},
+        {"grid_cpu_util", calculate_grid_cpu_util()},
+        {"duration", ex.get_finish_time() - ex.get_start_time()},
+        {"retries", job->retries},
+        {"queue_time", ex.get_start_time()}
+    };
+
+    insert_event("JobExecution", "Finished",
+                 std::to_string(job->jobid),
+                 job->status,
+                 ex.get_finish_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onFileTransferStart(Job* job, const std::string& filename,
+void OUTPUT::onFileTransferStart(Job* job,
+                                 const std::string& filename,
                                  const long long filesize,
-                                 simgrid::s4u::Comm const& co,
+                                 sg4::Comm const& co,
                                  const std::string& src_site,
                                  const std::string& dst_site)
 {
     auto link = get_link(src_site, dst_site);
-    std::string payload =
-        "{"
-        "\"file\":\"" + filename + "\","
-        "\"size\":" + std::to_string(filesize) + ","
-        "\"source_site\":\"" + src_site + "\","
-        "\"destination_site\":\"" + dst_site + "\","
-        "\"bandwidth\":" + std::to_string(link->get_bandwidth()) + ","
-        "\"latency\":" + std::to_string(link->get_latency()) + ","
-        "\"link_load\":" + std::to_string(link->get_load()) + ","
-        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
-        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
-        "}";
-    insert_event("FileTransfer", "Start", std::to_string(job->jobid),
-                 job->status, co.get_start_time(), payload);
+
+    json payload = {
+        {"file", filename},
+        {"size", filesize},
+        {"source_site", src_site},
+        {"destination_site", dst_site},
+        {"bandwidth", link->get_bandwidth()},
+        {"latency", link->get_latency()},
+        {"link_load", link->get_load()},
+        {"site_storage_util", calculate_site_storage_util(job->comp_site)},
+        {"grid_storage_util", calculate_grid_storage_util()}
+    };
+
+    insert_event("FileTransfer", "Start",
+                 std::to_string(job->jobid),
+                 job->status,
+                 co.get_start_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onFileTransferEnd(Job* job, const std::string& filename,
+void OUTPUT::onFileTransferEnd(Job* job,
+                               const std::string& filename,
                                const long long filesize,
-                               simgrid::s4u::Comm const& co,
+                               sg4::Comm const& co,
                                const std::string& src_site,
                                const std::string& dst_site)
 {
     auto link = get_link(src_site, dst_site);
-    std::string payload =
-        "{"
-        "\"file\":\"" + filename + "\","
-        "\"size\":" + std::to_string(filesize) + ","
-        "\"source_site\":\"" + src_site + "\","
-        "\"destination_site\":\"" + dst_site + "\","
-        "\"duration\":" + std::to_string(co.get_finish_time() - co.get_start_time()) + ","
-        "\"bandwidth\":" + std::to_string(link->get_bandwidth()) + ","
-        "\"latency\":" + std::to_string(link->get_latency()) + ","
-        "\"link_load\":" + std::to_string(link->get_load()) + ","
-        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
-        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
-        "}";
-    insert_event("FileTransfer", "Finished", std::to_string(job->jobid),
-                 job->status, co.get_finish_time(), payload);
+
+    json payload = {
+        {"file", filename},
+        {"size", filesize},
+        {"source_site", src_site},
+        {"destination_site", dst_site},
+        {"duration", co.get_finish_time() - co.get_start_time()},
+        {"bandwidth", link->get_bandwidth()},
+        {"latency", link->get_latency()},
+        {"link_load", link->get_load()},
+        {"site_storage_util", calculate_site_storage_util(job->comp_site)},
+        {"grid_storage_util", calculate_grid_storage_util()}
+    };
+
+    insert_event("FileTransfer", "Finished",
+                 std::to_string(job->jobid),
+                 job->status,
+                 co.get_finish_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onFileReadStart(Job* job, const std::string& filename,
-                            const long long filesize, simgrid::s4u::Io const& io)
+void OUTPUT::onFileReadStart(Job* job,
+                            const std::string& filename,
+                            const long long filesize,
+                            sg4::Io const& io)
 {
-    std::string payload =
-        "{"
-        "\"file\":\"" + filename + "\","
-        "\"size\":" + std::to_string(filesize) + ","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"disk\":\"" + job->disk + "\","
-        "\"disk_read_bw\":" + std::to_string(job->disk_read_bw) +
-        "}";
-    insert_event("FileRead", "Start", std::to_string(job->jobid),
-                 job->status, io.get_start_time(), payload);
+    json payload = {
+        {"file", filename},
+        {"size", filesize},
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"disk", job->disk},
+        {"disk_read_bw", job->disk_read_bw}
+    };
+
+    insert_event("FileRead", "Start",
+                 std::to_string(job->jobid),
+                 job->status,
+                 io.get_start_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onFileReadEnd(Job* job, const std::string& filename,
-                           const long long filesize, simgrid::s4u::Io const& io)
+void OUTPUT::onFileReadEnd(Job* job,
+                           const std::string& filename,
+                           const long long filesize,
+                           sg4::Io const& io)
 {
-    std::string payload =
-        "{"
-        "\"file\":\"" + filename + "\","
-        "\"size\":" + std::to_string(filesize) + ","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"disk\":\"" + job->disk + "\","
-        "\"disk_read_bw\":\"" + std::to_string(job->disk_read_bw) + "\","
-        "\"duration\":" + std::to_string(io.get_finish_time() - io.get_start_time()) +
-        "}";
-    insert_event("FileRead", "Finished", std::to_string(job->jobid),
-                 job->status, io.get_finish_time(), payload);
+    json payload = {
+        {"file", filename},
+        {"size", filesize},
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"disk", job->disk},
+        {"disk_read_bw", job->disk_read_bw},
+        {"duration", io.get_finish_time() - io.get_start_time()}
+    };
+
+    insert_event("FileRead", "Finished",
+                 std::to_string(job->jobid),
+                 job->status,
+                 io.get_finish_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onFileWriteStart(Job* job, const std::string& filename,
-                             const long long filesize, simgrid::s4u::Io const& io)
+void OUTPUT::onFileWriteStart(Job* job,
+                             const std::string& filename,
+                             const long long filesize,
+                             sg4::Io const& io)
 {
-    std::string payload =
-        "{"
-        "\"file\":\"" + filename + "\","
-        "\"size\":" + std::to_string(filesize) + ","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"disk\":\"" + job->disk + "\","
-        "\"disk_write_bw\":\"" + std::to_string(job->disk_write_bw) + "\","
-        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
-        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
-        "}";
-    insert_event("FileWrite", "Start", std::to_string(job->jobid),
-                 job->status, io.get_start_time(), payload);
+    json payload = {
+        {"file", filename},
+        {"size", filesize},
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"disk", job->disk},
+        {"disk_write_bw", job->disk_write_bw},
+        {"site_storage_util", calculate_site_storage_util(job->comp_site)},
+        {"grid_storage_util", calculate_grid_storage_util()}
+    };
+
+    insert_event("FileWrite", "Start",
+                 std::to_string(job->jobid),
+                 job->status,
+                 io.get_start_time(),
+                 payload.dump());
 }
 
-void OUTPUT::onFileWriteEnd(Job* job, const std::string& filename,
-                           const long long filesize, simgrid::s4u::Io const& io)
+void OUTPUT::onFileWriteEnd(Job* job,
+                           const std::string& filename,
+                           const long long filesize,
+                           sg4::Io const& io)
 {
-    std::string payload =
-        "{"
-        "\"file\":\"" + filename + "\","
-        "\"size\":" + std::to_string(filesize) + ","
-        "\"site\":\"" + job->comp_site + "\","
-        "\"host\":\"" + job->comp_host + "\","
-        "\"duration\":" + std::to_string(io.get_finish_time() - io.get_start_time()) + ","
-        "\"disk\":\"" + job->disk + "\","
-        "\"disk_write_bw\":\"" + std::to_string(job->disk_write_bw) + "\","
-        "\"site_storage_util\":" + std::to_string(calculate_site_storage_util(job->comp_site)) + ","
-        "\"grid_storage_util\":" + std::to_string(calculate_grid_storage_util()) +
-        "}";
-    insert_event("FileWrite", "Finished", std::to_string(job->jobid),
-                 job->status, io.get_finish_time(), payload);
+    json payload = {
+        {"file", filename},
+        {"size", filesize},
+        {"site", job->comp_site},
+        {"host", job->comp_host},
+        {"duration", io.get_finish_time() - io.get_start_time()},
+        {"disk", job->disk},
+        {"disk_write_bw", job->disk_write_bw},
+        {"site_storage_util", calculate_site_storage_util(job->comp_site)},
+        {"grid_storage_util", calculate_grid_storage_util()}
+    };
+
+    insert_event("FileWrite", "Finished",
+                 std::to_string(job->jobid),
+                 job->status,
+                 io.get_finish_time(),
+                 payload.dump());
 }
+
 
 sg4::Link* OUTPUT::get_link(const std::string& src_site, const std::string& dst_site)
 {
