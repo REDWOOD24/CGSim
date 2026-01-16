@@ -94,7 +94,7 @@ void OUTPUT::onJobTransferStart(Job* job, sg4::Mess const& me)
         {"host", job->comp_host}
     };
 
-    insert_event("JobAllocation", "Start",
+    insert_event("JobAllocation", "Started",
                  std::to_string(job->jobid),
                  job->status,
                  sg4::Engine::get_clock(),
@@ -132,7 +132,7 @@ void OUTPUT::onJobExecutionStart(Job* job, sg4::Exec const& ex)
         {"grid_cpu_util", calculate_grid_cpu_util()}
     };
 
-    insert_event("JobExecution", "Start",
+    insert_event("JobExecution", "Started",
                  std::to_string(job->jobid),
                  job->status,
                  ex.get_start_time(),
@@ -183,7 +183,7 @@ void OUTPUT::onFileTransferStart(Job* job,
         {"grid_storage_util", calculate_grid_storage_util()}
     };
 
-    insert_event("FileTransfer", "Start",
+    insert_event("FileTransfer", "Started",
                  std::to_string(job->jobid),
                  job->status,
                  co.get_start_time(),
@@ -233,7 +233,7 @@ void OUTPUT::onFileReadStart(Job* job,
         {"disk_read_bw", job->disk_read_bw}
     };
 
-    insert_event("FileRead", "Start",
+    insert_event("FileRead", "Started",
                  std::to_string(job->jobid),
                  job->status,
                  io.get_start_time(),
@@ -278,7 +278,7 @@ void OUTPUT::onFileWriteStart(Job* job,
         {"grid_storage_util", calculate_grid_storage_util()}
     };
 
-    insert_event("FileWrite", "Start",
+    insert_event("FileWrite", "Started",
                  std::to_string(job->jobid),
                  job->status,
                  io.get_start_time(),
