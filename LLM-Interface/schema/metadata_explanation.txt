@@ -1,10 +1,8 @@
 JobAllocation:
   AllocationStart:
-    status           : string, current job status (e.g., "pending", "running")
     site             : string, site where the job is allocated
     host             : string, host executing or receiving the job
   AllocationFinished :
-    status           : string, job status at allocation completion
     site             : string, site where the job was sent for execution
     host             : string, host executing or receiving the job
     site_storage_util: string, fraction of storage used at the site
