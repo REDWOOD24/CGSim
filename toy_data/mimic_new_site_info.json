@@ -1,77 +1,77 @@
 {
   "AGLT2_site_0": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
-      "storage_capacity_bytes": "5534241158037",
+      "GFLOPS": "28407840",
+      "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.8047010601519187",
       "file_count": "1763"
     },
     "CPUInfo": [
       {
-        "units": 1,
+        "units": 888,
         "speed": 30000000.0,
-        "cores": 20,
-        "BW_CPU": "3489GBps",
-        "LAT_CPU": "61ns",
+        "cores": 47,
+        "BW_CPU": "3001GBps",
+        "LAT_CPU": "75ns",
         "properties": [
           {
-            "ram": "8192GB"
+            "ram": "13312GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3179MBps",
-            "write_bw": "478MBps"
+            "read_bw": "2615MBps",
+            "write_bw": "1955MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1731MBps",
-            "write_bw": "2416MBps"
+            "read_bw": "1109MBps",
+            "write_bw": "309MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2065MBps",
-            "write_bw": "338MBps"
+            "read_bw": "1291MBps",
+            "write_bw": "2512MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1358MBps",
-            "write_bw": "1494MBps"
+            "read_bw": "991MBps",
+            "write_bw": "2873MBps"
           }
         ]
       },
       {
-        "units": 1,
+        "units": 887,
         "speed": 20000000.0,
-        "cores": 26,
-        "BW_CPU": "3834GBps",
-        "LAT_CPU": "60ns",
+        "cores": 42,
+        "BW_CPU": "2112GBps",
+        "LAT_CPU": "89ns",
         "properties": [
           {
-            "ram": "18432GB"
+            "ram": "19456GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1918MBps",
-            "write_bw": "207MBps"
+            "read_bw": "2261MBps",
+            "write_bw": "599MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "876MBps",
-            "write_bw": "1374MBps"
+            "read_bw": "3008MBps",
+            "write_bw": "754MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1466MBps",
-            "write_bw": "463MBps"
+            "read_bw": "3128MBps",
+            "write_bw": "1002MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1836MBps",
-            "write_bw": "1103MBps"
+            "read_bw": "2071MBps",
+            "write_bw": "2865MBps"
           }
         ]
       }
@@ -7133,7 +7133,7 @@
   },
   "AGLT2_site_1": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.398077173871024",
       "file_count": "896"
@@ -7142,68 +7142,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 35,
-        "BW_CPU": "1975GBps",
-        "LAT_CPU": "97ns",
+        "cores": 23,
+        "BW_CPU": "3080GBps",
+        "LAT_CPU": "51ns",
         "properties": [
           {
-            "ram": "19456GB"
+            "ram": "2048GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2587MBps",
-            "write_bw": "2900MBps"
+            "read_bw": "824MBps",
+            "write_bw": "814MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1501MBps",
-            "write_bw": "850MBps"
+            "read_bw": "614MBps",
+            "write_bw": "2114MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3064MBps",
-            "write_bw": "2346MBps"
+            "read_bw": "3284MBps",
+            "write_bw": "1724MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2362MBps",
-            "write_bw": "1524MBps"
+            "read_bw": "2390MBps",
+            "write_bw": "307MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 47,
-        "BW_CPU": "1620GBps",
-        "LAT_CPU": "56ns",
+        "cores": 41,
+        "BW_CPU": "2345GBps",
+        "LAT_CPU": "82ns",
         "properties": [
           {
-            "ram": "11264GB"
+            "ram": "8192GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2253MBps",
-            "write_bw": "2978MBps"
+            "read_bw": "721MBps",
+            "write_bw": "1111MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3311MBps",
-            "write_bw": "888MBps"
+            "read_bw": "2065MBps",
+            "write_bw": "1300MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2617MBps",
-            "write_bw": "2905MBps"
+            "read_bw": "999MBps",
+            "write_bw": "2995MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2403MBps",
-            "write_bw": "1317MBps"
+            "read_bw": "3157MBps",
+            "write_bw": "2959MBps"
           }
         ]
       }
@@ -10797,7 +10797,7 @@
   },
   "AGLT2_site_2": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.26058612872049264",
       "file_count": "604"
@@ -10806,68 +10806,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 41,
-        "BW_CPU": "2303GBps",
-        "LAT_CPU": "76ns",
+        "cores": 24,
+        "BW_CPU": "1603GBps",
+        "LAT_CPU": "99ns",
         "properties": [
           {
-            "ram": "10240GB"
+            "ram": "17408GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2617MBps",
-            "write_bw": "983MBps"
+            "read_bw": "1199MBps",
+            "write_bw": "1952MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2999MBps",
-            "write_bw": "464MBps"
+            "read_bw": "908MBps",
+            "write_bw": "2854MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3147MBps",
-            "write_bw": "276MBps"
+            "read_bw": "523MBps",
+            "write_bw": "657MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2371MBps",
-            "write_bw": "1259MBps"
+            "read_bw": "998MBps",
+            "write_bw": "1558MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 40,
-        "BW_CPU": "2896GBps",
-        "LAT_CPU": "66ns",
+        "cores": 27,
+        "BW_CPU": "2299GBps",
+        "LAT_CPU": "65ns",
         "properties": [
           {
-            "ram": "3072GB"
+            "ram": "8192GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3180MBps",
-            "write_bw": "914MBps"
+            "read_bw": "3224MBps",
+            "write_bw": "1287MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2072MBps",
-            "write_bw": "1006MBps"
+            "read_bw": "1274MBps",
+            "write_bw": "476MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2617MBps",
-            "write_bw": "1418MBps"
+            "read_bw": "538MBps",
+            "write_bw": "226MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1473MBps",
-            "write_bw": "1955MBps"
+            "read_bw": "2692MBps",
+            "write_bw": "1124MBps"
           }
         ]
       }
@@ -13293,7 +13293,7 @@
   },
   "AGLT2_site_3": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.20190489181121946",
       "file_count": "456"
@@ -13302,68 +13302,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 24,
-        "BW_CPU": "3359GBps",
+        "cores": 25,
+        "BW_CPU": "1682GBps",
         "LAT_CPU": "85ns",
         "properties": [
           {
-            "ram": "17408GB"
+            "ram": "15360GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "789MBps",
-            "write_bw": "2526MBps"
+            "read_bw": "1051MBps",
+            "write_bw": "394MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3173MBps",
-            "write_bw": "1603MBps"
+            "read_bw": "1667MBps",
+            "write_bw": "941MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "839MBps",
-            "write_bw": "979MBps"
+            "read_bw": "2239MBps",
+            "write_bw": "2473MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "879MBps",
-            "write_bw": "225MBps"
+            "read_bw": "2099MBps",
+            "write_bw": "782MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 42,
-        "BW_CPU": "3538GBps",
-        "LAT_CPU": "59ns",
+        "cores": 38,
+        "BW_CPU": "2910GBps",
+        "LAT_CPU": "56ns",
         "properties": [
           {
-            "ram": "14336GB"
+            "ram": "8192GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2422MBps",
-            "write_bw": "2189MBps"
+            "read_bw": "3126MBps",
+            "write_bw": "1542MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1911MBps",
-            "write_bw": "246MBps"
+            "read_bw": "2503MBps",
+            "write_bw": "2730MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "791MBps",
-            "write_bw": "2502MBps"
+            "read_bw": "1440MBps",
+            "write_bw": "283MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "823MBps",
-            "write_bw": "1130MBps"
+            "read_bw": "2404MBps",
+            "write_bw": "1343MBps"
           }
         ]
       }
@@ -15197,7 +15197,7 @@
   },
   "AGLT2_site_4": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.17126457428550027",
       "file_count": "367"
@@ -15206,9 +15206,9 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 22,
-        "BW_CPU": "2735GBps",
-        "LAT_CPU": "55ns",
+        "cores": 39,
+        "BW_CPU": "1695GBps",
+        "LAT_CPU": "93ns",
         "properties": [
           {
             "ram": "2048GB"
@@ -15217,57 +15217,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1129MBps",
-            "write_bw": "2413MBps"
+            "read_bw": "1014MBps",
+            "write_bw": "395MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2441MBps",
-            "write_bw": "2599MBps"
+            "read_bw": "1647MBps",
+            "write_bw": "1108MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "525MBps",
-            "write_bw": "424MBps"
+            "read_bw": "2460MBps",
+            "write_bw": "917MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1366MBps",
-            "write_bw": "518MBps"
+            "read_bw": "691MBps",
+            "write_bw": "1258MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 40,
-        "BW_CPU": "2330GBps",
-        "LAT_CPU": "73ns",
+        "cores": 29,
+        "BW_CPU": "2776GBps",
+        "LAT_CPU": "75ns",
         "properties": [
           {
-            "ram": "10240GB"
+            "ram": "9216GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1505MBps",
-            "write_bw": "276MBps"
+            "read_bw": "2089MBps",
+            "write_bw": "831MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1749MBps",
-            "write_bw": "1966MBps"
+            "read_bw": "2355MBps",
+            "write_bw": "1514MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3064MBps",
-            "write_bw": "2534MBps"
+            "read_bw": "1896MBps",
+            "write_bw": "2287MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2406MBps",
-            "write_bw": "2922MBps"
+            "read_bw": "2667MBps",
+            "write_bw": "2612MBps"
           }
         ]
       }
@@ -16745,7 +16745,7 @@
   },
   "AGLT2_site_5": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.13626178383926252",
       "file_count": "307"
@@ -16755,33 +16755,33 @@
         "units": 888,
         "speed": 30000000.0,
         "cores": 34,
-        "BW_CPU": "3110GBps",
-        "LAT_CPU": "76ns",
+        "BW_CPU": "2675GBps",
+        "LAT_CPU": "78ns",
         "properties": [
           {
-            "ram": "16384GB"
+            "ram": "13312GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2868MBps",
-            "write_bw": "1630MBps"
+            "read_bw": "1245MBps",
+            "write_bw": "2986MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "760MBps",
-            "write_bw": "1471MBps"
+            "read_bw": "1805MBps",
+            "write_bw": "578MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2718MBps",
-            "write_bw": "2634MBps"
+            "read_bw": "1222MBps",
+            "write_bw": "1663MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "875MBps",
-            "write_bw": "2051MBps"
+            "read_bw": "1254MBps",
+            "write_bw": "2637MBps"
           }
         ]
       },
@@ -16789,33 +16789,33 @@
         "units": 887,
         "speed": 20000000.0,
         "cores": 20,
-        "BW_CPU": "1883GBps",
-        "LAT_CPU": "69ns",
+        "BW_CPU": "3303GBps",
+        "LAT_CPU": "80ns",
         "properties": [
           {
-            "ram": "3072GB"
+            "ram": "18432GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1247MBps",
-            "write_bw": "1534MBps"
+            "read_bw": "1842MBps",
+            "write_bw": "1876MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1576MBps",
-            "write_bw": "551MBps"
+            "read_bw": "1555MBps",
+            "write_bw": "1599MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3489MBps",
-            "write_bw": "921MBps"
+            "read_bw": "2137MBps",
+            "write_bw": "2424MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "597MBps",
-            "write_bw": "1274MBps"
+            "read_bw": "3469MBps",
+            "write_bw": "1141MBps"
           }
         ]
       }
@@ -18053,7 +18053,7 @@
   },
   "AGLT2_site_6": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.11923371107667424",
       "file_count": "264"
@@ -18063,42 +18063,8 @@
         "units": 888,
         "speed": 30000000.0,
         "cores": 46,
-        "BW_CPU": "2388GBps",
-        "LAT_CPU": "58ns",
-        "properties": [
-          {
-            "ram": "14336GB"
-          }
-        ],
-        "disks": [
-          {
-            "name": "AGLT2_CALIBDISK",
-            "read_bw": "2553MBps",
-            "write_bw": "250MBps"
-          },
-          {
-            "name": "AGLT2_DATADISK",
-            "read_bw": "587MBps",
-            "write_bw": "2326MBps"
-          },
-          {
-            "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "787MBps",
-            "write_bw": "1765MBps"
-          },
-          {
-            "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2121MBps",
-            "write_bw": "797MBps"
-          }
-        ]
-      },
-      {
-        "units": 887,
-        "speed": 20000000.0,
-        "cores": 27,
-        "BW_CPU": "2199GBps",
-        "LAT_CPU": "70ns",
+        "BW_CPU": "1867GBps",
+        "LAT_CPU": "54ns",
         "properties": [
           {
             "ram": "4096GB"
@@ -18107,23 +18073,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2798MBps",
-            "write_bw": "1973MBps"
+            "read_bw": "535MBps",
+            "write_bw": "2663MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "974MBps",
-            "write_bw": "1277MBps"
+            "read_bw": "1701MBps",
+            "write_bw": "1830MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1244MBps",
-            "write_bw": "500MBps"
+            "read_bw": "759MBps",
+            "write_bw": "1891MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2805MBps",
-            "write_bw": "2369MBps"
+            "read_bw": "1455MBps",
+            "write_bw": "1036MBps"
+          }
+        ]
+      },
+      {
+        "units": 887,
+        "speed": 20000000.0,
+        "cores": 27,
+        "BW_CPU": "2095GBps",
+        "LAT_CPU": "61ns",
+        "properties": [
+          {
+            "ram": "14336GB"
+          }
+        ],
+        "disks": [
+          {
+            "name": "AGLT2_CALIBDISK",
+            "read_bw": "2241MBps",
+            "write_bw": "2931MBps"
+          },
+          {
+            "name": "AGLT2_DATADISK",
+            "read_bw": "508MBps",
+            "write_bw": "2261MBps"
+          },
+          {
+            "name": "AGLT2_LOCALGROUPDISK",
+            "read_bw": "2977MBps",
+            "write_bw": "2429MBps"
+          },
+          {
+            "name": "AGLT2_SCRATCHDISK",
+            "read_bw": "717MBps",
+            "write_bw": "932MBps"
           }
         ]
       }
@@ -19189,7 +19189,7 @@
   },
   "AGLT2_site_7": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.10502527352533593",
       "file_count": "232"
@@ -19198,68 +19198,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 33,
-        "BW_CPU": "2915GBps",
-        "LAT_CPU": "55ns",
+        "cores": 20,
+        "BW_CPU": "3901GBps",
+        "LAT_CPU": "65ns",
         "properties": [
           {
-            "ram": "2048GB"
+            "ram": "8192GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1336MBps",
-            "write_bw": "1691MBps"
+            "read_bw": "2135MBps",
+            "write_bw": "1619MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1174MBps",
-            "write_bw": "1004MBps"
+            "read_bw": "1920MBps",
+            "write_bw": "935MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1432MBps",
-            "write_bw": "2603MBps"
+            "read_bw": "2057MBps",
+            "write_bw": "1554MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1856MBps",
-            "write_bw": "1481MBps"
+            "read_bw": "2731MBps",
+            "write_bw": "1130MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 27,
-        "BW_CPU": "3507GBps",
-        "LAT_CPU": "61ns",
+        "cores": 23,
+        "BW_CPU": "1871GBps",
+        "LAT_CPU": "68ns",
         "properties": [
           {
-            "ram": "6144GB"
+            "ram": "17408GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2615MBps",
-            "write_bw": "2065MBps"
+            "read_bw": "790MBps",
+            "write_bw": "1096MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "929MBps",
-            "write_bw": "2396MBps"
+            "read_bw": "2007MBps",
+            "write_bw": "2339MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2006MBps",
-            "write_bw": "2607MBps"
+            "read_bw": "1151MBps",
+            "write_bw": "962MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "570MBps",
-            "write_bw": "2977MBps"
+            "read_bw": "1995MBps",
+            "write_bw": "1007MBps"
           }
         ]
       }
@@ -20197,7 +20197,7 @@
   },
   "AGLT2_site_8": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.09549778107757596",
       "file_count": "207"
@@ -20206,43 +20206,9 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 38,
-        "BW_CPU": "1609GBps",
-        "LAT_CPU": "99ns",
-        "properties": [
-          {
-            "ram": "11264GB"
-          }
-        ],
-        "disks": [
-          {
-            "name": "AGLT2_CALIBDISK",
-            "read_bw": "3217MBps",
-            "write_bw": "353MBps"
-          },
-          {
-            "name": "AGLT2_DATADISK",
-            "read_bw": "2118MBps",
-            "write_bw": "2888MBps"
-          },
-          {
-            "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1682MBps",
-            "write_bw": "2554MBps"
-          },
-          {
-            "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1489MBps",
-            "write_bw": "1270MBps"
-          }
-        ]
-      },
-      {
-        "units": 887,
-        "speed": 20000000.0,
-        "cores": 20,
-        "BW_CPU": "2305GBps",
-        "LAT_CPU": "67ns",
+        "cores": 24,
+        "BW_CPU": "3882GBps",
+        "LAT_CPU": "65ns",
         "properties": [
           {
             "ram": "12288GB"
@@ -20251,23 +20217,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3121MBps",
-            "write_bw": "2008MBps"
+            "read_bw": "1857MBps",
+            "write_bw": "1272MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1647MBps",
-            "write_bw": "657MBps"
+            "read_bw": "3275MBps",
+            "write_bw": "1736MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1352MBps",
-            "write_bw": "2201MBps"
+            "read_bw": "2203MBps",
+            "write_bw": "306MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1405MBps",
-            "write_bw": "424MBps"
+            "read_bw": "771MBps",
+            "write_bw": "1317MBps"
+          }
+        ]
+      },
+      {
+        "units": 887,
+        "speed": 20000000.0,
+        "cores": 46,
+        "BW_CPU": "2471GBps",
+        "LAT_CPU": "87ns",
+        "properties": [
+          {
+            "ram": "6144GB"
+          }
+        ],
+        "disks": [
+          {
+            "name": "AGLT2_CALIBDISK",
+            "read_bw": "568MBps",
+            "write_bw": "2930MBps"
+          },
+          {
+            "name": "AGLT2_DATADISK",
+            "read_bw": "858MBps",
+            "write_bw": "719MBps"
+          },
+          {
+            "name": "AGLT2_LOCALGROUPDISK",
+            "read_bw": "2073MBps",
+            "write_bw": "1327MBps"
+          },
+          {
+            "name": "AGLT2_SCRATCHDISK",
+            "read_bw": "774MBps",
+            "write_bw": "1978MBps"
           }
         ]
       }
@@ -21105,7 +21105,7 @@
   },
   "AGLT2_site_9": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.08391536709226437",
       "file_count": "186"
@@ -21114,68 +21114,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 31,
-        "BW_CPU": "2006GBps",
-        "LAT_CPU": "60ns",
+        "cores": 43,
+        "BW_CPU": "2379GBps",
+        "LAT_CPU": "61ns",
         "properties": [
           {
-            "ram": "2048GB"
+            "ram": "4096GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2972MBps",
-            "write_bw": "2899MBps"
+            "read_bw": "835MBps",
+            "write_bw": "1340MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1108MBps",
-            "write_bw": "2507MBps"
+            "read_bw": "1897MBps",
+            "write_bw": "1846MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2891MBps",
-            "write_bw": "1806MBps"
+            "read_bw": "1589MBps",
+            "write_bw": "1352MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3309MBps",
-            "write_bw": "2173MBps"
+            "read_bw": "2394MBps",
+            "write_bw": "1513MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 28,
-        "BW_CPU": "3026GBps",
-        "LAT_CPU": "67ns",
+        "cores": 29,
+        "BW_CPU": "2090GBps",
+        "LAT_CPU": "57ns",
         "properties": [
           {
-            "ram": "1024GB"
+            "ram": "7168GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "721MBps",
-            "write_bw": "667MBps"
+            "read_bw": "1123MBps",
+            "write_bw": "830MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3261MBps",
-            "write_bw": "302MBps"
+            "read_bw": "1733MBps",
+            "write_bw": "620MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "517MBps",
-            "write_bw": "970MBps"
+            "read_bw": "3436MBps",
+            "write_bw": "2243MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "659MBps",
-            "write_bw": "474MBps"
+            "read_bw": "1668MBps",
+            "write_bw": "2075MBps"
           }
         ]
       }
@@ -21929,7 +21929,7 @@
   },
   "AGLT2_site_10": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.0779578085508765",
       "file_count": "170"
@@ -21938,68 +21938,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 39,
-        "BW_CPU": "1860GBps",
-        "LAT_CPU": "60ns",
+        "cores": 36,
+        "BW_CPU": "2631GBps",
+        "LAT_CPU": "85ns",
         "properties": [
           {
-            "ram": "13312GB"
+            "ram": "9216GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3426MBps",
-            "write_bw": "2111MBps"
+            "read_bw": "903MBps",
+            "write_bw": "279MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1663MBps",
-            "write_bw": "232MBps"
+            "read_bw": "1587MBps",
+            "write_bw": "2922MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2448MBps",
-            "write_bw": "2959MBps"
+            "read_bw": "998MBps",
+            "write_bw": "2040MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "842MBps",
-            "write_bw": "2819MBps"
+            "read_bw": "628MBps",
+            "write_bw": "1323MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 40,
-        "BW_CPU": "2509GBps",
-        "LAT_CPU": "97ns",
+        "cores": 32,
+        "BW_CPU": "1794GBps",
+        "LAT_CPU": "82ns",
         "properties": [
           {
-            "ram": "12288GB"
+            "ram": "9216GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2999MBps",
-            "write_bw": "856MBps"
+            "read_bw": "655MBps",
+            "write_bw": "2357MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3259MBps",
-            "write_bw": "1040MBps"
+            "read_bw": "1985MBps",
+            "write_bw": "1082MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2367MBps",
-            "write_bw": "860MBps"
+            "read_bw": "1349MBps",
+            "write_bw": "723MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2431MBps",
-            "write_bw": "549MBps"
+            "read_bw": "1345MBps",
+            "write_bw": "451MBps"
           }
         ]
       }
@@ -22689,7 +22689,7 @@
   },
   "AGLT2_site_11": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.07445450751977929",
       "file_count": "156"
@@ -22698,68 +22698,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 28,
-        "BW_CPU": "3773GBps",
-        "LAT_CPU": "77ns",
+        "cores": 41,
+        "BW_CPU": "1750GBps",
+        "LAT_CPU": "52ns",
         "properties": [
           {
-            "ram": "15360GB"
+            "ram": "16384GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1987MBps",
-            "write_bw": "1905MBps"
+            "read_bw": "1626MBps",
+            "write_bw": "2222MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "915MBps",
-            "write_bw": "2061MBps"
+            "read_bw": "1631MBps",
+            "write_bw": "1636MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3263MBps",
-            "write_bw": "1934MBps"
+            "read_bw": "1677MBps",
+            "write_bw": "1335MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3489MBps",
-            "write_bw": "542MBps"
+            "read_bw": "1478MBps",
+            "write_bw": "1501MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 39,
-        "BW_CPU": "3832GBps",
-        "LAT_CPU": "73ns",
+        "cores": 25,
+        "BW_CPU": "2954GBps",
+        "LAT_CPU": "53ns",
         "properties": [
           {
-            "ram": "12288GB"
+            "ram": "2048GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2489MBps",
-            "write_bw": "435MBps"
+            "read_bw": "1360MBps",
+            "write_bw": "2278MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2069MBps",
-            "write_bw": "2054MBps"
+            "read_bw": "2766MBps",
+            "write_bw": "2662MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "996MBps",
-            "write_bw": "1065MBps"
+            "read_bw": "3395MBps",
+            "write_bw": "2888MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1183MBps",
-            "write_bw": "2532MBps"
+            "read_bw": "2890MBps",
+            "write_bw": "748MBps"
           }
         ]
       }
@@ -23393,7 +23393,7 @@
   },
   "AGLT2_site_12": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.06741413719613565",
       "file_count": "145"
@@ -23402,68 +23402,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 35,
-        "BW_CPU": "3545GBps",
-        "LAT_CPU": "70ns",
+        "cores": 41,
+        "BW_CPU": "2411GBps",
+        "LAT_CPU": "79ns",
         "properties": [
           {
-            "ram": "13312GB"
+            "ram": "17408GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3065MBps",
-            "write_bw": "1814MBps"
+            "read_bw": "2325MBps",
+            "write_bw": "2901MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "864MBps",
-            "write_bw": "1871MBps"
+            "read_bw": "2409MBps",
+            "write_bw": "2339MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "560MBps",
-            "write_bw": "2701MBps"
+            "read_bw": "2627MBps",
+            "write_bw": "972MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1141MBps",
-            "write_bw": "2339MBps"
+            "read_bw": "2423MBps",
+            "write_bw": "1352MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 39,
-        "BW_CPU": "2856GBps",
-        "LAT_CPU": "99ns",
+        "cores": 25,
+        "BW_CPU": "3247GBps",
+        "LAT_CPU": "54ns",
         "properties": [
           {
-            "ram": "18432GB"
+            "ram": "1024GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1961MBps",
-            "write_bw": "1493MBps"
+            "read_bw": "2869MBps",
+            "write_bw": "1652MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "867MBps",
-            "write_bw": "2994MBps"
+            "read_bw": "1260MBps",
+            "write_bw": "1706MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "984MBps",
-            "write_bw": "2596MBps"
+            "read_bw": "2642MBps",
+            "write_bw": "595MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2182MBps",
-            "write_bw": "2662MBps"
+            "read_bw": "2177MBps",
+            "write_bw": "2392MBps"
           }
         ]
       }
@@ -24053,7 +24053,7 @@
   },
   "AGLT2_site_13": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.057463461396389276",
       "file_count": "134"
@@ -24062,68 +24062,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 41,
-        "BW_CPU": "2264GBps",
-        "LAT_CPU": "58ns",
+        "cores": 42,
+        "BW_CPU": "2721GBps",
+        "LAT_CPU": "92ns",
         "properties": [
           {
-            "ram": "4096GB"
+            "ram": "12288GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3231MBps",
-            "write_bw": "2458MBps"
+            "read_bw": "984MBps",
+            "write_bw": "880MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2291MBps",
-            "write_bw": "1609MBps"
+            "read_bw": "1563MBps",
+            "write_bw": "757MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2264MBps",
-            "write_bw": "567MBps"
+            "read_bw": "2840MBps",
+            "write_bw": "1203MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3136MBps",
-            "write_bw": "1517MBps"
+            "read_bw": "2196MBps",
+            "write_bw": "1960MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 32,
-        "BW_CPU": "1628GBps",
-        "LAT_CPU": "56ns",
+        "cores": 45,
+        "BW_CPU": "2081GBps",
+        "LAT_CPU": "96ns",
         "properties": [
           {
-            "ram": "11264GB"
+            "ram": "2048GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2687MBps",
-            "write_bw": "1520MBps"
+            "read_bw": "2203MBps",
+            "write_bw": "2691MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2594MBps",
-            "write_bw": "1171MBps"
+            "read_bw": "2523MBps",
+            "write_bw": "2447MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1926MBps",
-            "write_bw": "1477MBps"
+            "read_bw": "1307MBps",
+            "write_bw": "1900MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1870MBps",
-            "write_bw": "627MBps"
+            "read_bw": "873MBps",
+            "write_bw": "1114MBps"
           }
         ]
       }
@@ -24669,7 +24669,7 @@
   },
   "AGLT2_site_14": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.06043875176648195",
       "file_count": "126"
@@ -24678,68 +24678,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 47,
-        "BW_CPU": "2010GBps",
-        "LAT_CPU": "87ns",
+        "cores": 32,
+        "BW_CPU": "1753GBps",
+        "LAT_CPU": "82ns",
         "properties": [
           {
-            "ram": "18432GB"
+            "ram": "2048GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1550MBps",
-            "write_bw": "1812MBps"
+            "read_bw": "3290MBps",
+            "write_bw": "2815MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "667MBps",
-            "write_bw": "1221MBps"
+            "read_bw": "1025MBps",
+            "write_bw": "1870MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1263MBps",
-            "write_bw": "2600MBps"
+            "read_bw": "1829MBps",
+            "write_bw": "410MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1866MBps",
-            "write_bw": "1265MBps"
+            "read_bw": "2747MBps",
+            "write_bw": "2697MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 34,
-        "BW_CPU": "2200GBps",
-        "LAT_CPU": "82ns",
+        "cores": 49,
+        "BW_CPU": "3433GBps",
+        "LAT_CPU": "73ns",
         "properties": [
           {
-            "ram": "10240GB"
+            "ram": "14336GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3268MBps",
-            "write_bw": "1207MBps"
+            "read_bw": "2515MBps",
+            "write_bw": "1021MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2759MBps",
-            "write_bw": "2767MBps"
+            "read_bw": "2142MBps",
+            "write_bw": "2045MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2498MBps",
-            "write_bw": "2112MBps"
+            "read_bw": "612MBps",
+            "write_bw": "2052MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3068MBps",
-            "write_bw": "2079MBps"
+            "read_bw": "3294MBps",
+            "write_bw": "2464MBps"
           }
         ]
       }
@@ -25253,7 +25253,7 @@
   },
   "AGLT2_site_15": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.0544657436093873",
       "file_count": "118"
@@ -25262,68 +25262,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 47,
-        "BW_CPU": "2783GBps",
-        "LAT_CPU": "56ns",
+        "cores": 31,
+        "BW_CPU": "2540GBps",
+        "LAT_CPU": "68ns",
         "properties": [
           {
-            "ram": "18432GB"
+            "ram": "2048GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3115MBps",
-            "write_bw": "609MBps"
+            "read_bw": "2443MBps",
+            "write_bw": "2436MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2670MBps",
-            "write_bw": "855MBps"
+            "read_bw": "753MBps",
+            "write_bw": "561MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3020MBps",
-            "write_bw": "1250MBps"
+            "read_bw": "970MBps",
+            "write_bw": "2748MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2759MBps",
-            "write_bw": "1614MBps"
+            "read_bw": "2091MBps",
+            "write_bw": "208MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 23,
-        "BW_CPU": "2312GBps",
-        "LAT_CPU": "99ns",
+        "cores": 31,
+        "BW_CPU": "3044GBps",
+        "LAT_CPU": "73ns",
         "properties": [
           {
-            "ram": "11264GB"
+            "ram": "17408GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1945MBps",
-            "write_bw": "1924MBps"
+            "read_bw": "1390MBps",
+            "write_bw": "1255MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2005MBps",
-            "write_bw": "2941MBps"
+            "read_bw": "2639MBps",
+            "write_bw": "1449MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3304MBps",
-            "write_bw": "1909MBps"
+            "read_bw": "2092MBps",
+            "write_bw": "1539MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2890MBps",
-            "write_bw": "1672MBps"
+            "read_bw": "1667MBps",
+            "write_bw": "1926MBps"
           }
         ]
       }
@@ -25805,7 +25805,7 @@
   },
   "AGLT2_site_16": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.050995294907570585",
       "file_count": "111"
@@ -25814,68 +25814,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 22,
-        "BW_CPU": "2363GBps",
-        "LAT_CPU": "68ns",
+        "cores": 35,
+        "BW_CPU": "2470GBps",
+        "LAT_CPU": "85ns",
         "properties": [
           {
-            "ram": "12288GB"
+            "ram": "9216GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1147MBps",
-            "write_bw": "863MBps"
+            "read_bw": "3075MBps",
+            "write_bw": "2901MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1120MBps",
-            "write_bw": "980MBps"
+            "read_bw": "1549MBps",
+            "write_bw": "920MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "841MBps",
-            "write_bw": "1628MBps"
+            "read_bw": "2251MBps",
+            "write_bw": "1997MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "702MBps",
-            "write_bw": "568MBps"
+            "read_bw": "1257MBps",
+            "write_bw": "357MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 23,
-        "BW_CPU": "1937GBps",
-        "LAT_CPU": "52ns",
+        "cores": 36,
+        "BW_CPU": "1826GBps",
+        "LAT_CPU": "61ns",
         "properties": [
           {
-            "ram": "2048GB"
+            "ram": "3072GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2240MBps",
-            "write_bw": "1705MBps"
+            "read_bw": "2995MBps",
+            "write_bw": "1072MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "500MBps",
-            "write_bw": "995MBps"
+            "read_bw": "1779MBps",
+            "write_bw": "877MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1517MBps",
-            "write_bw": "214MBps"
+            "read_bw": "2690MBps",
+            "write_bw": "2229MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1578MBps",
-            "write_bw": "589MBps"
+            "read_bw": "1977MBps",
+            "write_bw": "2645MBps"
           }
         ]
       }
@@ -26329,7 +26329,7 @@
   },
   "AGLT2_site_17": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.05301242349290207",
       "file_count": "105"
@@ -26338,68 +26338,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 37,
-        "BW_CPU": "2552GBps",
-        "LAT_CPU": "82ns",
+        "cores": 39,
+        "BW_CPU": "3569GBps",
+        "LAT_CPU": "54ns",
         "properties": [
           {
-            "ram": "11264GB"
+            "ram": "16384GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2749MBps",
-            "write_bw": "2155MBps"
+            "read_bw": "1980MBps",
+            "write_bw": "2339MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2636MBps",
-            "write_bw": "2275MBps"
+            "read_bw": "3150MBps",
+            "write_bw": "2515MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3037MBps",
-            "write_bw": "1603MBps"
+            "read_bw": "900MBps",
+            "write_bw": "1231MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1688MBps",
-            "write_bw": "1311MBps"
+            "read_bw": "1050MBps",
+            "write_bw": "1528MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 43,
-        "BW_CPU": "3330GBps",
-        "LAT_CPU": "89ns",
+        "cores": 48,
+        "BW_CPU": "3008GBps",
+        "LAT_CPU": "86ns",
         "properties": [
           {
-            "ram": "9216GB"
+            "ram": "6144GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3391MBps",
-            "write_bw": "1806MBps"
+            "read_bw": "1154MBps",
+            "write_bw": "2688MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2660MBps",
-            "write_bw": "496MBps"
+            "read_bw": "1369MBps",
+            "write_bw": "710MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1048MBps",
-            "write_bw": "2117MBps"
+            "read_bw": "1187MBps",
+            "write_bw": "1017MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2326MBps",
-            "write_bw": "803MBps"
+            "read_bw": "1844MBps",
+            "write_bw": "421MBps"
           }
         ]
       }
@@ -26829,7 +26829,7 @@
   },
   "AGLT2_site_18": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.05044889019915973",
       "file_count": "100"
@@ -26838,68 +26838,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 38,
-        "BW_CPU": "2560GBps",
-        "LAT_CPU": "67ns",
+        "cores": 34,
+        "BW_CPU": "3815GBps",
+        "LAT_CPU": "69ns",
         "properties": [
           {
-            "ram": "1024GB"
+            "ram": "11264GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2190MBps",
-            "write_bw": "1891MBps"
+            "read_bw": "2830MBps",
+            "write_bw": "1203MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1420MBps",
-            "write_bw": "224MBps"
+            "read_bw": "2008MBps",
+            "write_bw": "997MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2776MBps",
-            "write_bw": "2595MBps"
+            "read_bw": "1554MBps",
+            "write_bw": "1324MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2377MBps",
-            "write_bw": "1346MBps"
+            "read_bw": "2403MBps",
+            "write_bw": "742MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 30,
-        "BW_CPU": "3175GBps",
-        "LAT_CPU": "56ns",
+        "cores": 26,
+        "BW_CPU": "3747GBps",
+        "LAT_CPU": "71ns",
         "properties": [
           {
-            "ram": "12288GB"
+            "ram": "15360GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "943MBps",
-            "write_bw": "1970MBps"
+            "read_bw": "3082MBps",
+            "write_bw": "668MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1353MBps",
-            "write_bw": "542MBps"
+            "read_bw": "964MBps",
+            "write_bw": "645MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2705MBps",
-            "write_bw": "1773MBps"
+            "read_bw": "3344MBps",
+            "write_bw": "1754MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3137MBps",
-            "write_bw": "2133MBps"
+            "read_bw": "1955MBps",
+            "write_bw": "1901MBps"
           }
         ]
       }
@@ -27309,7 +27309,7 @@
   },
   "AGLT2_site_19": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.03762471941812252",
       "file_count": "95"
@@ -27318,43 +27318,9 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 25,
-        "BW_CPU": "3940GBps",
-        "LAT_CPU": "51ns",
-        "properties": [
-          {
-            "ram": "14336GB"
-          }
-        ],
-        "disks": [
-          {
-            "name": "AGLT2_CALIBDISK",
-            "read_bw": "2747MBps",
-            "write_bw": "1500MBps"
-          },
-          {
-            "name": "AGLT2_DATADISK",
-            "read_bw": "872MBps",
-            "write_bw": "2248MBps"
-          },
-          {
-            "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "624MBps",
-            "write_bw": "1569MBps"
-          },
-          {
-            "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1478MBps",
-            "write_bw": "2018MBps"
-          }
-        ]
-      },
-      {
-        "units": 887,
-        "speed": 20000000.0,
-        "cores": 33,
-        "BW_CPU": "1609GBps",
-        "LAT_CPU": "88ns",
+        "cores": 32,
+        "BW_CPU": "3378GBps",
+        "LAT_CPU": "97ns",
         "properties": [
           {
             "ram": "6144GB"
@@ -27363,23 +27329,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3179MBps",
-            "write_bw": "1390MBps"
+            "read_bw": "1106MBps",
+            "write_bw": "1341MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "668MBps",
-            "write_bw": "494MBps"
+            "read_bw": "1199MBps",
+            "write_bw": "1594MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3362MBps",
-            "write_bw": "2600MBps"
+            "read_bw": "1976MBps",
+            "write_bw": "2851MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3068MBps",
-            "write_bw": "2645MBps"
+            "read_bw": "3308MBps",
+            "write_bw": "405MBps"
+          }
+        ]
+      },
+      {
+        "units": 887,
+        "speed": 20000000.0,
+        "cores": 23,
+        "BW_CPU": "3596GBps",
+        "LAT_CPU": "57ns",
+        "properties": [
+          {
+            "ram": "9216GB"
+          }
+        ],
+        "disks": [
+          {
+            "name": "AGLT2_CALIBDISK",
+            "read_bw": "1211MBps",
+            "write_bw": "2528MBps"
+          },
+          {
+            "name": "AGLT2_DATADISK",
+            "read_bw": "746MBps",
+            "write_bw": "2029MBps"
+          },
+          {
+            "name": "AGLT2_LOCALGROUPDISK",
+            "read_bw": "3143MBps",
+            "write_bw": "846MBps"
+          },
+          {
+            "name": "AGLT2_SCRATCHDISK",
+            "read_bw": "2598MBps",
+            "write_bw": "1089MBps"
           }
         ]
       }
@@ -27769,7 +27769,7 @@
   },
   "AGLT2_site_20": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.04186802918597808",
       "file_count": "91"
@@ -27778,43 +27778,9 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 40,
-        "BW_CPU": "1730GBps",
-        "LAT_CPU": "71ns",
-        "properties": [
-          {
-            "ram": "1024GB"
-          }
-        ],
-        "disks": [
-          {
-            "name": "AGLT2_CALIBDISK",
-            "read_bw": "1606MBps",
-            "write_bw": "735MBps"
-          },
-          {
-            "name": "AGLT2_DATADISK",
-            "read_bw": "3021MBps",
-            "write_bw": "1614MBps"
-          },
-          {
-            "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3168MBps",
-            "write_bw": "357MBps"
-          },
-          {
-            "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1694MBps",
-            "write_bw": "2850MBps"
-          }
-        ]
-      },
-      {
-        "units": 887,
-        "speed": 20000000.0,
-        "cores": 48,
-        "BW_CPU": "3842GBps",
-        "LAT_CPU": "86ns",
+        "cores": 20,
+        "BW_CPU": "2424GBps",
+        "LAT_CPU": "87ns",
         "properties": [
           {
             "ram": "6144GB"
@@ -27823,23 +27789,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1789MBps",
-            "write_bw": "318MBps"
+            "read_bw": "753MBps",
+            "write_bw": "1160MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3039MBps",
-            "write_bw": "1645MBps"
+            "read_bw": "2447MBps",
+            "write_bw": "2762MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2479MBps",
-            "write_bw": "1264MBps"
+            "read_bw": "793MBps",
+            "write_bw": "1812MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "954MBps",
-            "write_bw": "1357MBps"
+            "read_bw": "2726MBps",
+            "write_bw": "1415MBps"
+          }
+        ]
+      },
+      {
+        "units": 887,
+        "speed": 20000000.0,
+        "cores": 31,
+        "BW_CPU": "2631GBps",
+        "LAT_CPU": "54ns",
+        "properties": [
+          {
+            "ram": "5120GB"
+          }
+        ],
+        "disks": [
+          {
+            "name": "AGLT2_CALIBDISK",
+            "read_bw": "3385MBps",
+            "write_bw": "1953MBps"
+          },
+          {
+            "name": "AGLT2_DATADISK",
+            "read_bw": "1631MBps",
+            "write_bw": "885MBps"
+          },
+          {
+            "name": "AGLT2_LOCALGROUPDISK",
+            "read_bw": "3439MBps",
+            "write_bw": "2769MBps"
+          },
+          {
+            "name": "AGLT2_SCRATCHDISK",
+            "read_bw": "1989MBps",
+            "write_bw": "2931MBps"
           }
         ]
       }
@@ -28213,7 +28213,7 @@
   },
   "AGLT2_site_21": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.03801362012864661",
       "file_count": "86"
@@ -28222,68 +28222,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 21,
-        "BW_CPU": "2860GBps",
-        "LAT_CPU": "76ns",
+        "cores": 20,
+        "BW_CPU": "2287GBps",
+        "LAT_CPU": "61ns",
         "properties": [
           {
-            "ram": "5120GB"
+            "ram": "16384GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2684MBps",
-            "write_bw": "796MBps"
+            "read_bw": "1872MBps",
+            "write_bw": "1990MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1742MBps",
-            "write_bw": "854MBps"
+            "read_bw": "2101MBps",
+            "write_bw": "567MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1929MBps",
-            "write_bw": "2580MBps"
+            "read_bw": "1646MBps",
+            "write_bw": "2543MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2181MBps",
-            "write_bw": "1305MBps"
+            "read_bw": "962MBps",
+            "write_bw": "534MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 23,
-        "BW_CPU": "2954GBps",
-        "LAT_CPU": "73ns",
+        "cores": 34,
+        "BW_CPU": "3151GBps",
+        "LAT_CPU": "92ns",
         "properties": [
           {
-            "ram": "17408GB"
+            "ram": "14336GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1053MBps",
-            "write_bw": "692MBps"
+            "read_bw": "755MBps",
+            "write_bw": "652MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1187MBps",
-            "write_bw": "2741MBps"
+            "read_bw": "2668MBps",
+            "write_bw": "2908MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1766MBps",
-            "write_bw": "2946MBps"
+            "read_bw": "1049MBps",
+            "write_bw": "1523MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "994MBps",
-            "write_bw": "2244MBps"
+            "read_bw": "1953MBps",
+            "write_bw": "1772MBps"
           }
         ]
       }
@@ -28637,7 +28637,7 @@
   },
   "AGLT2_site_22": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.0427414360355908",
       "file_count": "83"
@@ -28646,68 +28646,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 27,
-        "BW_CPU": "3060GBps",
-        "LAT_CPU": "77ns",
+        "cores": 26,
+        "BW_CPU": "1705GBps",
+        "LAT_CPU": "76ns",
         "properties": [
           {
-            "ram": "7168GB"
+            "ram": "1024GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1442MBps",
-            "write_bw": "1634MBps"
+            "read_bw": "725MBps",
+            "write_bw": "464MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "722MBps",
-            "write_bw": "2748MBps"
+            "read_bw": "2817MBps",
+            "write_bw": "2176MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3061MBps",
-            "write_bw": "745MBps"
+            "read_bw": "1539MBps",
+            "write_bw": "2548MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3113MBps",
-            "write_bw": "785MBps"
+            "read_bw": "2047MBps",
+            "write_bw": "593MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 24,
-        "BW_CPU": "1982GBps",
-        "LAT_CPU": "61ns",
+        "cores": 22,
+        "BW_CPU": "2648GBps",
+        "LAT_CPU": "93ns",
         "properties": [
           {
-            "ram": "2048GB"
+            "ram": "8192GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1355MBps",
-            "write_bw": "1342MBps"
+            "read_bw": "2946MBps",
+            "write_bw": "830MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2661MBps",
-            "write_bw": "2558MBps"
+            "read_bw": "1932MBps",
+            "write_bw": "322MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2834MBps",
-            "write_bw": "1484MBps"
+            "read_bw": "604MBps",
+            "write_bw": "625MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3090MBps",
-            "write_bw": "1276MBps"
+            "read_bw": "1582MBps",
+            "write_bw": "667MBps"
           }
         ]
       }
@@ -29049,7 +29049,7 @@
   },
   "AGLT2_site_23": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.033022982944852855",
       "file_count": "79"
@@ -29058,68 +29058,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 29,
-        "BW_CPU": "1870GBps",
-        "LAT_CPU": "81ns",
+        "cores": 27,
+        "BW_CPU": "2622GBps",
+        "LAT_CPU": "55ns",
         "properties": [
           {
-            "ram": "6144GB"
+            "ram": "13312GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3286MBps",
-            "write_bw": "2965MBps"
+            "read_bw": "2506MBps",
+            "write_bw": "1174MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "653MBps",
-            "write_bw": "2212MBps"
+            "read_bw": "3329MBps",
+            "write_bw": "1497MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3440MBps",
-            "write_bw": "1934MBps"
+            "read_bw": "2873MBps",
+            "write_bw": "2347MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2491MBps",
-            "write_bw": "1461MBps"
+            "read_bw": "1997MBps",
+            "write_bw": "1398MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 32,
-        "BW_CPU": "2983GBps",
-        "LAT_CPU": "89ns",
+        "cores": 41,
+        "BW_CPU": "2130GBps",
+        "LAT_CPU": "88ns",
         "properties": [
           {
-            "ram": "14336GB"
+            "ram": "11264GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3418MBps",
-            "write_bw": "1778MBps"
+            "read_bw": "1164MBps",
+            "write_bw": "353MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "540MBps",
-            "write_bw": "932MBps"
+            "read_bw": "3097MBps",
+            "write_bw": "546MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "839MBps",
-            "write_bw": "2778MBps"
+            "read_bw": "1011MBps",
+            "write_bw": "1169MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2277MBps",
-            "write_bw": "856MBps"
+            "read_bw": "1408MBps",
+            "write_bw": "266MBps"
           }
         ]
       }
@@ -29445,7 +29445,7 @@
   },
   "AGLT2_site_24": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.039079646889530174",
       "file_count": "76"
@@ -29454,43 +29454,43 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 34,
-        "BW_CPU": "2130GBps",
-        "LAT_CPU": "72ns",
+        "cores": 31,
+        "BW_CPU": "1875GBps",
+        "LAT_CPU": "64ns",
         "properties": [
           {
-            "ram": "9216GB"
+            "ram": "12288GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1670MBps",
-            "write_bw": "2837MBps"
+            "read_bw": "2724MBps",
+            "write_bw": "1447MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2676MBps",
-            "write_bw": "2925MBps"
+            "read_bw": "1630MBps",
+            "write_bw": "2266MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3141MBps",
-            "write_bw": "2772MBps"
+            "read_bw": "1584MBps",
+            "write_bw": "2475MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2175MBps",
-            "write_bw": "1610MBps"
+            "read_bw": "1489MBps",
+            "write_bw": "1507MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 20,
-        "BW_CPU": "3443GBps",
-        "LAT_CPU": "59ns",
+        "cores": 43,
+        "BW_CPU": "2489GBps",
+        "LAT_CPU": "71ns",
         "properties": [
           {
             "ram": "18432GB"
@@ -29499,23 +29499,23 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2525MBps",
-            "write_bw": "1675MBps"
+            "read_bw": "2075MBps",
+            "write_bw": "2069MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "740MBps",
-            "write_bw": "2830MBps"
+            "read_bw": "1144MBps",
+            "write_bw": "2546MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3396MBps",
-            "write_bw": "274MBps"
+            "read_bw": "2059MBps",
+            "write_bw": "756MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1251MBps",
-            "write_bw": "844MBps"
+            "read_bw": "2489MBps",
+            "write_bw": "979MBps"
           }
         ]
       }
@@ -29829,7 +29829,7 @@
   },
   "AGLT2_site_25": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.03232763494594143",
       "file_count": "74"
@@ -29838,68 +29838,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 26,
-        "BW_CPU": "2312GBps",
-        "LAT_CPU": "61ns",
+        "cores": 22,
+        "BW_CPU": "3264GBps",
+        "LAT_CPU": "98ns",
         "properties": [
           {
-            "ram": "12288GB"
+            "ram": "6144GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1649MBps",
-            "write_bw": "630MBps"
+            "read_bw": "3333MBps",
+            "write_bw": "769MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2587MBps",
-            "write_bw": "1513MBps"
+            "read_bw": "2142MBps",
+            "write_bw": "1684MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3288MBps",
-            "write_bw": "321MBps"
+            "read_bw": "1075MBps",
+            "write_bw": "1446MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1427MBps",
-            "write_bw": "264MBps"
+            "read_bw": "820MBps",
+            "write_bw": "2597MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 44,
-        "BW_CPU": "2342GBps",
-        "LAT_CPU": "67ns",
+        "cores": 33,
+        "BW_CPU": "3730GBps",
+        "LAT_CPU": "70ns",
         "properties": [
           {
-            "ram": "4096GB"
+            "ram": "9216GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2038MBps",
-            "write_bw": "1780MBps"
+            "read_bw": "1208MBps",
+            "write_bw": "892MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2705MBps",
-            "write_bw": "2113MBps"
+            "read_bw": "2393MBps",
+            "write_bw": "1722MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "976MBps",
-            "write_bw": "287MBps"
+            "read_bw": "1867MBps",
+            "write_bw": "1595MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "642MBps",
-            "write_bw": "2094MBps"
+            "read_bw": "2101MBps",
+            "write_bw": "982MBps"
           }
         ]
       }
@@ -30205,7 +30205,7 @@
   },
   "AGLT2_site_26": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.034569900551556315",
       "file_count": "71"
@@ -30214,68 +30214,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 47,
-        "BW_CPU": "3939GBps",
-        "LAT_CPU": "90ns",
+        "cores": 42,
+        "BW_CPU": "1915GBps",
+        "LAT_CPU": "72ns",
         "properties": [
           {
-            "ram": "10240GB"
+            "ram": "1024GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1290MBps",
-            "write_bw": "322MBps"
+            "read_bw": "2127MBps",
+            "write_bw": "1897MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1644MBps",
-            "write_bw": "201MBps"
+            "read_bw": "2062MBps",
+            "write_bw": "2069MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3319MBps",
-            "write_bw": "930MBps"
+            "read_bw": "2278MBps",
+            "write_bw": "1360MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "997MBps",
-            "write_bw": "1286MBps"
+            "read_bw": "2397MBps",
+            "write_bw": "610MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 36,
-        "BW_CPU": "2059GBps",
-        "LAT_CPU": "58ns",
+        "cores": 30,
+        "BW_CPU": "1692GBps",
+        "LAT_CPU": "53ns",
         "properties": [
           {
-            "ram": "9216GB"
+            "ram": "13312GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3331MBps",
-            "write_bw": "1676MBps"
+            "read_bw": "991MBps",
+            "write_bw": "1772MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1127MBps",
-            "write_bw": "1469MBps"
+            "read_bw": "3081MBps",
+            "write_bw": "2818MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1028MBps",
-            "write_bw": "2418MBps"
+            "read_bw": "898MBps",
+            "write_bw": "1062MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1522MBps",
-            "write_bw": "2394MBps"
+            "read_bw": "2781MBps",
+            "write_bw": "1253MBps"
           }
         ]
       }
@@ -30569,7 +30569,7 @@
   },
   "AGLT2_site_27": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.03196257051982477",
       "file_count": "68"
@@ -30578,68 +30578,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 45,
-        "BW_CPU": "2612GBps",
-        "LAT_CPU": "71ns",
+        "cores": 25,
+        "BW_CPU": "2641GBps",
+        "LAT_CPU": "78ns",
         "properties": [
           {
-            "ram": "1024GB"
+            "ram": "15360GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "681MBps",
-            "write_bw": "228MBps"
+            "read_bw": "754MBps",
+            "write_bw": "2948MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1153MBps",
-            "write_bw": "1835MBps"
+            "read_bw": "2542MBps",
+            "write_bw": "1020MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1362MBps",
-            "write_bw": "2559MBps"
+            "read_bw": "2097MBps",
+            "write_bw": "239MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "970MBps",
-            "write_bw": "1482MBps"
+            "read_bw": "3107MBps",
+            "write_bw": "2567MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 36,
-        "BW_CPU": "3134GBps",
-        "LAT_CPU": "62ns",
+        "cores": 27,
+        "BW_CPU": "2980GBps",
+        "LAT_CPU": "85ns",
         "properties": [
           {
-            "ram": "18432GB"
+            "ram": "10240GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "3321MBps",
-            "write_bw": "893MBps"
+            "read_bw": "1681MBps",
+            "write_bw": "1813MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1511MBps",
-            "write_bw": "2705MBps"
+            "read_bw": "812MBps",
+            "write_bw": "1748MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1127MBps",
-            "write_bw": "1251MBps"
+            "read_bw": "761MBps",
+            "write_bw": "926MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2919MBps",
-            "write_bw": "691MBps"
+            "read_bw": "3408MBps",
+            "write_bw": "1452MBps"
           }
         ]
       }
@@ -30921,7 +30921,7 @@
   },
   "AGLT2_site_28": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.030159922997700792",
       "file_count": "66"
@@ -30930,9 +30930,9 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 23,
-        "BW_CPU": "2191GBps",
-        "LAT_CPU": "64ns",
+        "cores": 48,
+        "BW_CPU": "1733GBps",
+        "LAT_CPU": "56ns",
         "properties": [
           {
             "ram": "14336GB"
@@ -30941,57 +30941,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2607MBps",
-            "write_bw": "672MBps"
+            "read_bw": "3442MBps",
+            "write_bw": "243MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3032MBps",
-            "write_bw": "378MBps"
+            "read_bw": "3161MBps",
+            "write_bw": "1594MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1879MBps",
-            "write_bw": "1222MBps"
+            "read_bw": "2258MBps",
+            "write_bw": "578MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "830MBps",
-            "write_bw": "704MBps"
+            "read_bw": "1831MBps",
+            "write_bw": "2378MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 29,
-        "BW_CPU": "3234GBps",
-        "LAT_CPU": "92ns",
+        "cores": 24,
+        "BW_CPU": "3736GBps",
+        "LAT_CPU": "80ns",
         "properties": [
           {
-            "ram": "12288GB"
+            "ram": "13312GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "2020MBps",
-            "write_bw": "1554MBps"
+            "read_bw": "3247MBps",
+            "write_bw": "1136MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2946MBps",
-            "write_bw": "2430MBps"
+            "read_bw": "1601MBps",
+            "write_bw": "1030MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1305MBps",
-            "write_bw": "2369MBps"
+            "read_bw": "2609MBps",
+            "write_bw": "2299MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "2440MBps",
-            "write_bw": "749MBps"
+            "read_bw": "677MBps",
+            "write_bw": "1347MBps"
           }
         ]
       }
@@ -31265,7 +31265,7 @@
   },
   "AGLT2_site_29": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.028590647508512347",
       "file_count": "64"
@@ -31274,68 +31274,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 29,
-        "BW_CPU": "2698GBps",
-        "LAT_CPU": "76ns",
+        "cores": 48,
+        "BW_CPU": "3076GBps",
+        "LAT_CPU": "98ns",
         "properties": [
           {
-            "ram": "1024GB"
+            "ram": "5120GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1234MBps",
-            "write_bw": "1966MBps"
+            "read_bw": "2851MBps",
+            "write_bw": "2866MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "2016MBps",
-            "write_bw": "2867MBps"
+            "read_bw": "3010MBps",
+            "write_bw": "1446MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1743MBps",
-            "write_bw": "1266MBps"
+            "read_bw": "3356MBps",
+            "write_bw": "1828MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3037MBps",
-            "write_bw": "1644MBps"
+            "read_bw": "3271MBps",
+            "write_bw": "2198MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 49,
-        "BW_CPU": "2255GBps",
-        "LAT_CPU": "65ns",
+        "cores": 34,
+        "BW_CPU": "3839GBps",
+        "LAT_CPU": "51ns",
         "properties": [
           {
-            "ram": "14336GB"
+            "ram": "6144GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1484MBps",
-            "write_bw": "2540MBps"
+            "read_bw": "2119MBps",
+            "write_bw": "2390MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1374MBps",
-            "write_bw": "2122MBps"
+            "read_bw": "1042MBps",
+            "write_bw": "1894MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "515MBps",
-            "write_bw": "678MBps"
+            "read_bw": "1440MBps",
+            "write_bw": "1049MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "1835MBps",
-            "write_bw": "2802MBps"
+            "read_bw": "2896MBps",
+            "write_bw": "1457MBps"
           }
         ]
       }
@@ -31601,7 +31601,7 @@
   },
   "AGLT2_site_30": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.02832470884168001",
       "file_count": "62"
@@ -31610,9 +31610,9 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 22,
-        "BW_CPU": "3698GBps",
-        "LAT_CPU": "85ns",
+        "cores": 43,
+        "BW_CPU": "2709GBps",
+        "LAT_CPU": "86ns",
         "properties": [
           {
             "ram": "12288GB"
@@ -31621,57 +31621,57 @@
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "865MBps",
-            "write_bw": "611MBps"
+            "read_bw": "1848MBps",
+            "write_bw": "887MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1048MBps",
-            "write_bw": "796MBps"
+            "read_bw": "535MBps",
+            "write_bw": "2740MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1996MBps",
-            "write_bw": "1595MBps"
+            "read_bw": "2225MBps",
+            "write_bw": "2943MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "3143MBps",
-            "write_bw": "400MBps"
+            "read_bw": "2274MBps",
+            "write_bw": "2035MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 48,
-        "BW_CPU": "1811GBps",
-        "LAT_CPU": "97ns",
+        "cores": 33,
+        "BW_CPU": "1814GBps",
+        "LAT_CPU": "66ns",
         "properties": [
           {
-            "ram": "7168GB"
+            "ram": "17408GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1771MBps",
-            "write_bw": "287MBps"
+            "read_bw": "533MBps",
+            "write_bw": "512MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1634MBps",
-            "write_bw": "2730MBps"
+            "read_bw": "3113MBps",
+            "write_bw": "1478MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "2511MBps",
-            "write_bw": "2272MBps"
+            "read_bw": "2529MBps",
+            "write_bw": "1297MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "557MBps",
-            "write_bw": "2423MBps"
+            "read_bw": "1287MBps",
+            "write_bw": "569MBps"
           }
         ]
       }
@@ -31929,7 +31929,7 @@
   },
   "AGLT2_site_31": {
     "SITE_PROPERTIES": {
-      "gflops": "28407840",
+      "GFLOPS": "28407840",
       "storage_capacity_bytes": "2534241158037",
       "storage_utilization_ratio": "0.024127460428178905",
       "file_count": "60"
@@ -31938,68 +31938,68 @@
       {
         "units": 888,
         "speed": 30000000.0,
-        "cores": 37,
-        "BW_CPU": "1697GBps",
-        "LAT_CPU": "76ns",
+        "cores": 25,
+        "BW_CPU": "2324GBps",
+        "LAT_CPU": "74ns",
         "properties": [
           {
-            "ram": "4096GB"
+            "ram": "1024GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1508MBps",
-            "write_bw": "436MBps"
+            "read_bw": "3230MBps",
+            "write_bw": "2708MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "1235MBps",
-            "write_bw": "1769MBps"
+            "read_bw": "2452MBps",
+            "write_bw": "1816MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "1509MBps",
-            "write_bw": "2113MBps"
+            "read_bw": "2004MBps",
+            "write_bw": "2959MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "703MBps",
-            "write_bw": "2154MBps"
+            "read_bw": "3149MBps",
+            "write_bw": "876MBps"
           }
         ]
       },
       {
         "units": 887,
         "speed": 20000000.0,
-        "cores": 31,
-        "BW_CPU": "2696GBps",
-        "LAT_CPU": "54ns",
+        "cores": 30,
+        "BW_CPU": "2681GBps",
+        "LAT_CPU": "62ns",
         "properties": [
           {
-            "ram": "14336GB"
+            "ram": "6144GB"
           }
         ],
         "disks": [
           {
             "name": "AGLT2_CALIBDISK",
-            "read_bw": "1371MBps",
-            "write_bw": "463MBps"
+            "read_bw": "2088MBps",
+            "write_bw": "1407MBps"
           },
           {
             "name": "AGLT2_DATADISK",
-            "read_bw": "3326MBps",
-            "write_bw": "690MBps"
+            "read_bw": "950MBps",
+            "write_bw": "1699MBps"
           },
           {
             "name": "AGLT2_LOCALGROUPDISK",
-            "read_bw": "3040MBps",
-            "write_bw": "1494MBps"
+            "read_bw": "1228MBps",
+            "write_bw": "2972MBps"
           },
           {
             "name": "AGLT2_SCRATCHDISK",
-            "read_bw": "567MBps",
-            "write_bw": "1761MBps"
+            "read_bw": "3469MBps",
+            "write_bw": "1071MBps"
           }
         ]
       }
