@@ -16,12 +16,12 @@ public:
     virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
     virtual void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me) final override;
     virtual void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me) final override;
-    virtual void onFileTransferStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site) final override;
-    virtual void onFileTransferEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site) final override;
-    virtual void onFileReadStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io) final override;
-    virtual void onFileReadEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io) final override;
-    virtual void onFileWriteStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io) final override;
-    virtual void onFileWriteEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileTransferStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site) final override;
+    virtual void onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site) final override;
+    virtual void onFileReadStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileReadEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileWriteStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
 
 private:
     std::unique_ptr<SIMPLE_DISPATCHER> sd = std::make_unique<SIMPLE_DISPATCHER>();
@@ -74,32 +74,32 @@ void SimpleDispatcherPlugin::onJobTransferEnd(Job* job, simgrid::s4u::Mess const
    ou->onJobTransferEnd(job,me);
 }
 
-void SimpleDispatcherPlugin::onFileTransferStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site)
+void SimpleDispatcherPlugin::onFileTransferStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site)
 {
    ou->onFileTransferStart(job,filename, filesize, co,src_site,dst_site);
 }
 
-void SimpleDispatcherPlugin::onFileTransferEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site)
+void SimpleDispatcherPlugin::onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site)
 {
    ou->onFileTransferEnd(job,filename, filesize, co,src_site,dst_site);
 }
 
-void SimpleDispatcherPlugin::onFileReadStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io)
+void SimpleDispatcherPlugin::onFileReadStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
 {
    ou->onFileReadStart(job,filename, filesize, io);
 }
 
-void SimpleDispatcherPlugin::onFileReadEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io)
+void SimpleDispatcherPlugin::onFileReadEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
 {
    ou->onFileReadEnd(job,filename, filesize, io);
 }
 
-void SimpleDispatcherPlugin::onFileWriteStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io)
+void SimpleDispatcherPlugin::onFileWriteStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
 {
    ou->onFileWriteStart(job,filename, filesize, io);
 }
 
-void SimpleDispatcherPlugin::onFileWriteEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io)
+void SimpleDispatcherPlugin::onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
 {
    ou->onFileWriteEnd(job,filename, filesize, io);
 }

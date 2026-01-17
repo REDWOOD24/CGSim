@@ -4,17 +4,17 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j, std::unique_ptr<Dispa
 {
     auto host = sg4::Host::by_name(j->comp_host);
     sg4::ExecPtr exec_activity = sg4::Exec::init()
-        ->set_flops_amount(j->flops/(1.0*j->core_count))
+        ->set_flops_amount((1.0*j->flops)/(1.0*j->cores))
         ->set_host(host)
         ->set_name("Exec_Job_" + std::to_string(j->jobid) + "_on_" + host->get_name());
 
     exec_activity->on_this_start_cb([j, &dispatcher](simgrid::s4u::Exec const& ex) {
+        j->file_transfer_queue_time = sg4::Engine::get_clock() - j->resource_waiting_queue_time - j->total_io_read_time;
         j->status = "running";
         dispatcher->onJobExecutionStart(j,ex);
     });
 
     exec_activity->on_this_completion_cb([j, &dispatcher, host](simgrid::s4u::Exec const& ex) {
-        j->EXEC_time_taken += ex.get_finish_time() - ex.get_start_time();
         j->status = "finished";
         host->extension<HostExtensions>()->onJobFinish(j);
         dispatcher->onJobExecutionEnd(j,ex);
@@ -34,9 +34,7 @@ sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename, std::un
         });
 
     read_activity->on_this_completion_cb([j,filename,size,&dispatcher](simgrid::s4u::Io const& io) {
-            j->IO_READ_time_taken += io.get_finish_time() - io.get_start_time();
-            j->IO_READ_size_performed += io.get_performed_ioops();
-            j->files_read += 1;
+            j->total_io_read_time += (io.get_finish_time() - io.get_start_time());
             dispatcher->onFileReadEnd(j,filename,size,io);
             });
 
@@ -53,9 +51,7 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
         });
 
     write_activity->on_this_completion_cb([j,filename,size,&dispatcher](simgrid::s4u::Io const& io) {
-           j->IO_WRITE_time_taken += io.get_finish_time() - io.get_start_time();
-           j->IO_WRITE_size_performed += io.get_performed_ioops();
-           j->files_written += 1;
+            j->total_io_write_time += (io.get_finish_time() - io.get_start_time());
             dispatcher->onFileWriteEnd(j,filename,size,io);
        });
 

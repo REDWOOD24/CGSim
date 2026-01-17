@@ -47,22 +47,22 @@ public:
   virtual void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me){}
 
   // Virtual function can be implemented when a file transfer starts
-  virtual void onFileTransferStart(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
+  virtual void onFileTransferStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
   // Virtual function can be implemented when a file transfer ends
-  virtual void onFileTransferEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
+  virtual void onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
   // Virtual function can be implemented when a file read starts
-  virtual void onFileReadStart(Job* job,const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
+  virtual void onFileReadStart(Job* job,const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
   // Virtual function can be implemented when a file read ends
-  virtual void onFileReadEnd(Job* job,const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
+  virtual void onFileReadEnd(Job* job,const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
   // Virtual function can be implemented when a file write starts
-  virtual void onFileWriteStart(Job* job,const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
+  virtual void onFileWriteStart(Job* job,const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
   // Virtual function can be implemented when a file write ends
-  virtual void onFileWriteEnd(Job* job, const std::string& filename, const long long filesize, simgrid::s4u::Io const& io){}
+  virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
 };
 

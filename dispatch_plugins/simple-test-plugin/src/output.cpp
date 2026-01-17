@@ -152,7 +152,10 @@ void OUTPUT::onJobExecutionEnd(Job* job, sg4::Exec const& ex)
         {"grid_cpu_util", calculate_grid_cpu_util()},
         {"duration", ex.get_finish_time() - ex.get_start_time()},
         {"retries", job->retries},
-        {"queue_time", ex.get_start_time()}
+        {"total_io_read_time", job->total_io_read_time},
+        {"file_transfer_queue_time", job->file_transfer_queue_time},
+        {"resource_waiting_queue_time", job->resource_waiting_queue_time},
+        {"total_queue_time", job->file_transfer_queue_time+job->resource_waiting_queue_time},
     };
 
     insert_event("JobExecution", "Finished",
@@ -164,7 +167,7 @@ void OUTPUT::onJobExecutionEnd(Job* job, sg4::Exec const& ex)
 
 void OUTPUT::onFileTransferStart(Job* job,
                                  const std::string& filename,
-                                 const long long filesize,
+                                 const unsigned long long filesize,
                                  sg4::Comm const& co,
                                  const std::string& src_site,
                                  const std::string& dst_site)
@@ -192,7 +195,7 @@ void OUTPUT::onFileTransferStart(Job* job,
 
 void OUTPUT::onFileTransferEnd(Job* job,
                                const std::string& filename,
-                               const long long filesize,
+                               const unsigned long long filesize,
                                sg4::Comm const& co,
                                const std::string& src_site,
                                const std::string& dst_site)
@@ -221,7 +224,7 @@ void OUTPUT::onFileTransferEnd(Job* job,
 
 void OUTPUT::onFileReadStart(Job* job,
                             const std::string& filename,
-                            const long long filesize,
+                            const unsigned long long filesize,
                             sg4::Io const& io)
 {
     json payload = {
@@ -242,7 +245,7 @@ void OUTPUT::onFileReadStart(Job* job,
 
 void OUTPUT::onFileReadEnd(Job* job,
                            const std::string& filename,
-                           const long long filesize,
+                           const unsigned long long filesize,
                            sg4::Io const& io)
 {
     json payload = {
@@ -264,7 +267,7 @@ void OUTPUT::onFileReadEnd(Job* job,
 
 void OUTPUT::onFileWriteStart(Job* job,
                              const std::string& filename,
-                             const long long filesize,
+                             const unsigned long long filesize,
                              sg4::Io const& io)
 {
     json payload = {
@@ -287,7 +290,7 @@ void OUTPUT::onFileWriteStart(Job* job,
 
 void OUTPUT::onFileWriteEnd(Job* job,
                            const std::string& filename,
-                           const long long filesize,
+                           const unsigned long long filesize,
                            sg4::Io const& io)
 {
     json payload = {

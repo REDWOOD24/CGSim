@@ -33,8 +33,9 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
       sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
       sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
       sg4::MessPtr transfer = mqueue->put_async(job)->set_name("Comm_send_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
-      transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
-      transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferEnd(job, me);});
+      transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
+      transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me)
+        {job->resource_waiting_queue_time = sg4::Engine::get_clock(); dispatcher->onJobTransferEnd(job, me);});
       pending_activities.push(transfer);
     }
     else if (job->status == "pending") pending_jobs.push_back(job);
@@ -56,12 +57,13 @@ void JOB_EXECUTOR::start_server(JobQueue jobs)
 
       if (job->status == "assigned")
       {
-        sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
         std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << retry_counts[job] << " tries" <<std::endl;
+        sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
         sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
         sg4::MessPtr transfer = mqueue->put_async(job)->set_name("Comm_send_Job_" + job->id + "_to_" + job->comp_host+"_from_JOB-SERVER");
-        transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
-        transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferEnd(job, me);});
+        transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
+        transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me)
+          {job->resource_waiting_queue_time = sg4::Engine::get_clock(); dispatcher->onJobTransferEnd(job, me);});
         pending_activities.push(transfer);
         it = pending_jobs.erase(it);
       }

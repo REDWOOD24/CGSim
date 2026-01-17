@@ -82,26 +82,26 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
 
             // Safely get each column, providing defaults if missing
             job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
-            job->creation_time         = getColumn(row, column_map, "creationtime", "");
-            job->job_status            = getColumn(row, column_map, "jobstatus", "");
-            job->job_name              = getColumn(row, column_map, "jobname", "");
+            //job->creation_time         = getColumn(row, column_map, "creationtime", "");
+            //job->job_status            = getColumn(row, column_map, "jobstatus", "");
+            //job->job_name              = getColumn(row, column_map, "jobname", "");
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
             job->comp_site             = "AGLT2_site_"+getColumn(row, column_map, "computingsite", "");
-            job->destination_dataset_name = getColumn(row, column_map, "destinationdblock", "");
-            job->destination_SE        = getColumn(row, column_map, "destinationse", "");
-            job->source_site           = getColumn(row, column_map, "sourcesite", "");
-            job->transfer_type         = getColumn(row, column_map, "transfertype", "");
-            job->core_count            = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
+            //job->destination_dataset_name = getColumn(row, column_map, "destinationdblock", "");
+            //job->destination_SE        = getColumn(row, column_map, "destinationse", "");
+            //job->source_site           = getColumn(row, column_map, "sourcesite", "");
+            //job->transfer_type         = getColumn(row, column_map, "transfertype", "");
+            //job->core_count            = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
             job->cores                 = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
-            job->no_of_inp_files       = std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));
-            job->inp_file_bytes        = std::stod(getColumn(row, column_map, "inputfilebytes", "0"));
-            job->no_of_out_files       = std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));
-            job->out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
-            job->pilot_error_code      = getColumn(row, column_map, "piloterrorcode", "");
-            job->exe_error_code        = getColumn(row, column_map, "exeerrorcode", "");
-            job->ddm_error_code        = getColumn(row, column_map, "ddmerrorcode", "");
-            job->dispatcher_error_code = getColumn(row, column_map, "jobdispatchererrorcode", "");
-            job->taskbuffer_error_code = getColumn(row, column_map, "taskbuffererrorcode", "");
+            //job->no_of_inp_files       = std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));
+            //job->inp_file_bytes        = std::stod(getColumn(row, column_map, "inputfilebytes", "0"));
+            //job->no_of_out_files       = std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));
+            //job->out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
+            //job->pilot_error_code      = getColumn(row, column_map, "piloterrorcode", "");
+            //job->exe_error_code        = getColumn(row, column_map, "exeerrorcode", "");
+            //job->ddm_error_code        = getColumn(row, column_map, "ddmerrorcode", "");
+            //job->dispatcher_error_code = getColumn(row, column_map, "jobdispatchererrorcode", "");
+            //job->taskbuffer_error_code = getColumn(row, column_map, "taskbuffererrorcode", "");
             job->status                = "created";
             job->retries                = 0;
 
@@ -125,9 +125,12 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
                 }
             }
 
+            double no_of_out_files       = std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));
+            double out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
+
             // ---- Generate output files ----
-            long long size_per_out_file = job->no_of_out_files > 0 ? job->out_file_bytes / job->no_of_out_files : 0;
-            for (int f = 1; f <= job->no_of_out_files; ++f) {
+            long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
+            for (int f = 1; f <= no_of_out_files; ++f) {
                 std::string filename = "user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
                 job->output_files[filename] = size_per_out_file;
             }
