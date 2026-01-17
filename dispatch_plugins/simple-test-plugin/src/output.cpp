@@ -52,12 +52,10 @@ void OUTPUT::insert_event(
     std::string sql_insert =
         "INSERT INTO EVENTS (EVENT, STATE, JOB_ID, STATUS, TIME, METADATA) VALUES (?, ?, ?, ?, ?, ?)";
 
-    // Prepare the statement
     int rc = sqlite3_prepare_v2(db, sql_insert.c_str(), -1, &stmt, nullptr);
     if (rc != SQLITE_OK)
         throw std::runtime_error(std::string("SQLite prepare failed: ") + sqlite3_errmsg(db));
 
-    // Bind parameters (1-based indexing)
     sqlite3_bind_text(stmt, 1, event.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, state.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, job_id.c_str(), -1, SQLITE_TRANSIENT);
@@ -65,14 +63,12 @@ void OUTPUT::insert_event(
     sqlite3_bind_double(stmt, 5, time);
     sqlite3_bind_text(stmt, 6, payload.c_str(), -1, SQLITE_TRANSIENT);
 
-    // Execute the statement
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
-        sqlite3_finalize(stmt);  // Ensure cleanup before throwing
+        sqlite3_finalize(stmt);
         throw std::runtime_error(std::string("SQLite step failed: ") + sqlite3_errmsg(db));
     }
 
-    // Finalize the statement
     sqlite3_finalize(stmt);
 }
 
