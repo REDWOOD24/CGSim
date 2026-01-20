@@ -9,95 +9,57 @@
 #include <chrono>
 #include <list>
 #include <simgrid/s4u.hpp>
-#include "logger.h"
 #include "parser.h"
 #include "platform.h"
-#include "job_manager.h"
 #include "version.h"
+#include "logger.h"
 #include "job_executor.h"
 
 int main(int argc, char** argv)
 {
-  //simatlas_host_extension_init();
-    logger::init();  // Must be called before any logging
-    
+    //Initialize Logging
+    CGSim::logger::init();
     const std::string usage = std::string("usage: ") + argv[0] + " -c config.json";
-    
-    if (argc != 3) {
-        LOG_ERROR("Invalid number of arguments.\n{}", usage);
-        return -1;
-    }
 
-    if (std::string(argv[1]) != "-c") {
-        LOG_ERROR("Missing -c option.\n{}", usage);
-        return -1;
-    }
-    
-    // Parse Configuration File
+    //Read in Configuration
+    if (argc != 3 || std::string(argv[1]) != "-c") {throw std::runtime_error(usage);}
     const std::string configFile = argv[2];
-    LOG_INFO("Reading in configuration from: {}", configFile);
+    CG_SIM_LOG_INFO("Reading in configuration from: {}", configFile);
 
     std::ifstream in(configFile);
-    if (!in.is_open()) {
-        LOG_CRITICAL("Failed to open config file: {}", configFile);
-        return -1;
-    }
-
+    if (!in.is_open()) { throw std::runtime_error("could not open configuration file");}
     auto j = json::parse(in);
 
+    //Configuration Elements
     const std::string gridName                     = j["Grid_Name"];
     const std::string siteInfoFile                 = j["Sites_Information"];
     const std::string siteConnInfoFile             = j["Sites_Connection_Information"];
     const std::string dispatcherPath               = j["Dispatcher_Plugin"];
-    const std::string outputFile                   = j["Output_DB"];
-    const int         num_of_jobs                  = j["Num_of_Jobs"];
-    const std::string jobFile                      = j["Input_Job_CSV"];
-    const std::list<std::string> filteredSiteList  = j["Sites"].get<std::list<std::string>>();
+    const std::set<std::string> filteredSiteList   = j["Limited_Sites"].get<std::set<std::string>>();
 
-    // Calibration Parameter these will be moved to site info later
-    // const int cpu_min = j["cpu_min_max"][0];
-    // const int cpu_max = j["cpu_min_max"][1];
-    // const int speed_precision = j["cpu_speed_precision"]; 
-    // const std::vector<double> cpuSpeeds = j["cpu_speeds"].get<std::vector<double>>();
-
-    std::unique_ptr<Parser> parser = std::make_unique<Parser>(siteConnInfoFile, siteInfoFile, jobFile, filteredSiteList);
-    // auto siteNameCPUInfo = parser->getSiteNameCPUInfo(cpu_min,cpu_max,speed_precision);
-    auto siteNameCPUInfo = parser->getSiteNameCPUInfo();
-    auto siteConnInfo    = parser->getSiteConnInfo();
-    auto siteNameGLOPS   = parser->getSiteNameGFLOPS();
+    //Parse Input
+    std::unique_ptr<Parser> parser = std::make_unique<Parser>(siteConnInfoFile, siteInfoFile, filteredSiteList);
+    auto sitesInfo     = parser->getSiteInfo();
+    auto siteConnInfo  = parser->getSiteConnInfo();
 
     // Initialize SimGrid
     sg4::Engine e(&argc, argv);
 
     // Create the platform
-    std::unique_ptr<Platform> pf = std::make_unique<Platform>();
-    auto* platform = pf->create_platform(gridName);
-    pf->initialize_simgrid_plugins();
-   
-    // Create sites and connections
-    auto sites = pf->create_sites(platform, filteredSiteList, siteNameCPUInfo, siteNameGLOPS);
-    pf->initialize_site_connections(platform, siteConnInfo, sites);
-    pf->initialize_job_server(platform, siteNameCPUInfo, sites);
-    
-    // Create and set up executor
-    std::unique_ptr<JOB_EXECUTOR> executor = std::make_unique<JOB_EXECUTOR>();
-    executor->set_output(outputFile);
-    executor->set_dispatcher(dispatcherPath, platform);
-    executor->start_receivers();
+    std::unique_ptr<Platform> pf = std::make_unique<Platform>(gridName, sitesInfo, siteConnInfo);
+    auto* platform = pf->get_simgrid_platform();
+    for (auto& [key, value] : j["Custom_Parameters"].items()) {platform->set_property(key,value.get<std::string>());}
 
-    // Create jobs
-    std::unique_ptr<JOB_MANAGER> jm = std::make_unique<JOB_MANAGER>();
-    jm->set_parser(std::move(parser));
-    JobQueue jobs = jm->get_jobs(num_of_jobs);
-    LOG_INFO("Jobs to be executed: {}", jobs.size());
-    
-    // Execute jobs
-    executor->start_job_execution(jobs);
-    
-    executor->saveJobs(jobs);
+    PluginLoader<DispatcherPlugin> plugin_loader;
+    auto dispatcher = plugin_loader.load(dispatcherPath);
+
+    // Create and set up executor
+    JOB_EXECUTOR::set_dispatcher(dispatcher);
+    JOB_EXECUTOR::start_receivers();
+    JOB_EXECUTOR::start_job_execution();
 
     // Print version
-    LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
+    CG_SIM_LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
 
     return 0;
 }

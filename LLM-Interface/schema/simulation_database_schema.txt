@@ -1,0 +1,56 @@
+CREATE TABLE EVENTS (
+    _ID INTEGER PRIMARY KEY AUTOINCREMENT,   -- Unique internal event ID
+    EVENT TEXT NOT NULL,                     -- Event type (e.g., JobAllocation)
+    STATE TEXT NOT NULL,                     -- Event state (Start or Finished)
+    STATUS TEXT NOT NULL,                    -- Job status at the event (e.g., pending, running)
+    JOB_ID TEXT NOT NULL,                    -- Unique identifier of the job
+    TIME FLOAT NOT NULL,                     -- Simulation clock time when event started
+    METADATA TEXT                            -- JSON object with event-specific keys
+);
+
+COLUMNS = {"_ID", "EVENT", "STATE", "STATUS", "JOB_ID", "TIME", "METADATA"}
+
+EVENT_SCHEMA = {
+    "JobAllocation": {
+        "AllocationStart": ["status", "site", "host"],
+        "AllocationFinished": [
+            "status", "site", "host",
+            "site_storage_util", "grid_storage_util",
+            "site_cpu_util", "grid_cpu_util"
+        ]
+    },
+    "JobExecution": {
+        "Start": [
+            "flops", "cores", "speed", "site", "host", "start_time",
+            "site_cpu_util", "grid_cpu_util"
+        ],
+        "Finished": [
+            "flops", "cores", "speed", "cost", "site", "host",
+            "duration", "retries", "queue_time",
+            "site_cpu_util", "grid_cpu_util"
+        ]
+    },
+    "FileTransfer": {
+        "Start": [
+            "file", "size", "source_site", "destination_site",
+            "bandwidth", "latency", "link_load",
+            "site_storage_util", "grid_storage_util"
+        ],
+        "Finished": [
+            "file", "size", "source_site", "destination_site",
+            "duration", "bandwidth", "latency",
+            "link_load", "site_storage_util", "grid_storage_util"
+        ]
+    },
+    "FileRead": {
+        "Start": ["file", "size", "site", "host", "disk", "disk_read_bw"],
+        "Finished": ["file", "size", "site", "host", "disk",
+                     "duration", "disk_read_bw"]
+    },
+    "FileWrite": {
+        "Start": ["file", "size", "site", "host", "disk", "disk_write_bw",
+                  "site_storage_util", "grid_storage_util"],
+        "Finished": ["file", "size", "site", "host", "disk", "duration",
+                     "disk_write_bw", "site_storage_util", "grid_storage_util"]
+    }
+}

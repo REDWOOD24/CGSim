@@ -1,0 +1,97 @@
+JobAllocation:
+  AllocationStart:
+    site             : string, site where the job is allocated
+    host             : string, host executing or receiving the job
+  AllocationFinished :
+    site             : string, site where the job was sent for execution
+    host             : string, host executing or receiving the job
+    site_storage_util: string, fraction of storage used at the site
+    grid_storage_util: string, fraction of storage used across the grid
+    site_cpu_util    : string, CPU utilization at the site
+    grid_cpu_util    : string, CPU utilization across the grid
+
+JobExecution:
+  Start:
+    flops           : string, total floating-point operations required by the job
+    cores           : string, number of CPU cores allocated
+    speed           : string, host CPU speed in FLOPS per second
+    site            : string, site executing the job
+    host            : string, host executing the job
+    start_time      : string, simulation time when execution begins
+    site_cpu_util   : string, CPU utilization at the site at start
+    grid_cpu_util   : string, CPU utilization across the grid at start
+  Finished:
+    flops           : string, total floating-point operations performed
+    cores           : string, number of cores used
+    speed           : string, host CPU speed
+    cost            : string, cost of executing the job
+    site            : string, site executing the job
+    host            : string, host executing the job
+    duration        : string, time it took to complete the execution
+    retries         : string, number of retries for this job
+    queue_time      : string, time spent waiting before execution
+    site_cpu_util   : string, CPU utilization at finish
+    grid_cpu_util   : string, CPU utilization across the grid at finish
+
+FileTransfer:
+  Start:
+    file             : string, filename being transferred
+    size             : string, file size in bytes
+    source_site      : string, site sending the file
+    destination_site : string, site receiving the file
+    bandwidth        : string, link bandwidth in bytes/sec
+    latency          : string, network latency in seconds
+    link_load        : string, current load on the link
+    site_storage_util: string, storage utilization at the job site
+    grid_storage_util: string, storage utilization across the grid
+    direction        : string, "outgoing" if site = source, "incoming" if site = destination (can be inferred in summaries)
+  Finished:
+    file             : string, filename transferred
+    size             : string, file size in bytes
+    source_site      : string, site sending the file
+    destination_site : string, site receiving the file
+    duration         : string, time it took to complete the transfer
+    bandwidth        : string, link bandwidth
+    latency          : string, network latency
+    link_load        : string, link utilization at transfer end
+    site_storage_util: string, storage utilization at the job site
+    grid_storage_util: string, storage utilization across the grid
+    direction        : string, "outgoing" if site = source, "incoming" if site = destination (can be inferred in summaries)
+
+FileRead:
+  Start:
+    file            : string, filename being read
+    size            : string, file size in bytes
+    site            : string, site performing the read
+    host            : string, host performing the read
+    disk            : string, disk identifier
+    disk_read_bw    : string, disk read bandwidth in bytes/sec
+  Finished:
+    file            : string, filename read
+    size            : string, file size
+    site            : string, site performing the read
+    host            : string, host performing the read
+    disk            : string, disk identifier
+    duration        : string, time it took to complete the read
+    disk_read_bw    : string, disk read bandwidth
+
+FileWrite:
+  Start:
+    file             : string, filename being written
+    size             : string, file size in bytes
+    site             : string, site performing the write
+    host             : string, host performing the write
+    disk             : string, disk identifier
+    disk_write_bw    : string, disk write bandwidth in bytes/sec
+    site_storage_util: string, storage utilization at the job site
+    grid_storage_util: string, storage utilization across the grid
+  Finished:
+    file             : string, filename written
+    size             : string, file size
+    site             : string, site performing the write
+    host             : string, host performing the write
+    disk             : string, disk identifier
+    duration         : string, time it took to complete the write
+    disk_write_bw    : string, disk write bandwidth
+    site_storage_util: string, storage utilization at the job site
+    grid_storage_util: string, storage utilization across the grid

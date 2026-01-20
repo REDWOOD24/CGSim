@@ -17,7 +17,6 @@ add_library(SimpleDispatcherPlugin SHARED ${SOURCES})
 
 # Find SimGrid, SimATLAS, Boost, and FSMod
 find_package(SimGrid REQUIRED)
-find_package(FSMod REQUIRED)
 find_package(Boost REQUIRED)
 find_package(CGSim REQUIRED)
 find_package(spdlog REQUIRED)
@@ -25,7 +24,7 @@ find_package(SQLite3   REQUIRED)
 
 
 #Link libraries and Include Directories
-target_link_libraries ( SimpleDispatcherPlugin PUBLIC ${SimGrid_LIBRARY} ${Boost_LIBRARIES} ${FSMOD_LIBRARY} spdlog::spdlog CGSim::CGSim SQLite::SQLite3)
-target_include_directories( SimpleDispatcherPlugin PUBLIC ${SimGrid_INCLUDE_DIR} ${CGSim_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${FSMOD_INCLUDE_DIR})
+target_link_libraries ( SimpleDispatcherPlugin PUBLIC ${SimGrid_LIBRARY} ${Boost_LIBRARIES} spdlog::spdlog CGSim::CGSim SQLite::SQLite3)
+target_include_directories( SimpleDispatcherPlugin PUBLIC ${SimGrid_INCLUDE_DIR} ${CGSim_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
 

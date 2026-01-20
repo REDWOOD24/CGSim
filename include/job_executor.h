@@ -3,45 +3,34 @@
 
 #include "DispatcherPlugin.h"
 #include "PluginLoader.h"
-#include "job_manager.h"
 #include "actions.h"
-#include "sqliteSaver.h"
-#include "logger.h"
 #include "host_extensions.h"
+#include <chrono>
 
 class JOB_EXECUTOR
 {
 
 
 public:
-     JOB_EXECUTOR(){LOG_INFO("Initalizing Job Executor .....");};
+     JOB_EXECUTOR()= default;
     ~JOB_EXECUTOR()= default;
 
 
-    static void set_dispatcher(const std::string& dispatcherPath, sg4::NetZone* platform);
-    static void update_disk_content(const std::shared_ptr<simgrid::fsmod::FileSystem>& fs, const std::unordered_map<std::string, size_t>&  input_files, Job* j);
-    static void start_server(JobQueue jobs);
-    // static void suspend_server();
-    // static bool is_suspended();
-    static void execute_job(Job* j);
-    void        start_job_execution(JobQueue jobs);
-    static void receiver(const std::string& MQ_name);
-    static void start_receivers();
-    static void set_output(const std::string& outputFile);
-    static void saveJobs(JobQueue jobs);
-    static void attach_callbacks();
-
+    static void   set_dispatcher(std::unique_ptr<DispatcherPlugin>& d){dispatcher = std::move(d);}
+    static void   start_server(JobQueue jobs);
+    static void   execute_job(Job* j);
+    static void   start_job_execution();
+    static void   receiver(const std::string& MQ_name);
+    static void   start_receivers();
+    static void   attach_callbacks();
 
 private:
-    static   std::unique_ptr<DispatcherPlugin>    dispatcher;
-    static   std::unique_ptr<sqliteSaver>         saver;
-    static   constexpr int MAX_RETRIES            = 300;
-    static   constexpr int RETRY_INTERVAL         = 1000000000; //seconds
-    // static   constexpr bool suspended             = false;
-    // static   std::vector<Job*> pending_jobs;
+    static   std::unique_ptr<DispatcherPlugin>      dispatcher;
+    static   unsigned long MAX_RETRIES;
     static   sg4::ActivitySet pending_activities;
-    static   sg4::ActivitySet exec_activities;
-
+    static   JobQueue jobs;
+    static   std::vector<Job*> pending_jobs;
+    static   std::unordered_map<Job*, int> retry_counts;
 
 };
 

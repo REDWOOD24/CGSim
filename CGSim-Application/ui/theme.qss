@@ -1,0 +1,44 @@
+/* --- Neon Dark --- */
+
+QWidget {
+    background-color: #0d0d0d;
+    color: #f2f2f2;
+    font-family: "Segoe UI";
+    font-size: 14px;
+}
+
+QPushButton {
+    background-color: #1a1a1a;
+    border: 2px solid #00eaff;
+    border-radius: 8px;
+    padding: 8px;
+    color: #00eaff;
+}
+
+QPushButton:hover {
+    background-color: #003b46;
+}
+
+QPushButton:pressed {
+    background-color: #002f36;
+}
+
+QLineEdit {
+    background-color: #1a1a1a;
+    border: 2px solid #ff00ff;
+    border-radius: 6px;
+    padding: 6px;
+    color: #ff00ff;
+}
+
+QLabel {
+    color: #00eaff;
+}
+
+QTextBrowser {
+    background-color: #1e1e1e;
+    color: #e8e8e8;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 6px;
+}
