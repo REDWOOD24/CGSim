@@ -149,7 +149,7 @@ void JOB_EXECUTOR::start_receivers()
 
 void JOB_EXECUTOR::attach_callbacks()
 {
-  sg4::Engine::on_simulation_start_cb([](){});
+  sg4::Engine::on_simulation_start_cb([](){dispatcher->onSimulationStart();});
   sg4::Engine::on_simulation_end_cb([]() {dispatcher->onSimulationEnd();});
 }
 
