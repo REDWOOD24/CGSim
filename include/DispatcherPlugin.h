@@ -20,13 +20,18 @@ public:
   DispatcherPlugin(DispatcherPlugin&&) = delete;
   DispatcherPlugin& operator=(DispatcherPlugin&&) = delete;
 
+
+  /*------Input Module Interface------*/
+  
   //Pure virtual function must be implemented by derived classes to get the Workload
   virtual JobQueue getWorkload() = 0;
   
+  /*------Dispatch Module Interface------*/
+
   // Pure virtual function must be implemented by derived classes to assign Jobs
   virtual Job* assignJob(Job* job) = 0;
-
-  /*-------------------------------------------------------------------------------------------*/
+  
+  /*------Output Module Interface------*/
 
   // Virtual function can be implemented to execute code on simulation start
   virtual void onSimulationStart(){}

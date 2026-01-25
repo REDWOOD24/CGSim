@@ -1,21 +1,18 @@
 cmake_minimum_required(VERSION 3.12)
+#cmake_policy(SET CMP0167 NEW)
 
 message(STATUS "Cmake version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
 project(CGSim VERSION 1.1)
 
 # Disable annoying warnings
-#add_definitions(-DSPDLOG_FMT_EXTERNAL)
 add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/CMakeModules/")
-#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Find required packages
-find_package(Boost     REQUIRED)
-find_package(SimGrid   REQUIRED)
-find_package(SQLite3   REQUIRED)
-find_package(spdlog    REQUIRED)
-find_package(fmt REQUIRED)
+find_package(SimGrid REQUIRED)
+find_package(Boost REQUIRED)
+
 
 # Add json subdir
 add_subdirectory(json)
@@ -26,10 +23,7 @@ include_directories(${SimGrid_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${CMAKE_SOURCE_D
 include_directories(include/)
 
 # Source files
-file(GLOB_RECURSE SOURCE_FILES
-#        "src/*.cpp"
-        "util/*.cpp"
-)
+file(GLOB_RECURSE SOURCE_FILES "util/*.cpp")
 
 # Build the library
 add_library(CGSim SHARED ${SOURCE_FILES})
@@ -40,15 +34,10 @@ add_executable(cg-sim src/main.cpp)
 target_link_libraries(
 	CGSim
 	${SimGrid_LIBRARY}
-        ${Boost_LIBRARIES}
-        SQLite::SQLite3
-        spdlog::spdlog
-	fmt::fmt
+	Boost::boost
 )
 
-target_link_libraries(cg-sim
-    CGSim
-)
+target_link_libraries(cg-sim CGSim)
 
 # ==============================
 # Installation Configuration

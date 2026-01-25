@@ -105,9 +105,21 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
 
     read_activity->on_this_start_cb([filename,comp_sitename](simgrid::s4u::Io const& io) {
         if (!exists(filename,comp_sitename)) throw std::runtime_error("File: " +filename+
-            " does not exist on Site: "+comp_sitename+" does not exist");});
+            " does not exist on Site: "+comp_sitename);});
     return read_activity;
 }
+
+sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+
+    if(!exists(filename,src_site)) return nullptr;
+    if(exists(filename,dst_site)) return nullptr;
+    auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
+    auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication_server");
+    auto size     = FileSizes.at(filename);
+    auto transfer_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
+    transfer_activity->set_name("Transfer_File_" + filename + "_from_" + src_site + "_to_" + dst_site);
+    return transfer_activity;
+  }
 
 } 
 

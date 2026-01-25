@@ -43,10 +43,10 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         const std::string  comm_host_BW_CPU = "10000000GBps";
         const std::string  comm_host_LAT_CPU = "0ns";
         const int          comm_host_cores = 1;
-        const sg4::Link*   link = site->create_split_duplex_link("link_" + site_info.name+"_communication",
+        const sg4::Link*   link = site->create_split_duplex_link("link_" + site_info.name+"_communication_server",
             comm_host_BW_CPU)->set_latency(comm_host_LAT_CPU)->seal();
 
-        sg4::Host* comm_host = site->create_host(site_info.name+"_communication",comm_host_CPU_SPEED);
+        sg4::Host* comm_host = site->create_host(site_info.name+"_communication_server",comm_host_CPU_SPEED);
         comm_host->set_core_count(comm_host_cores);
         site->add_route(comm_host, nullptr, {{link, sg4::LinkInRoute::Direction::UP}}, true);
         site->set_gateway(comm_host->get_netpoint());
@@ -83,7 +83,7 @@ void Platform::initialize_site_connections(std::vector<SiteConnInfo>& site_conn_
 
 void Platform::initialize_simgrid_plugins()
 {
-    simatlas_host_extension_init();
+    host_extension_init();
 }
 
 void Platform::initialize_job_server()

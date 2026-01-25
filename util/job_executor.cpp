@@ -83,13 +83,13 @@ void JOB_EXECUTOR::execute_job(Job* j)
   std::vector<sg4::IoPtr>   write_activities;
 
   for (const auto& [filename,fileinfo] : j->input_files) {
-    auto size = fileinfo.first;
+    
     //Take the first location where the file is located, may want to change this behavior later
     auto filelocation = *(fileinfo.second.begin());
 
-    if (filelocation != j->comp_site) {
+    if (filelocation != j->comp_site) { //Check if in list, not first element
 
-      auto comm_activity = Actions::comm_file_async(j,filename,filelocation,j->comp_site,size,dispatcher);
+      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,dispatcher);
       auto read_activity = Actions::read_file_async(j,filename,dispatcher);
 
       comm_activity->add_successor(read_activity);
@@ -142,7 +142,7 @@ void JOB_EXECUTOR::start_receivers()
 {
   for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) {
     if (host->get_name() == "JOB-SERVER_cpu-0") continue;
-    if ((host->get_name()).find("_communication") != std::string::npos) continue;
+    if ((host->get_name()).find("_communication_server") != std::string::npos) continue;
     sg4::Actor::create(host->get_name() + "-actor", host, receiver, host->get_name() + "-MQ");
   }
 }

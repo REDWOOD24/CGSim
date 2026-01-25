@@ -58,23 +58,22 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
     return write_activity;
 }
 
-sg4::CommPtr Actions::comm_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, const unsigned long long& size, std::unique_ptr<DispatcherPlugin>& dispatcher)
+sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, std::unique_ptr<DispatcherPlugin>& dispatcher)
 {
-    auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication");
-    auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication");
-    auto comm_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
-    comm_activity->set_name("Comm_transfer_File_" + filename + "_for_Job_" + std::to_string(j->jobid)+"_from_"+src_site+"_to_"+dst_site);
 
-    comm_activity->on_this_start_cb([j,filename,size,src_site,dst_site, &dispatcher](simgrid::s4u::Comm const& co) {
-        if (!started_comms.insert(co.get_name()).second) return;
+    auto transfer_activity = CGSim::FileManager::transfer(filename,src_site,dst_site);
+    const auto size = static_cast<unsigned long long>(transfer_activity->get_remaining());
+
+    transfer_activity->on_this_start_cb([j,filename,size,src_site,dst_site, &dispatcher](simgrid::s4u::Comm const& co) {
+        if (!started_transfers.insert(co.get_name()).second) return;
         dispatcher->onFileTransferStart(j,filename,size,co,src_site,dst_site);
         });
 
-    comm_activity->on_this_completion_cb([filename,size,src_site,dst_site,j, &dispatcher](simgrid::s4u::Comm const& co) {
+    transfer_activity->on_this_completion_cb([filename,size,src_site,dst_site,j, &dispatcher](simgrid::s4u::Comm const& co) {
         CGSim::FileManager::create(filename,size,dst_site);
-        started_comms.erase(co.get_name());
+        started_transfers.erase(co.get_name());
         dispatcher->onFileTransferEnd(j,filename,size,co,src_site,dst_site);
         });
 
-    return comm_activity;
+    return transfer_activity;
 }

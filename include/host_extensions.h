@@ -30,6 +30,6 @@ private:
   std::string name;
 };
 
-void simatlas_host_extension_init();
+void host_extension_init();
 
 #endif // HOST_EXTENSIONS_H

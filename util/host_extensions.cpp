@@ -25,7 +25,7 @@ static void on_host_creation(simgrid::s4u::Host& h) {
     h.extension_set<HostExtensions>(new HostExtensions(&h));
 }
 
-void simatlas_host_extension_init() {
+void host_extension_init() {
     if (not HostExtensions::EXTENSION_ID.valid()) {
         HostExtensions::EXTENSION_ID = simgrid::s4u::Host::extension_create<HostExtensions>();
         simgrid::s4u::Host::on_creation_cb(&on_host_creation);

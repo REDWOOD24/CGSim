@@ -28,6 +28,7 @@ public:
     static void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
     static sg4::IoPtr write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
     static sg4::IoPtr read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
+    static sg4::CommPtr transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site);
     static bool exists(const std::string& filename);
     static bool exists(const std::string& filename, const std::string& sitename);
     static bool remove(const std::string& filename, const std::string& sitename);

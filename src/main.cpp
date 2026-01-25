@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     JOB_EXECUTOR::start_job_execution();
 
     // Print version
-    CG_SIM_LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
+    CG_SIM_LOG_INFO("CGSim version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
 
     return 0;
 }
