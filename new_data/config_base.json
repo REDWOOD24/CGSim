@@ -1,8 +1,25 @@
 {
     "Grid_Name": "ATLAS-GRID",
+<<<<<<< Updated upstream
     "Sites_Information": "/home/akman/CGSim/new_data/new_site_info.json",
     "Sites": [],
     "Sites_Connection_Information": "/home/akman/CGSim/new_data/new_site_conn_info.json",
     "Dispatcher_Plugin": "/home/akman/CGSim/dispatch_plugins/RL-test-plugin/build/libRL_DISPATCHER.so",
     "Num_of_Jobs": 50
+=======
+    "Sites_Information": "/home/akman/CGSim-Modular/new_data/new_site_info.json",
+    "Sites_Connection_Information": "/home/akman/CGSim-Modular/new_data/new_site_conn_info.json",
+    "Dispatcher_Plugin": "/home/akman/CGSim-Modular/dispatch_plugins/python-test-plugin/build/libPYTHON_DISPATCHER.so",
+    "Limited_Sites": [],
+    "Custom_Parameters":
+    {
+	"Num_of_Jobs": "50",
+	"jobs_file": "/home/akman/CGSim-Modular/new_data/mimic_job.csv",
+	"output_file": "/home/akman/CGSim-Modular/new_output/mimic_job.db",
+	"port": "5555",
+	"host": "127.0.0.1",
+	"SiteFeatures": "cores,cores_available,speed",
+	"JobFeatures": "cores,core_count,no_of_inp_files"
+    }
+>>>>>>> Stashed changes
 }
