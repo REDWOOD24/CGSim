@@ -5,25 +5,72 @@ A Streamlit web application for visualizing CGSim output data in real time. Live
 ## Repository Location
 This repository is located in the `CGSim_Visualization` directory of the [CGSim](https://github.com/REDWOOD24/CGSim) repository. Default configuration paths are set up for running the application from this location.
 
+## Quick Start
+
+The easiest way to install and run the visualization is using the provided scripts:
+
+```bash
+cd CGSim_Visualization
+./install_visualization.sh   # One-time setup
+./run_visualization.sh       # Run the app
+```
+
+The application will open in your default web browser (typically at `http://localhost:8501`).
+
 ## Installation
+
+### Option 1: Using the Install Script (Recommended)
+
+The `install_visualization.sh` script automates the setup process:
+
+```bash
+cd CGSim_Visualization
+./install_visualization.sh
+```
+
+This script will:
+1. Check that Python 3 and the `venv` module are installed
+2. Create a virtual environment in `.venv/`
+3. Activate the virtual environment
+4. Upgrade pip
+5. Install all dependencies from `requirements.txt`
+
+### Option 2: Manual Installation
+
+If you prefer to set up manually or use an existing environment:
 
 1. **Navigate to this directory:**
    ```bash
    cd CGSim_Visualization
    ```
 
-2. **Install Python dependencies:**
-   The app has three requirements: streamlit, pandas, and plotly. These can be installed with:
+2. **Create and activate a virtual environment (optional but recommended):**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. **Install Python dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
-   It is recommended to do this in a new (or the user's preferred) python environment.
 
 ## Running the Application
 
-From the `CGSim_Visualization` directory, run:
+### Option 1: Using the Run Script (Recommended)
 
 ```bash
+./run_visualization.sh
+```
+
+This script automatically activates the virtual environment and starts the Streamlit server.
+
+### Option 2: Manual Run
+
+If you installed manually or want more control:
+
+```bash
+source .venv/bin/activate  # If using a virtual environment
 streamlit run CGSim_Visualization.py
 ```
 
@@ -80,17 +127,21 @@ If `vis_config.json` does not exist or cannot be read, the application defaults 
 
 ```
 CGSim_Visualization/
-├── CGSim_Visualization.py # Main entry point (Overview page)
-├── requirements.txt       # Python dependencies
-├── README.md              # This file
+├── CGSim_Visualization.py   # Main entry point (Overview page)
+├── install_visualization.sh # Installation script (creates .venv)
+├── run_visualization.sh     # Run script (activates .venv and starts app)
+├── requirements.txt         # Python dependencies
+├── vis_config.json          # Saved configuration (created after first save)
+├── README.md                # This file
+├── .venv/                   # Virtual environment (created by install script)
 ├── pages/
-│   ├── 2_Site.py          # Site-level visualization
-│   ├── 3_CPU.py           # CPU-level visualization
-│   ├── 4_Failed_Jobs.py   # Failed jobs analysis
-│   └── 5_Configuration.py # Configuration page
+│   ├── 2_Site.py            # Site-level visualization
+│   ├── 3_CPU.py             # CPU-level visualization
+│   ├── 4_Failed_Jobs.py     # Failed jobs analysis
+│   └── 5_Configuration.py   # Configuration page
 └── vis_utils/
     ├── __init__.py
-    └── time_controls.py   # Shared time navigation controls
+    └── time_controls.py     # Shared time navigation controls
 ```
 
 ## Pages
