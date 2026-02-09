@@ -659,6 +659,33 @@ with metrics_container.container():
         with col3:
             st.metric("Site CPUs", site_cpus)
 
+    # Show events dataframe when paused (inside metrics container for aesthetics)
+    if not is_live_mode() and selected_timestep is not None:
+        st.write("## Events at Current Timestep")
+        filter_site_events = st.checkbox(f"Show only events for {site}", value=True, key="filter_site_events")
+        events_df = get_events_at_timestep(output_db_path, selected_timestep)
+        if not events_df.empty:
+            if filter_site_events:
+                # Filter to show only events for the current site
+                events_df = events_df[events_df['METADATA'].str.contains(f'"{site}"', na=False)]
+            if not events_df.empty:
+                # Extract CPU number from METADATA host field
+                import json
+                def extract_cpu_from_metadata(metadata_str):
+                    try:
+                        metadata = json.loads(metadata_str)
+                        host = metadata.get('host', '')
+                        return extract_cpu_number(host)
+                    except:
+                        return -1
+                events_df = events_df.copy()
+                events_df.insert(1, 'CPU', events_df['METADATA'].apply(extract_cpu_from_metadata))
+                st.dataframe(events_df, hide_index=True, width='stretch')
+            else:
+                st.info(f"No events found for {site} at timestep {selected_timestep:.4f}s")
+        else:
+            st.info(f"No events found at timestep {selected_timestep:.4f}s")
+
 # Check for pending selection from ANY previous chart widget BEFORE rendering new one
 for key in list(st.session_state.keys()):
     if key.startswith('site_chart_'):
@@ -685,22 +712,6 @@ st.session_state.site_chart_counter += 1
 
 if is_live_mode():
     status_container.success(f"Monitoring site: {site} (Live)")
-
-# Show events dataframe when paused
-if not is_live_mode() and selected_timestep is not None:
-    st.write("### Events at Current Timestep")
-    filter_site_events = st.checkbox(f"Show only events for {site}", value=True, key="filter_site_events")
-    events_df = get_events_at_timestep(output_db_path, selected_timestep)
-    if not events_df.empty:
-        if filter_site_events:
-            # Filter to show only events for the current site
-            events_df = events_df[events_df['METADATA'].str.contains(f'"{site}"', na=False)]
-        if not events_df.empty:
-            st.dataframe(events_df, hide_index=True, width='stretch')
-        else:
-            st.info(f"No events found for {site} at timestep {selected_timestep:.4f}s")
-    else:
-        st.info(f"No events found at timestep {selected_timestep:.4f}s")
 
 # Update loop with live update toggle - use flag to allow clean exit for navigation
 should_exit_loop = False
