@@ -1,6 +1,6 @@
 {
-    "output_dir": "../output",
+    "output_dir": "./example_config",
     "output_filename": "output.db",
-    "config_dir": "../config-files",
-    "selected_config_file": "site_info.json"
+    "config_dir": "./example_config",
+    "selected_config_file": "mimic_new_site_info.json"
 }
