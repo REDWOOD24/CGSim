@@ -46,44 +46,35 @@ def save_config():
         return False
 
 
-st.write("# CGSim Configuration")
-st.write("Configure the paths for your simulation output database and site configuration files.")
-
 # Load config from file on first run of the entire app
+# This must happen BEFORE any widgets are rendered
 if "config_loaded" not in st.session_state:
     saved_config = load_config()
     st.session_state.output_dir = saved_config.get("output_dir", DEFAULT_CONFIG["output_dir"])
     st.session_state.output_filename = saved_config.get("output_filename", DEFAULT_CONFIG["output_filename"])
     st.session_state.config_dir = saved_config.get("config_dir", DEFAULT_CONFIG["config_dir"])
     st.session_state.selected_config_file = saved_config.get("selected_config_file", DEFAULT_CONFIG["selected_config_file"])
-    # Also set site_info_json_path from loaded config
-    st.session_state.site_info_json_path = os.path.join(
-        st.session_state.config_dir,
-        st.session_state.selected_config_file
-    )
+    st.session_state.config_files_list = []
     st.session_state.config_loaded = True
 
-# Initialize session state with defaults if not already set
-if "output_dir" not in st.session_state:
+# Ensure values are never empty - reset to defaults if empty
+if not st.session_state.get("output_dir"):
     st.session_state.output_dir = DEFAULT_CONFIG["output_dir"]
-
-if "output_filename" not in st.session_state:
+if not st.session_state.get("output_filename"):
     st.session_state.output_filename = DEFAULT_CONFIG["output_filename"]
-
-# Always recalculate output_db_path from output_dir and output_filename
-st.session_state.output_db_path = os.path.join(st.session_state.output_dir, st.session_state.output_filename)
-
-if "config_dir" not in st.session_state:
+if not st.session_state.get("config_dir"):
     st.session_state.config_dir = DEFAULT_CONFIG["config_dir"]
-
-if "site_info_json_path" not in st.session_state:
-    st.session_state.site_info_json_path = os.path.join(DEFAULT_CONFIG["config_dir"], DEFAULT_CONFIG["selected_config_file"])
-
+if not st.session_state.get("selected_config_file"):
+    st.session_state.selected_config_file = DEFAULT_CONFIG["selected_config_file"]
 if "config_files_list" not in st.session_state:
     st.session_state.config_files_list = []
 
-if "selected_config_file" not in st.session_state:
-    st.session_state.selected_config_file = DEFAULT_CONFIG["selected_config_file"]
+# Always recalculate derived paths from current session state values
+st.session_state.output_db_path = os.path.join(st.session_state.output_dir, st.session_state.output_filename)
+st.session_state.site_info_json_path = os.path.join(st.session_state.config_dir, st.session_state.selected_config_file)
+
+st.write("# CGSim Configuration")
+st.write("Configure the paths for your simulation output database and site configuration files.")
 
 
 def scan_config_directory():
@@ -140,20 +131,26 @@ st.write("## Output Database Configuration")
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.text_input(
+    new_output_dir = st.text_input(
         "Output Directory",
-        key="output_dir",
-        on_change=on_output_dir_change,
+        value=st.session_state.output_dir,
         help="Path to the directory containing the simulation output database. Press Enter to apply."
     )
+    if new_output_dir != st.session_state.output_dir:
+        st.session_state.output_dir = new_output_dir
+        on_output_dir_change()
+        st.rerun()
 
 with col2:
-    st.text_input(
+    new_output_filename = st.text_input(
         "Output Filename",
-        key="output_filename",
-        on_change=on_output_filename_change,
+        value=st.session_state.output_filename,
         help="Name of the database file (default: output.db). Press Enter to apply."
     )
+    if new_output_filename != st.session_state.output_filename:
+        st.session_state.output_filename = new_output_filename
+        on_output_filename_change()
+        st.rerun()
 
 # Show current full path and status
 full_db_path = st.session_state.output_db_path
@@ -167,12 +164,15 @@ else:
 st.write("---")
 st.write("## Site Configuration Files")
 
-st.text_input(
+new_config_dir = st.text_input(
     "Config Files Directory",
-    key="config_dir",
-    on_change=on_config_dir_change,
+    value=st.session_state.config_dir,
     help="Path to the directory containing site configuration JSON files. Press Enter to scan the directory."
 )
+if new_config_dir != st.session_state.config_dir:
+    st.session_state.config_dir = new_config_dir
+    on_config_dir_change()
+    st.rerun()
 
 # Scan directory on first load or if list is empty
 if not st.session_state.config_files_list:
@@ -229,7 +229,7 @@ with summary_col2:
 
 # === Save Configuration ===
 st.write("---")
-if st.button("Save Configuration", use_container_width=True, type="primary"):
+if st.button("Save Configuration", width='stretch', type="primary"):
     if save_config():
         st.success("Configuration saved successfully!")
     else:
@@ -238,5 +238,5 @@ if st.button("Save Configuration", use_container_width=True, type="primary"):
 
 # === Navigation ===
 st.write("---")
-if st.button("← Back to Overview", use_container_width=True):
+if st.button("← Back to Overview", width='stretch'):
     st.switch_page('CGSim_Visualization.py')

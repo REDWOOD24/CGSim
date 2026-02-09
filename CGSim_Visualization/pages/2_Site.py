@@ -676,7 +676,7 @@ for key in list(st.session_state.keys()):
 # Initial plot render with counter-based key
 chart_selection = plot_container.plotly_chart(
     plotly_site_subplot(df_site, site),
-    use_container_width=True,
+    width='stretch',
     on_select="rerun",
     selection_mode="points",
     key=f"site_chart_{st.session_state.site_chart_counter}"
@@ -696,7 +696,7 @@ if not is_live_mode() and selected_timestep is not None:
             # Filter to show only events for the current site
             events_df = events_df[events_df['METADATA'].str.contains(f'"{site}"', na=False)]
         if not events_df.empty:
-            st.dataframe(events_df, hide_index=True, use_container_width=True)
+            st.dataframe(events_df, hide_index=True, width='stretch')
         else:
             st.info(f"No events found for {site} at timestep {selected_timestep:.4f}s")
     else:
@@ -706,11 +706,19 @@ if not is_live_mode() and selected_timestep is not None:
 should_exit_loop = False
 navigate_to_page = None
 
+# Track the current timestep to detect changes from button callbacks
+last_selected_timestep = st.session_state.get('selected_timestep')
+
 while not should_exit_loop:
     time.sleep(global_sleep_time)
 
     # Update the timestep metric in the sidebar
     update_timestep_metric(output_db_path)
+
+    # Check if timestep changed (from button callbacks) and rerun if so
+    current_selected_timestep = st.session_state.get('selected_timestep')
+    if current_selected_timestep != last_selected_timestep:
+        st.rerun()
 
     # Check for pending selection from ANY previous chart widget (runs in both live and paused modes)
     for key in list(st.session_state.keys()):
@@ -836,7 +844,7 @@ while not should_exit_loop:
                 # Then update the plot with counter-based key
                 live_chart_selection = plot_container.plotly_chart(
                     plotly_site_subplot(new_df_site, site),
-                    use_container_width=False,
+                    width='content',
                     on_select="rerun",
                     selection_mode="points",
                     key=f"site_chart_{st.session_state.site_chart_counter}"

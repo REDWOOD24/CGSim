@@ -219,7 +219,7 @@ metrics_cols[1].metric("Sites with Failures", len(failed_by_site))
 # Display pie chart
 pie_container.plotly_chart(
     plotly_failed_jobs_pie(failed_by_site),
-    use_container_width=True,
+    width='stretch',
     key=f"failed_pie_{st.session_state.failed_jobs_chart_counter}"
 )
 st.session_state.failed_jobs_chart_counter += 1
@@ -249,7 +249,7 @@ if not site_summary_df.empty:
             on_select='rerun',
             selection_mode="single-row",
             hide_index=True,
-            use_container_width=True,
+            width='stretch',
             key=f"failed_df_{st.session_state.failed_jobs_df_counter}"
         )
     st.session_state.failed_jobs_df_counter += 1
@@ -270,7 +270,7 @@ else:
 
 # Display all failed jobs dataframe
 if not df_failed.empty:
-    df_container.dataframe(df_failed.sort_values(by='SITE'), hide_index=True, use_container_width=True, height=600)
+    df_container.dataframe(df_failed.sort_values(by='SITE'), hide_index=True, width='stretch', height=600)
 else:
     df_container.info("No failed jobs found.")
 
@@ -289,7 +289,7 @@ if not is_live_mode() and selected_timestep is not None:
         conn_events.close()
         st.write("### Events at Current Timestep")
         if not events_df.empty:
-            st.dataframe(events_df, hide_index=True, use_container_width=True)
+            st.dataframe(events_df, hide_index=True, width='stretch')
         else:
             st.info(f"No events found at timestep {selected_timestep:.4f}s")
 
@@ -298,8 +298,16 @@ if not is_live_mode() and selected_timestep is not None:
 should_exit_loop = False
 navigate_to_page = None
 
+# Track the current timestep to detect changes from button callbacks
+last_selected_timestep = st.session_state.get('selected_timestep')
+
 while not should_exit_loop:
     time.sleep(global_sleep_time)
+
+    # Check if timestep changed (from button callbacks) and rerun if so
+    current_selected_timestep = st.session_state.get('selected_timestep')
+    if current_selected_timestep != last_selected_timestep:
+        st.rerun()
 
     # Only update if in live (playing) mode
     if is_live_mode():
@@ -319,7 +327,7 @@ while not should_exit_loop:
                 # Update pie chart
                 pie_container.plotly_chart(
                     plotly_failed_jobs_pie(new_failed_by_site),
-                    use_container_width=True,
+                    width='stretch',
                     key=f"failed_pie_{st.session_state.failed_jobs_chart_counter}"
                 )
                 st.session_state.failed_jobs_chart_counter += 1
@@ -352,7 +360,7 @@ while not should_exit_loop:
                             on_select='rerun',
                             selection_mode="single-row",
                             hide_index=True,
-                            use_container_width=True,
+                            width='stretch',
                             key=f"failed_df_{st.session_state.failed_jobs_df_counter}"
                         )
                     st.session_state.failed_jobs_df_counter += 1
@@ -364,7 +372,7 @@ while not should_exit_loop:
                     df_container.dataframe(
                         new_df_failed.sort_values(by='SITE'),
                         hide_index=True,
-                        use_container_width=True,
+                        width='stretch',
                         height=600
                     )
                 else:

@@ -215,11 +215,11 @@ st.sidebar.write("## Navigation")
 nav_col1, nav_col2 = st.sidebar.columns(2)
 
 with nav_col1:
-    if st.button("Back to Overview", use_container_width=True):
+    if st.button("Back to Overview", width='stretch'):
         st.switch_page('CGSim_Visualization.py')
 
 with nav_col2:
-    if st.button("Back to Site", use_container_width=True):
+    if st.button("Back to Site", width='stretch'):
         st.switch_page('pages/2_Site.py')
 
 # Site selection dropdown
@@ -305,7 +305,7 @@ metrics_cols[3].metric("Failed Jobs", failed_jobs)
 # Display pie chart
 pie_container.plotly_chart(
     plotly_cpu_pie_chart(df_cpu),
-    use_container_width=True,
+    width='stretch',
     key=f"cpu_pie_{st.session_state.cpu_chart_counter}"
 )
 st.session_state.cpu_chart_counter += 1
@@ -313,7 +313,7 @@ st.session_state.cpu_chart_counter += 1
 # Display dataframe
 df_container.write("### Job History")
 if not df_cpu.empty:
-    df_container.dataframe(df_cpu.sort_values(by='TIME', ascending=False), hide_index=True, use_container_width=True)
+    df_container.dataframe(df_cpu.sort_values(by='TIME', ascending=False), hide_index=True, width='stretch')
 else:
     df_container.info("No jobs found for this CPU.")
 
@@ -330,11 +330,14 @@ if not is_live_mode() and selected_timestep is not None:
             # Filter to show only events for the current CPU (host name format: SITE_cpu-N)
             events_df = events_df[events_df['METADATA'].str.contains(f'"{cpu_host_name}"', na=False)]
         if not events_df.empty:
-            st.dataframe(events_df, hide_index=True, use_container_width=True)
+            st.dataframe(events_df, hide_index=True, width='stretch')
         else:
             st.info(f"No events found for cpu-{cpu_num} at timestep {selected_timestep:.4f}s")
     else:
         st.info(f"No events found at timestep {selected_timestep:.4f}s")
+
+# Track the current timestep to detect changes from button callbacks
+last_selected_timestep = st.session_state.get('selected_timestep')
 
 # Live update loop
 while True:
@@ -342,6 +345,11 @@ while True:
 
     # Update the timestep metric in the sidebar
     update_timestep_metric(output_db_path)
+
+    # Check if timestep changed (from button callbacks) and rerun if so
+    current_selected_timestep = st.session_state.get('selected_timestep')
+    if current_selected_timestep != last_selected_timestep:
+        st.rerun()
 
     # Only update if in live (playing) mode
     if is_live_mode():
@@ -369,7 +377,7 @@ while True:
                 # Update pie chart
                 pie_container.plotly_chart(
                     plotly_cpu_pie_chart(new_df_cpu),
-                    use_container_width=True,
+                    width='stretch',
                     key=f"cpu_pie_{st.session_state.cpu_chart_counter}"
                 )
                 st.session_state.cpu_chart_counter += 1
@@ -377,7 +385,7 @@ while True:
                 # Update dataframe
                 df_container.write("### Job History")
                 if not new_df_cpu.empty:
-                    df_container.dataframe(new_df_cpu, hide_index=True, use_container_width=True)
+                    df_container.dataframe(new_df_cpu, hide_index=True, width='stretch')
                 else:
                     df_container.info("No jobs found for this CPU.")
 

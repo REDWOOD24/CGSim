@@ -83,44 +83,36 @@ def render_time_controls(db_path: str, sidebar: bool = True) -> Optional[float]:
     # Store timesteps in session state so callbacks can access them
     st.session_state._timesteps_cache = timesteps
 
-    # Define callback functions for buttons
-    def on_pause():
-        ts = st.session_state._timesteps_cache
-        st.session_state.time_playing = False
-        st.session_state.selected_timestep = ts[-1]
-        st.session_state.timestep_index = len(ts) - 1
-
-    def on_play():
-        st.session_state.time_playing = True
-        st.session_state.selected_timestep = None
-        st.session_state.timestep_index = -1
-
-    def on_step_back():
-        ts = st.session_state._timesteps_cache
-        st.session_state.timestep_index -= 1
-        st.session_state.selected_timestep = ts[st.session_state.timestep_index]
-
-    def on_step_fwd():
-        ts = st.session_state._timesteps_cache
-        st.session_state.timestep_index += 1
-        st.session_state.selected_timestep = ts[st.session_state.timestep_index]
-
-    # Play/Pause and Step buttons in a row
+    # Play/Pause and Step buttons in a row - use if st.button() pattern like slider
     col1, col2, col3 = container.columns([1, 1, 1])
 
     with col1:
         if st.session_state.time_playing:
-            st.button("⏸️ Pause", key="time_pause_btn", use_container_width=True, on_click=on_pause)
+            if st.button("⏸️ Pause", key="time_pause_btn", width='stretch'):
+                st.session_state.time_playing = False
+                st.session_state.selected_timestep = timesteps[-1]
+                st.session_state.timestep_index = len(timesteps) - 1
+                st.rerun()
         else:
-            st.button("▶️ Play", key="time_play_btn", use_container_width=True, on_click=on_play)
+            if st.button("▶️ Play", key="time_play_btn", width='stretch'):
+                st.session_state.time_playing = True
+                st.session_state.selected_timestep = None
+                st.session_state.timestep_index = -1
+                st.rerun()
 
     with col2:
         step_back_disabled = st.session_state.time_playing or st.session_state.timestep_index <= 0
-        st.button("⏮️ Back", key="time_back_btn", disabled=step_back_disabled, use_container_width=True, on_click=on_step_back)
+        if st.button("⏮️ Back", key="time_back_btn", disabled=step_back_disabled, width='stretch'):
+            st.session_state.timestep_index -= 1
+            st.session_state.selected_timestep = timesteps[st.session_state.timestep_index]
+            st.rerun()
 
     with col3:
         step_fwd_disabled = st.session_state.time_playing or st.session_state.timestep_index >= len(timesteps) - 1
-        st.button("⏭️ Fwd", key="time_fwd_btn", disabled=step_fwd_disabled, use_container_width=True, on_click=on_step_fwd)
+        if st.button("⏭️ Fwd", key="time_fwd_btn", disabled=step_fwd_disabled, width='stretch'):
+            st.session_state.timestep_index += 1
+            st.session_state.selected_timestep = timesteps[st.session_state.timestep_index]
+            st.rerun()
     
     # Create an empty placeholder for the timestep metric that can be updated live
     if 'timestep_metric_container' not in st.session_state:
@@ -137,35 +129,37 @@ def render_time_controls(db_path: str, sidebar: bool = True) -> Optional[float]:
     st.session_state.timestep_metric_container.metric("Current Timestep", f"{current_ts:.4f}s")
 
     # Slider for scanning timesteps (only enabled when paused)
+    # Use unique keys with counter to force re-render when timestep changes
     if not st.session_state.time_playing and len(timesteps) > 1:
         container.write("### Timestep Slider")
+        slider_key = f"time_slider_{st.session_state.timestep_index}"
         new_index = container.slider(
             "Select timestep",
             min_value=0,
             max_value=len(timesteps) - 1,
             value=st.session_state.timestep_index,
             format=f"Step %d",
-            key="time_slider",
+            key=slider_key,
             label_visibility="collapsed"
         )
         if new_index != st.session_state.timestep_index:
             st.session_state.timestep_index = new_index
             st.session_state.selected_timestep = timesteps[new_index]
             st.rerun()
-        
+
         # Dropdown for specific timestep selection
         container.write("### Select Timestep")
         timestep_options = {f"{i}: {t:.4f}s": i for i, t in enumerate(timesteps)}
-        current_label = f"{st.session_state.timestep_index}: {timesteps[st.session_state.timestep_index]:.4f}s"
-        
+
+        dropdown_key = f"time_dropdown_{st.session_state.timestep_index}"
         selected_label = container.selectbox(
             "Choose timestep",
             options=list(timestep_options.keys()),
             index=st.session_state.timestep_index,
-            key="time_dropdown",
+            key=dropdown_key,
             label_visibility="collapsed"
         )
-        
+
         selected_idx = timestep_options[selected_label]
         if selected_idx != st.session_state.timestep_index:
             st.session_state.timestep_index = selected_idx
@@ -271,8 +265,10 @@ def get_timesteps_for_cpu(db_path: str, site: str, cpu_num: int) -> List[float]:
 
     try:
         conn = sqlite3.connect(db_path)
-        # Query events where METADATA contains the cpu host name pattern
-        cpu_pattern = f'%{site}%cpu-{cpu_num}%'
+        # Query events where METADATA contains the exact cpu host name
+        # Format is: "host": "SITE_cpu-N" - use exact match with quotes to avoid partial matches
+        cpu_host_name = f'{site}_cpu-{cpu_num}'
+        cpu_pattern = f'%"{cpu_host_name}"%'
         query = "SELECT DISTINCT TIME FROM EVENTS WHERE METADATA LIKE ? ORDER BY TIME"
         cursor = conn.cursor()
         cursor.execute(query, (cpu_pattern,))
@@ -315,28 +311,31 @@ def render_site_step_controls(db_path: str, site: str, container=None):
 
     all_timesteps = get_available_timesteps(db_path)
 
-    # Store values in session state for callbacks
-    st.session_state._site_prev_timestep = prev_site_timestep
-    st.session_state._site_next_timestep = next_site_timestep
-    st.session_state._all_timesteps = all_timesteps
-
-    def on_site_back():
-        ts = st.session_state._site_prev_timestep
-        all_ts = st.session_state._all_timesteps
-        st.session_state.selected_timestep = ts
-        st.session_state.timestep_index = all_ts.index(ts)
-
-    def on_site_fwd():
-        ts = st.session_state._site_next_timestep
-        all_ts = st.session_state._all_timesteps
-        st.session_state.selected_timestep = ts
-        st.session_state.timestep_index = all_ts.index(ts)
-
     with col1:
-        st.button("⏮️ Site Back", key="site_back_btn", disabled=prev_site_timestep is None, use_container_width=True, on_click=on_site_back)
+        if st.button("⏮️ Site Back", key="site_back_btn", disabled=prev_site_timestep is None, width='stretch'):
+            if prev_site_timestep is not None:
+                st.session_state.selected_timestep = prev_site_timestep
+                # Find the closest index in all_timesteps (handle floating point precision)
+                try:
+                    st.session_state.timestep_index = all_timesteps.index(prev_site_timestep)
+                except ValueError:
+                    # Find closest timestep if exact match not found
+                    closest_idx = min(range(len(all_timesteps)), key=lambda i: abs(all_timesteps[i] - prev_site_timestep))
+                    st.session_state.timestep_index = closest_idx
+                st.rerun()
 
     with col2:
-        st.button("⏭️ Site Fwd", key="site_fwd_btn", disabled=next_site_timestep is None, use_container_width=True, on_click=on_site_fwd)
+        if st.button("⏭️ Site Fwd", key="site_fwd_btn", disabled=next_site_timestep is None, width='stretch'):
+            if next_site_timestep is not None:
+                st.session_state.selected_timestep = next_site_timestep
+                # Find the closest index in all_timesteps (handle floating point precision)
+                try:
+                    st.session_state.timestep_index = all_timesteps.index(next_site_timestep)
+                except ValueError:
+                    # Find closest timestep if exact match not found
+                    closest_idx = min(range(len(all_timesteps)), key=lambda i: abs(all_timesteps[i] - next_site_timestep))
+                    st.session_state.timestep_index = closest_idx
+                st.rerun()
 
 
 def render_cpu_step_controls(db_path: str, site: str, cpu_num: int, container=None):
@@ -371,25 +370,28 @@ def render_cpu_step_controls(db_path: str, site: str, cpu_num: int, container=No
 
     all_timesteps = get_available_timesteps(db_path)
 
-    # Store values in session state for callbacks
-    st.session_state._cpu_prev_timestep = prev_cpu_timestep
-    st.session_state._cpu_next_timestep = next_cpu_timestep
-    st.session_state._all_timesteps = all_timesteps
-
-    def on_cpu_back():
-        ts = st.session_state._cpu_prev_timestep
-        all_ts = st.session_state._all_timesteps
-        st.session_state.selected_timestep = ts
-        st.session_state.timestep_index = all_ts.index(ts)
-
-    def on_cpu_fwd():
-        ts = st.session_state._cpu_next_timestep
-        all_ts = st.session_state._all_timesteps
-        st.session_state.selected_timestep = ts
-        st.session_state.timestep_index = all_ts.index(ts)
-
     with col1:
-        st.button("⏮️ CPU Back", key="cpu_back_btn", disabled=prev_cpu_timestep is None, use_container_width=True, on_click=on_cpu_back)
+        if st.button("⏮️ CPU Back", key="cpu_back_btn", disabled=prev_cpu_timestep is None, width='stretch'):
+            if prev_cpu_timestep is not None:
+                st.session_state.selected_timestep = prev_cpu_timestep
+                # Find the closest index in all_timesteps (handle floating point precision)
+                try:
+                    st.session_state.timestep_index = all_timesteps.index(prev_cpu_timestep)
+                except ValueError:
+                    # Find closest timestep if exact match not found
+                    closest_idx = min(range(len(all_timesteps)), key=lambda i: abs(all_timesteps[i] - prev_cpu_timestep))
+                    st.session_state.timestep_index = closest_idx
+                st.rerun()
 
     with col2:
-        st.button("⏭️ CPU Fwd", key="cpu_fwd_btn", disabled=next_cpu_timestep is None, use_container_width=True, on_click=on_cpu_fwd)
+        if st.button("⏭️ CPU Fwd", key="cpu_fwd_btn", disabled=next_cpu_timestep is None, width='stretch'):
+            if next_cpu_timestep is not None:
+                st.session_state.selected_timestep = next_cpu_timestep
+                # Find the closest index in all_timesteps (handle floating point precision)
+                try:
+                    st.session_state.timestep_index = all_timesteps.index(next_cpu_timestep)
+                except ValueError:
+                    # Find closest timestep if exact match not found
+                    closest_idx = min(range(len(all_timesteps)), key=lambda i: abs(all_timesteps[i] - next_cpu_timestep))
+                    st.session_state.timestep_index = closest_idx
+                st.rerun()

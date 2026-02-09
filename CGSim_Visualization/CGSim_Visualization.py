@@ -357,11 +357,19 @@ if not is_live_mode() and selected_timestep is not None:
 should_exit_loop = False
 navigate_to_page = None
 
+# Track the current timestep to detect changes from button callbacks
+last_selected_timestep = st.session_state.get('selected_timestep')
+
 while not should_exit_loop:
     time.sleep(global_sleep_time)
 
     # Update the timestep metric in the sidebar
     update_timestep_metric(output_db_path)
+
+    # Check if timestep changed (from button callbacks) and rerun if so
+    current_selected_timestep = st.session_state.get('selected_timestep')
+    if current_selected_timestep != last_selected_timestep:
+        st.rerun()
 
     # Only update if in live mode
     if is_live_mode():
