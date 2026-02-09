@@ -257,9 +257,10 @@ if 'overview_pie_counter' not in st.session_state:
 if 'overview_df_counter' not in st.session_state:
     st.session_state.overview_df_counter = 0
 
-if 'sites_info_df' not in st.session_state:
-
+# Reload sites_info_df if config file has changed or not yet loaded
+if 'sites_info_df' not in st.session_state or st.session_state.get('loaded_config_file') != site_info_json_path:
     st.session_state.sites_info_df = site_info_json_to_df(site_info_json_path)
+    st.session_state.loaded_config_file = site_info_json_path
 
 # Add title and controls
 st.write("# CGSim Visualization")
@@ -305,7 +306,7 @@ last_overview_hash = hash(str(sites_status))
 # Display initial pie chart with counter-based key (to avoid streamlit similar key errors)
 pie_container.plotly_chart(
     plotly_sites_status_pie(sites_status),
-    use_container_width=True,
+    width='stretch',
     key=f"overview_pie_{st.session_state.overview_pie_counter}"
 )
 st.session_state.overview_pie_counter += 1
@@ -334,7 +335,7 @@ with df_container:
         on_select='rerun',
         selection_mode="single-row",
         hide_index=True,
-        use_container_width=True,
+        width='stretch',
         height = 1000,
         key=current_df_key
     )
@@ -348,7 +349,7 @@ if not is_live_mode() and selected_timestep is not None:
     st.write("### Events at Current Timestep")
     events_df = get_events_at_timestep(output_db_path, selected_timestep)
     if not events_df.empty:
-        st.dataframe(events_df, hide_index=True, use_container_width=True)
+        st.dataframe(events_df, hide_index=True, width='stretch')
     else:
         st.info(f"No events found at timestep {selected_timestep:.4f}s")
 
@@ -382,7 +383,7 @@ while not should_exit_loop:
                 # Update the pie chart with counter-based key
                 pie_container.plotly_chart(
                     plotly_sites_status_pie(new_sites_status),
-                    use_container_width=True,
+                    width='stretch',
                     key=f"overview_pie_{st.session_state.overview_pie_counter}"
                 )
                 st.session_state.overview_pie_counter += 1
@@ -410,7 +411,7 @@ while not should_exit_loop:
                         on_select='rerun',
                         selection_mode="single-row",
                         hide_index=True,
-                        use_container_width=True,
+                        width='stretch',
                         height = 1000,
                         key=current_df_key
                     )
