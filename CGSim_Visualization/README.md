@@ -123,6 +123,10 @@ If `vis_config.json` does not exist or cannot be read, the application defaults 
 - Config directory: `../config-files`
 - Selected config file: `site_info.json`
 
+### Example Config Files
+
+Example files are located in `./CGSim_Visualization/example_config`. You can use these files to test the application by updating the paths in the configuration page.
+
 ## Directory Structure
 
 ```
