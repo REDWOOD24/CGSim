@@ -129,7 +129,7 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
             double out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
 
             // ---- Generate output files ----
-            long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
+            unsigned long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
             for (int f = 1; f <= no_of_out_files; ++f) {
                 std::string filename = "user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
                 job->output_files[filename] = size_per_out_file;

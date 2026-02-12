@@ -2,10 +2,10 @@
 
 namespace CGSim {
 
-std::unordered_map<std::string,std::unordered_set<std::string>>  FileManager::SiteFiles;
+std::unordered_map<std::string, std::unordered_set<std::string>>  FileManager::SiteFiles;
 std::unordered_map<std::string, std::unordered_set<std::string>> FileManager::FileSites;
 std::unordered_map<std::string, unsigned long long>              FileManager::FileSizes;
-std::unordered_map<std::string,  long long>              FileManager::SiteStorages;
+std::unordered_map<std::string, unsigned long long>              FileManager::SiteStorages;
 
 
 FileManager* FileManager::instance() {
@@ -31,14 +31,14 @@ return (FileSizes.erase(filename) > 0 && SiteFiles.at(sitename).erase(filename) 
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
 
     const std::string& site_name = site->get_name();
-    SiteStorages[site_name] = std::stoll(site->get_property("storage_capacity_bytes"));
+    SiteStorages[site_name] = std::stoull(site->get_property("storage_capacity_bytes"));
 
     for (const auto& [file, size] : files) {
+        if (SiteStorages[site_name] < size) throw std::runtime_error("Site: "+site_name+" is out of storage");
         SiteFiles[site_name].insert(file);
         FileSizes[file] = size;
         FileSites[file].insert(site_name);
         SiteStorages[site_name] -= size;
-        if (SiteStorages[site_name] < 0) throw std::runtime_error("Site "+site_name+" is out of storage");
     }
 }
 
@@ -60,7 +60,7 @@ unsigned long long FileManager::request_file_size(const std::string& filename)
 }
 
 unsigned long long FileManager::request_remaining_grid_storage() {
-    long long total = 0;
+    unsigned long long total = 0;
     for (const auto& [key, value] : SiteStorages) {
         total += value;
     }
@@ -68,26 +68,27 @@ unsigned long long FileManager::request_remaining_grid_storage() {
 }
 
 unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) {
-    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
+    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return SiteStorages.at(sitename);
 }
 
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){
 
-    //Check if Site exists
-    if (SiteFiles.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
+    if (exists(filename, sitename)) return;
 
+    //Check if Site exists
+    if (SiteFiles.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
+    if (SiteStorages[sitename] < size) throw std::runtime_error("Site: "+sitename+" is out of storage");
     SiteFiles[sitename].insert(filename);
     FileSites[filename].insert(sitename);
     FileSizes[filename] = size;
     SiteStorages[sitename] -= size;
-
-    if (SiteStorages[sitename] < 0) throw std::runtime_error("Site "+sitename+" is out of storage");
 }
 
 sg4::IoPtr FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
 
-    if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site"+comp_sitename+" does not exist");
+    if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site: "+comp_sitename+" does not exist");
+    if (exists(filename)) throw std::runtime_error("File: "+filename+" already exists on the grid");
     auto disk = sg4::Host::by_name(comp_host)->get_disk_by_name(comp_disk);
     auto write_activity = sg4::Io::init()->set_disk(disk)->set_size(size)->set_op_type(sg4::Io::OpType::WRITE);
     write_activity->on_this_completion_cb([filename,size,comp_sitename](simgrid::s4u::Io const& io) {
@@ -111,8 +112,8 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
 
 sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site){
 
-    if(!exists(filename,src_site)) return nullptr;
-    if(exists(filename,dst_site)) return nullptr;
+    if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");
+    if(exists(filename,dst_site)) throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
     auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
     auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication_server");
     auto size     = FileSizes.at(filename);

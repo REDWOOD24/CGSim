@@ -31,7 +31,10 @@ public:
   // Pure virtual function must be implemented by derived classes to assign Jobs
   virtual Job* assignJob(Job* job) = 0;
   
-  /*------Output Module Interface------*/
+  /*------Interaction Module Interface------*/
+
+  // Virtual function can be implemented to execute code before simulation start
+  virtual void beforeSimulationStart(){}
 
   // Virtual function can be implemented to execute code on simulation start
   virtual void onSimulationStart(){}

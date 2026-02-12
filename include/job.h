@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <queue>
 #include <unordered_set>
-using Files    = std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>;
+using Files    = std::unordered_map<std::string, std::pair<unsigned long long, std::unordered_set<std::string>>>;
 
 
 //Information needed to a specify a Job
@@ -33,7 +33,15 @@ struct Job {
     bool operator<(const Job& other) const {if(priority == other.priority){return jobid > other.jobid;} return priority < other.priority;}
   };
 
-using JobQueue = std::priority_queue<Job*>;
+struct JobPtrCompare {
+    bool operator()(const Job* a, const Job* b) const {
+        if (a->priority == b->priority)
+            return a->jobid > b->jobid;   // if same rank then smaller jobid = higher rank
+        return a->priority < b->priority; // higher priority value = higher rank
+    }
+};
+
+using JobQueue = std::priority_queue<Job*, std::vector<Job*>, JobPtrCompare>;
 
 
 #endif //JOB_H

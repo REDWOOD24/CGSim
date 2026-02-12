@@ -20,14 +20,14 @@ public:
     static void   start_server(JobQueue jobs);
     static void   execute_job(Job* j);
     static void   start_job_execution();
-    static void   receiver(const std::string& MQ_name);
+    [[noreturn]] static void   receiver(const std::string& MQ_name);
     static void   start_receivers();
     static void   attach_callbacks();
+    static   sg4::ActivitySet pending_activities;
 
 private:
-    static   std::unique_ptr<DispatcherPlugin>      dispatcher;
+    static   std::unique_ptr<DispatcherPlugin> dispatcher;
     static   unsigned long MAX_RETRIES;
-    static   sg4::ActivitySet pending_activities;
     static   JobQueue jobs;
     static   std::vector<Job*> pending_jobs;
     static   std::unordered_map<Job*, int> retry_counts;

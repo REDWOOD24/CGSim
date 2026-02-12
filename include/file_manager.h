@@ -42,7 +42,7 @@ private:
     static std::unordered_map<std::string, std::unordered_set<std::string>> SiteFiles;
     static std::unordered_map<std::string, std::unordered_set<std::string>> FileSites;
     static std::unordered_map<std::string, unsigned long long> FileSizes;
-    static std::unordered_map<std::string, long long> SiteStorages;
+    static std::unordered_map<std::string, unsigned long long> SiteStorages;
 
 
 };

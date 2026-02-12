@@ -123,7 +123,6 @@ void OUTPUT::onJobExecutionStart(Job* job, sg4::Exec const& ex)
         {"host", job->comp_host},
         {"cores", job->cores},
         {"speed", job->comp_host_speed},
-        {"start_time", ex.get_start_time()},
         {"site_cpu_util", calculate_site_cpu_util(job->comp_site)},
         {"grid_cpu_util", calculate_grid_cpu_util()}
     };
