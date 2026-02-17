@@ -53,7 +53,7 @@ RUN git clone https://github.com/simgrid/file-system-module.git /opt/fsmod && \
 RUN git clone https://github.com/REDWOOD24/CGSim.git /opt/CGSim && \
     cd /opt/CGSim && \
     mkdir output && \
-    git checkout CGSim-Refactor && \
+    git checkout main && \
     mkdir build && \
     cd build && \
     cmake .. && \

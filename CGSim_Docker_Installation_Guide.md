@@ -83,13 +83,6 @@ git clone https://github.com/REDWOOD24/CGSim.git
 cd CGSim
 ```
 
-As of **March 31, 2025**, the `historicaljob` branch contains the most
-up-to-date configuration files:
-
-``` bash
-git checkout historicaljob
-```
-
 If the `logs` directory does not exist, create it:
 
 ``` bash
@@ -239,7 +232,6 @@ Recommended workflow:
 ``` bash
 git clone https://github.com/REDWOOD24/CGSim.git
 cd CGSim
-git checkout historicaljob
 mkdir -p logs
 docker pull ghcr.io/redwood24/cgsim:latest
 docker create --name CGSim \
