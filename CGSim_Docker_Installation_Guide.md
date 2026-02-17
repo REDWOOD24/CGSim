@@ -7,7 +7,7 @@ machines and simplifies deployment to remote systems.
 
 You can either:
 
--   **Pull the pre-built Docker image** (recommended), or\
+-   **Pull the pre-built Docker image** (recommended), or
 -   **Build the image locally from the Dockerfile**
 
 Both approaches ultimately require creating a container with the
@@ -19,8 +19,8 @@ appropriate bind-mounted directories.
 
 Running CGSim in Docker involves three high-level steps:
 
-1.  Ensure required directories and configuration files exist\
-2.  Obtain the Docker image (pull or build)\
+1.  Ensure required directories and configuration files exist
+2.  Obtain the Docker image (pull or build)
 3.  Create and start the Docker container
 
 ------------------------------------------------------------------------
