@@ -76,8 +76,6 @@ void Platform::initialize_site_connections(std::vector<SiteConnInfo>& site_conn_
 
         const sg4::Link* interzonal_link = platform->create_link(linkname, siteConn.bandwidth)->set_latency(siteConn.latency)->seal();
         platform->add_route(src, dst, { sg4::LinkInRoute(interzonal_link) });
-
-        //LOG_DEBUG("Connected {} <--> {} with latency {} and bandwidth {}", src_name, dst_name, latency, bandwidth);
     }
 }
 
@@ -103,7 +101,6 @@ void Platform::initialize_job_server()
     JOB_SERVER_site->add_route(JOB_SERVER_host, nullptr, { { JOB_SERVER_link, sg4::LinkInRoute::Direction::UP}}, true);
     JOB_SERVER_site->set_gateway(JOB_SERVER_host->get_netpoint());
     JOB_SERVER_host->seal();
-
 
     for (auto& [site_name, site] : sites) {
         const auto linkname = "link_JOB_SERVER:" + site_name;

@@ -1,4 +1,13 @@
 #include "workload_manager.h"
+#include <random>
+
+
+long long random_ll(long long min, long long max) {
+    static std::random_device rd;
+    static std::mt19937_64 gen(rd());  // 64-bit generator
+    std::uniform_int_distribution<long long> dist(min, max);
+    return dist(gen);
+}
 
 
 std::vector<std::string> WORKLOAD_MANAGER::parseCSVLine(const std::string& line) {
@@ -82,7 +91,7 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
 
             // Safely get each column, providing defaults if missing
             job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
-            //job->creation_time         = getColumn(row, column_map, "creationtime", "");
+            job->creation_time         = random_ll(5,30000);
             //job->job_status            = getColumn(row, column_map, "jobstatus", "");
             //job->job_name              = getColumn(row, column_map, "jobname", "");
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));

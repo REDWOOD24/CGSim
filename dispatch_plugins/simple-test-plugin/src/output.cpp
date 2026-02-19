@@ -320,8 +320,11 @@ sg4::Link* OUTPUT::get_link(const std::string& src_site, const std::string& dst_
 double OUTPUT::calculate_grid_cpu_util()
 {
     double cores_used = 0;
-    double total_cores = std::stoul(platform->get_property("grid_storage"));
-    for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) {
+    double total_cores = std::stoul(platform->get_property("grid_cores"));
+    for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) 
+    {
+        if(host->get_name().find("JOB-SERVER_cpu") != std::string::npos) continue;
+        if(host->get_name().find("_communication") != std::string::npos) continue;
         cores_used += host->extension<HostExtensions>()->get_cores_used();
     }
     return cores_used/total_cores;
@@ -332,7 +335,9 @@ double OUTPUT::calculate_site_cpu_util(std::string& site_name)
     auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_cores = std::stoul(site->get_property("total_cores"));
     double cores_used = 0;
-    for (const auto& host : site->get_all_hosts()) {
+    for (const auto& host : site->get_all_hosts()) 
+    {
+        if(host->get_name().find("_communication") != std::string::npos) continue;
         cores_used += host->extension<HostExtensions>()->get_cores_used();
     }
     return cores_used/total_cores;

@@ -23,10 +23,10 @@ public:
      Actions() = default;
     ~Actions() = default;
 
-    static sg4::ExecPtr  exec_task_multi_thread_async(Job* j, std::unique_ptr<DispatcherPlugin>& dispatcher);
-    static sg4::CommPtr  transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, std::unique_ptr<DispatcherPlugin>& dispatcher);
-    static sg4::IoPtr    read_file_async(Job* j, const std::string& filename, std::unique_ptr<DispatcherPlugin>& dispatcher);
-    static sg4::IoPtr    write_file_async(Job* j, const std::string& filename, const unsigned long long& size, std::unique_ptr<DispatcherPlugin>& dispatcher);
+    static sg4::ExecPtr  exec_task_multi_thread_async(Job* j);
+    static sg4::CommPtr  transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site);
+    static sg4::IoPtr    read_file_async(Job* j, const std::string& filename);
+    static sg4::IoPtr    write_file_async(Job* j, const std::string& filename, const unsigned long long& size);
 };
 
 #endif

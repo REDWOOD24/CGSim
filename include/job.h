@@ -6,14 +6,15 @@
 #include <unordered_set>
 using Files    = std::unordered_map<std::string, std::pair<unsigned long long, std::unordered_set<std::string>>>;
 
-
 //Information needed to a specify a Job
-struct Job {
+struct Job 
+{
     long long                                   jobid{};
+    long long                                   creation_time{};
+    long long                                   submission_time{};
     std::string                                 status{};
     long long                                   flops{};
     int                                         cores{};
-    int                                         priority{};
     std::string                                 disk{};
     std::string                                 comp_site{};
     std::string                                 comp_host{};
@@ -30,16 +31,9 @@ struct Job {
     double                                      resource_waiting_queue_time{};
     Files                                       input_files{};
     std::unordered_map<std::string, long long>  output_files{};
-    bool operator<(const Job& other) const {if(priority == other.priority){return jobid > other.jobid;} return priority < other.priority;}
-  };
-
-struct JobPtrCompare {
-    bool operator()(const Job* a, const Job* b) const {
-        if (a->priority == b->priority)
-            return a->jobid > b->jobid;   // if same rank then smaller jobid = higher rank
-        return a->priority < b->priority; // higher priority value = higher rank
-    }
+    bool operator<(const Job& other) const {return creation_time >= other.creation_time;}
 };
+struct JobPtrCompare {bool operator()(const Job* a, const Job* b) const {return a->creation_time >= b->creation_time;}};
 
 using JobQueue = std::priority_queue<Job*, std::vector<Job*>, JobPtrCompare>;
 

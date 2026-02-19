@@ -4,81 +4,109 @@ std::unique_ptr<DispatcherPlugin>   JOB_EXECUTOR::dispatcher;
 sg4::ActivitySet                    JOB_EXECUTOR::pending_activities;
 std::vector<Job*>                   JOB_EXECUTOR::pending_jobs;
 JobQueue                            JOB_EXECUTOR::jobs;
-std::unordered_map<Job*, int>       JOB_EXECUTOR::retry_counts;
-unsigned long                       JOB_EXECUTOR::MAX_RETRIES;
+unsigned long                       JOB_EXECUTOR::MAX_RETRIES = 20;
+unsigned long                       JOB_EXECUTOR::USED_CORES = 0;
+unsigned long                       JOB_EXECUTOR::TOTAL_CORES;
+unsigned long                       JOB_EXECUTOR::DISPATCHED_JOBS;
+unsigned long                       JOB_EXECUTOR::TOTAL_JOBS;
+
+
 
 void JOB_EXECUTOR::start_job_execution()
 {
-  attach_callbacks();
+  TOTAL_CORES = 48;/*std::stoul((sg4::Engine::get_instance()->get_netzone_root())->get_property("grid_cores"));
+  attach_callbacks();*/
   sg4::Host* job_server = sg4::Host::by_name("JOB-SERVER_cpu-0");
-  if (!job_server) {throw std::runtime_error("JOB-SERVER not initialized properly");}
-  JobQueue jobs = dispatcher->getWorkload();
-  sg4::Actor::create("JOB-EXECUTOR-actor",job_server,start_server,jobs);
+  if (!job_server) throw std::runtime_error("JOB-SERVER not initialized properly");
+  jobs = std::move(dispatcher->getWorkload());
+  TOTAL_JOBS = jobs.size();
+  DISPATCHED_JOBS = 0;
+  sg4::Actor::create("JOB-EXECUTOR-actor",job_server,start_server);
   sg4::Engine::get_instance()->run();
 }
 
-void JOB_EXECUTOR::start_server(JobQueue jobs)
+void JOB_EXECUTOR::get_jobs()
 {
-  while (!jobs.empty())
+  while(!jobs.empty())
   {
     Job* job = jobs.top();
-    jobs.pop();
-
-    CGSim::FileManager::request_file_location(job);
-    dispatcher->assignJob(job);
-
-    if (job->status == "assigned")
+    if (sg4::Engine::get_clock() >= job->creation_time) 
     {
-      std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << retry_counts[job] << " tries" <<std::endl;
-      sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
-      sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-      sg4::MessPtr job_transfer = mqueue->put_async(job)->set_name("Transfer_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
-      job_transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
-      job_transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me)
-        {job->resource_waiting_queue_time = sg4::Engine::get_clock(); dispatcher->onJobTransferEnd(job, me);});
-      pending_activities.push(job_transfer);
+      CGSim::FileManager::request_file_location(job);
+      pending_jobs.push_back(job);
+      job->submission_time = sg4::Engine::get_clock();
+      std::cout << job->jobid << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
+      dispatcher->onJobSubmission(job);
+      jobs.pop();
     }
-    else if (job->status == "pending") pending_jobs.push_back(job);
+    else break;
   }
+}
 
-  MAX_RETRIES = 2*pending_jobs.size();
-  while (true) {if(pending_activities.wait_any()->get_name().find("Exec") != std::string::npos) break;}
-  for (Job* job : pending_jobs) {retry_counts[job] = 0;}
-
-  // Poll the pending jobs list until none remain.
-  while (!pending_jobs.empty())
+void JOB_EXECUTOR::advance_to_time(double time)
+{
+  while (sg4::Engine::get_clock() < time) 
   {
-    for (auto it = pending_jobs.begin(); it != pending_jobs.end(); )
+    if (pending_activities.empty()) 
     {
+      sg4::this_actor::sleep_until(time);
+      return;
+    }
+
+    try 
+    {
+      pending_activities.wait_any_for(time - sg4::Engine::get_clock());
+      while (true) {if(!pending_activities.test_any()) break;}
+    }
+    catch (const simgrid::TimeoutException&) {return;}
+  }  
+}
+
+
+void JOB_EXECUTOR::start_server()
+{
+  while (DISPATCHED_JOBS != TOTAL_JOBS)
+  {
+    if(!jobs.empty())
+    {
+    std::cout << sg4::Engine::get_clock() << std::endl;
+    std::cout << jobs.top()->creation_time << std::endl;
+    if(sg4::Engine::get_clock() < jobs.top()->creation_time) advance_to_time(jobs.top()->creation_time);
+    get_jobs();
+    }
+
+    for (auto it = pending_jobs.begin(); it != pending_jobs.end();)
+    {
+      if((1.0*USED_CORES)/(1.0*TOTAL_CORES) > 0.8) break;
       Job* job = *it;
       dispatcher->assignJob(job);
-      retry_counts[job]++;
-      job->retries++;
-
-      if (job->status == "assigned")
-      {
-        std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << retry_counts[job] << " tries" <<std::endl;
-        sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
-        sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-        sg4::MessPtr job_transfer = mqueue->put_async(job)->set_name("Transfer_Job_" + job->id + "_to_" + job->comp_host+"_from_JOB-SERVER");
-        job_transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
-        job_transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me)
-          {job->resource_waiting_queue_time = sg4::Engine::get_clock(); dispatcher->onJobTransferEnd(job, me);});
-        pending_activities.push(job_transfer);
-        it = pending_jobs.erase(it);
-      }
+      if (job->status == "assigned"){onJobAssignment(job); it = pending_jobs.erase(it);}
+      else if (job->status == "pending"){job->retries++; ++it;}
       else ++it;
-      break;
     }
-    while (true) {if(pending_activities.wait_any()->get_name().find("Exec") != std::string::npos) break;}
-  }
 
+    while ((1.0*USED_CORES)/(1.0*TOTAL_CORES) >= 0.6) {pending_activities.wait_any();}
+  }
   while (!pending_activities.empty()){pending_activities.wait_any();}
+}
+
+void JOB_EXECUTOR::onJobAssignment(Job* job)
+{
+  DISPATCHED_JOBS++;
+  USED_CORES += job->cores; 
+  std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << job->retries << " tries" <<std::endl;
+  sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
+  sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
+  sg4::MessPtr job_transfer = mqueue->put_async(job)->set_name("Transfer_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
+  job_transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
+  job_transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me)
+    {job->resource_waiting_queue_time = sg4::Engine::get_clock() - job->creation_time; dispatcher->onJobTransferEnd(job, me);});
+  pending_activities.push(job_transfer);
 }
 
 void JOB_EXECUTOR::execute_job(Job* j)
 {
-  auto exec_activity = Actions::exec_task_multi_thread_async(j,dispatcher);
+  auto exec_activity = Actions::exec_task_multi_thread_async(j);
   std::vector<sg4::IoPtr>   read_activities;
   std::vector<sg4::CommPtr> comm_activities;
   std::vector<sg4::IoPtr>   write_activities;
@@ -90,8 +118,8 @@ void JOB_EXECUTOR::execute_job(Job* j)
 
     if (filelocation != j->comp_site) { //Check if in list, not first element
 
-      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,dispatcher);
-      auto read_activity = Actions::read_file_async(j,filename,dispatcher);
+      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site);
+      auto read_activity = Actions::read_file_async(j,filename);
 
       comm_activity->add_successor(read_activity);
       read_activity->add_successor(exec_activity);
@@ -100,14 +128,14 @@ void JOB_EXECUTOR::execute_job(Job* j)
       read_activities.push_back(read_activity);
     }
     else{
-      auto read_activity = Actions::read_file_async(j,filename,dispatcher);
+      auto read_activity = Actions::read_file_async(j,filename);
       read_activity->add_successor(exec_activity);
       read_activities.push_back(read_activity);
     }
   }
 
   for (const auto& [filename,size] : j->output_files) {
-    auto write_activity = Actions::write_file_async(j,filename,size,dispatcher);
+    auto write_activity = Actions::write_file_async(j,filename,size);
     exec_activity->add_successor(write_activity);
     write_activities.push_back(write_activity);
   }
@@ -141,9 +169,10 @@ void JOB_EXECUTOR::execute_job(Job* j)
 
 void JOB_EXECUTOR::start_receivers()
 {
-  for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) {
-    if (host->get_name() == "JOB-SERVER_cpu-0") continue;
-    if ((host->get_name()).find("_communication_server") != std::string::npos) continue;
+  for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) 
+  {
+    if (host->get_name().find("JOB-SERVER_cpu") != std::string::npos) continue;
+    if (host->get_name().find("_communication_server") != std::string::npos) continue;
     sg4::Actor::create(host->get_name() + "-actor", host, receiver, host->get_name() + "-MQ");
   }
 }
