@@ -56,7 +56,7 @@ void JOB_EXECUTOR::advance_to_time(double time)
     try 
     {
       pending_activities.wait_any_for(time - sg4::Engine::get_clock());
-      while (true) {if(!pending_activities.test_any()) break;}
+      while (pending_activities.test_any()) {pending_activities.wait_any();}
     }
     catch (const simgrid::TimeoutException&) {return;}
   }  
