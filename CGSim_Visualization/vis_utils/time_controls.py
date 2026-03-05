@@ -395,3 +395,64 @@ def render_cpu_step_controls(db_path: str, site: str, cpu_num: int, container=No
                     closest_idx = min(range(len(all_timesteps)), key=lambda i: abs(all_timesteps[i] - next_cpu_timestep))
                     st.session_state.timestep_index = closest_idx
                 st.rerun()
+
+
+def get_transfer_timesteps_for_pair(db_path: str, source_site: str, dest_site: str) -> List[float]:
+    """
+    Return all distinct timesteps that have a FileTransfer event between a
+    specific source_site → destination_site pair.
+
+    Args:
+        db_path: Path to the SQLite database.
+        source_site: The sending site name.
+        dest_site: The receiving site name.
+
+    Returns:
+        Sorted list of timestep floats.
+    """
+    if not os.path.exists(db_path):
+        return []
+    try:
+        conn = sqlite3.connect(db_path)
+        # Use JSON substring matching on the METADATA column
+        src_pattern  = f'%"source_site":"{source_site}"%'
+        dst_pattern  = f'%"destination_site":"{dest_site}"%'
+        query = (
+            "SELECT DISTINCT TIME FROM EVENTS "
+            "WHERE EVENT = 'FileTransfer' "
+            "AND METADATA LIKE ? "
+            "AND METADATA LIKE ? "
+            "ORDER BY TIME"
+        )
+        cursor = conn.cursor()
+        cursor.execute(query, (src_pattern, dst_pattern))
+        timesteps = [row[0] for row in cursor.fetchall()]
+        conn.close()
+        return timesteps
+    except Exception:
+        return []
+
+
+def get_all_filewrite_timesteps(db_path: str) -> List[float]:
+    """
+    Return all distinct timesteps that have any FileWrite event in the simulation.
+
+    Args:
+        db_path: Path to the SQLite database.
+
+    Returns:
+        Sorted list of timestep floats.
+    """
+    if not os.path.exists(db_path):
+        return []
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT DISTINCT TIME FROM EVENTS WHERE EVENT = 'FileWrite' ORDER BY TIME"
+        )
+        timesteps = [row[0] for row in cursor.fetchall()]
+        conn.close()
+        return timesteps
+    except Exception:
+        return []
