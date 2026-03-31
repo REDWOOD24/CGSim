@@ -25,11 +25,48 @@ Follow these steps to build the project locally:
    sudo make install
    ```
 
+The build will also compile:
+- the core `CGSim` shared library,
+- the sample dispatcher plugin under `dispatch_plugins/simple-test-plugin` (if you build it separately with its own CMake file),
+- the built-in timer-based data management policy under `data_management_plugins/timer-based-policy`, which is linked directly into `CGSim`.
+
 ## Run Instructions
 
    ```bash
-  ./cg-sim -c config.json
+   ./cg-sim -c config.json
    ```
+
+### Configuring Data Management Plugins
+
+Data management behavior is controlled via the `Data_Management_Policy` block in your simulation config JSON (for example in `config-files/toy_config.json`):
+
+```json
+{
+  "Grid_Name": "ATLAS-GRID",
+  "Sites_Information": "path/to/sites.json",
+  "Sites_Connection_Information": "path/to/connections.json",
+  "Dispatcher_Plugin": "path/to/libSimpleDispatcherPlugin.dylib",
+  "Limited_Sites": [],
+  "Data_Management_Policy": {
+    "enabled": true,
+    "interval": 1000.0,
+    "high_utilization_threshold": 0.8,
+    "data_transfer_mode": "COPY"
+  },
+  "Custom_Parameters": {
+    "Num_of_Jobs": "-1",
+    "jobs_file": "path/to/jobs.csv",
+    "output_file": "path/to/output.db"
+  }
+}
+```
+
+- **`enabled`**: turn the policy on/off.
+- **`interval`**: simulation time between policy executions.
+- **`high_utilization_threshold`**: utilization above which a site is considered “full” and may trigger data movement.
+- **`data_transfer_mode`**: `"COPY"` to replicate data, `"MOVE"` to migrate (copy then remove at source).
+
+See `data_management_plugins/QUICK_START_TIMER_POLICY.md` and `data_management_plugins/TIMER_BASED_DATA_MANAGEMENT_TUTORIAL.md` for more details on how the timer-based policy works and how to customize it.
    
 ## Platform
 

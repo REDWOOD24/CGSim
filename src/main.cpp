@@ -14,6 +14,9 @@
 #include "version.h"
 #include "logger.h"
 #include "job_executor.h"
+#include "data_management_policy.h"
+
+using json = nlohmann::json;
 
 int main(int argc, char** argv)
 {
@@ -52,6 +55,11 @@ int main(int argc, char** argv)
 
     PluginLoader<DispatcherPlugin> plugin_loader;
     auto dispatcher = plugin_loader.load(dispatcherPath);
+
+    // Configure Data Management Policy from config (if specified)
+    if (j.contains("Data_Management_Policy")) {
+        CGSim::DataManagementPolicy::configure(j["Data_Management_Policy"]);
+    }
 
     // Create and set up executor
     JOB_EXECUTOR::set_dispatcher(dispatcher);

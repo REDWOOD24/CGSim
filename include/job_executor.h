@@ -5,7 +5,8 @@
 #include "PluginLoader.h"
 #include "actions.h"
 #include "host_extensions.h"
-#include <chrono>
+#include "CGSim.h"
+#include <atomic>
 
 class JOB_EXECUTOR
 {
@@ -31,6 +32,7 @@ private:
     static   JobQueue jobs;
     static   std::vector<Job*> pending_jobs;
     static   std::unordered_map<Job*, int> retry_counts;
+    static   std::atomic<bool> simulation_done;
 
 };
 

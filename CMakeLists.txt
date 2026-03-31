@@ -16,6 +16,7 @@ find_package(SimGrid   REQUIRED)
 find_package(SQLite3   REQUIRED)
 find_package(spdlog    REQUIRED)
 find_package(fmt REQUIRED)
+#find_package(nlohmann_json REQUIRED)
 
 # Add json subdir
 add_subdirectory(json)
@@ -31,8 +32,13 @@ file(GLOB_RECURSE SOURCE_FILES
         "util/*.cpp"
 )
 
+# Data management plugin sources (built into CGSim library)
+set(DATA_MANAGEMENT_PLUGIN_SOURCES
+    data_management_plugins/data_management_policy.cpp
+)
+
 # Build the library
-add_library(CGSim SHARED ${SOURCE_FILES})
+add_library(CGSim SHARED ${SOURCE_FILES} ${DATA_MANAGEMENT_PLUGIN_SOURCES})
 
 # Generating the executable
 add_executable(cg-sim src/main.cpp)
@@ -45,7 +51,14 @@ target_link_libraries(
         spdlog::spdlog
 	fmt::fmt
 )
-
+#target_link_libraries(SimpleDispatcherPlugin PUBLIC
+#    ${SimGrid_LIBRARY}
+#    ${Boost_LIBRARIES}
+#    spdlog::spdlog
+#    CGSim::CGSim
+#    SQLite::SQLite3
+#    nlohmann_json::nlohmann_json
+#)
 target_link_libraries(cg-sim
     CGSim
 )

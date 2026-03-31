@@ -6,6 +6,11 @@
 #include <unordered_set>
 using Files    = std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>;
 
+// File transfer operation mode
+enum class FileTransferMode {
+    COPY,  // Copy file: source file remains, destination gets a copy
+    MOVE   // Move file: source file is removed after successful transfer
+};
 
 //Information needed to a specify a Job
 struct Job {

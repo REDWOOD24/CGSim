@@ -6,6 +6,7 @@ std::unordered_map<std::string,std::unordered_set<std::string>>  FileManager::Si
 std::unordered_map<std::string, std::unordered_set<std::string>> FileManager::FileSites;
 std::unordered_map<std::string, unsigned long long>              FileManager::FileSizes;
 std::unordered_map<std::string,  long long>              FileManager::SiteStorages;
+std::unordered_map<std::string, long long>              FileManager::SiteCapacities;
 
 
 FileManager* FileManager::instance() {
@@ -25,13 +26,41 @@ return SiteFiles.at(sitename).count(filename) > 0;
 
 bool FileManager::remove(const std::string& filename, const std::string& sitename)
 {
-return (FileSizes.erase(filename) > 0 && SiteFiles.at(sitename).erase(filename) > 0 && FileSites.at(filename).erase(sitename) > 0);
+    // Check if file exists on this site
+    if (SiteFiles.count(sitename) == 0 || SiteFiles.at(sitename).count(filename) == 0) {
+        return false;
+    }
+    
+    // Get file size before removing from tracking
+    unsigned long long size = FileSizes.at(filename);
+    
+    // Remove file from site's file list
+    SiteFiles.at(sitename).erase(filename);
+    
+    // Remove site from file's site list
+    bool site_removed = false;
+    if (FileSites.count(filename) > 0) {
+        site_removed = FileSites.at(filename).erase(sitename) > 0;
+        
+        // If file no longer exists on any site, remove it from FileSizes
+        if (FileSites.at(filename).empty()) {
+            FileSites.erase(filename);
+            FileSizes.erase(filename);
+        }
+    }
+    
+    // Restore storage capacity on the source site
+    SiteStorages[sitename] += size;
+    
+    return site_removed;
 }
 
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
 
     const std::string& site_name = site->get_name();
-    SiteStorages[site_name] = std::stoll(site->get_property("storage_capacity_bytes"));
+    long long capacity = std::stoll(site->get_property("storage_capacity_bytes"));
+    SiteCapacities[site_name] = capacity;
+    SiteStorages[site_name] = capacity;
 
     for (const auto& [file, size] : files) {
         SiteFiles[site_name].insert(file);
@@ -70,6 +99,26 @@ unsigned long long FileManager::request_remaining_grid_storage() {
 unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) {
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
     return SiteStorages.at(sitename);
+}
+
+long long FileManager::get_site_capacity(const std::string& sitename) {
+    if (SiteCapacities.count(sitename) == 0) throw std::runtime_error("Site " + sitename + " does not exist");
+    return SiteCapacities.at(sitename);
+}
+
+std::vector<std::string> FileManager::get_site_names() {
+    std::vector<std::string> names;
+    names.reserve(SiteStorages.size());
+    for (const auto& [name, _] : SiteStorages) {
+        names.push_back(name);
+    }
+    return names;
+}
+
+std::vector<std::string> FileManager::get_files_on_site(const std::string& sitename) {
+    if (SiteFiles.count(sitename) == 0) throw std::runtime_error("Site " + sitename + " does not exist");
+    std::vector<std::string> files(SiteFiles.at(sitename).begin(), SiteFiles.at(sitename).end());
+    return files;
 }
 
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <iostream>
 #include <simgrid/s4u.hpp>
 #include <simgrid/s4u/Io.hpp>
@@ -24,7 +25,10 @@ public:
     static unsigned long long request_file_size(const std::string& filename);
     static unsigned long long request_remaining_site_storage(const std::string& sitename);
     static unsigned long long request_remaining_grid_storage();
-    
+    static long long get_site_capacity(const std::string& sitename);
+    static std::vector<std::string> get_site_names();
+    static std::vector<std::string> get_files_on_site(const std::string& sitename);
+
     static void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
     static sg4::IoPtr write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
     static sg4::IoPtr read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
@@ -42,6 +46,7 @@ private:
     static std::unordered_map<std::string, std::unordered_set<std::string>> FileSites;
     static std::unordered_map<std::string, unsigned long long> FileSizes;
     static std::unordered_map<std::string, long long> SiteStorages;
+    static std::unordered_map<std::string, long long> SiteCapacities;
 
 
 };

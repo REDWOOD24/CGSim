@@ -1,13 +1,26 @@
 {
-    "Grid_Name": "ATLAS-GRID",
-    "Sites_Information": "/Users/raekhan/CGSim/toy_data/toy_new_site_info.json",
-    "Sites_Connection_Information": "/Users/raekhan/CGSim/toy_data/homogenous_toy_new_site_conn_info.json",
-    "Dispatcher_Plugin": "/Users/raekhan/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
-    "Limited_Sites": [],
-    "Custom_Parameters":
-    {
-	"Num_of_Jobs": "-1",
-	"jobs_file": "/Users/raekhan/CGSim/toy_data/toy_job.csv",
-	"output_file": "/Users/raekhan/CGSim/toy_data/toy_job.db"
+  "Grid_Name": "ATLAS-GRID",
+  "Sites_Information": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_new_site_info.json",
+  "Sites_Connection_Information": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_new_site_conn_info.json",
+  "Dispatcher_Plugin": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
+  "Limited_Sites": [],
+  "Data_Management_Policy": {
+    "enabled": true,
+    "proactive": {
+      "enabled": true,
+      "interval": 10,
+      "high_utilization_threshold": 0.1,
+      "data_transfer_mode": "MOVE"
+    },
+    "reactive": {
+      "enabled": true,
+      "strategy": "prefer_local_then_first",
+      "move_when_replica_count_exceeds": 3
     }
+  },
+  "Custom_Parameters": {
+    "Num_of_Jobs": "-1",
+    "jobs_file": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_job.csv",
+    "output_file": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_job.db"
+  }
 }
