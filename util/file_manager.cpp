@@ -21,7 +21,11 @@ return FileSizes.count(filename) > 0;
 
 bool FileManager::exists(const std::string& filename, const std::string& sitename)
 {
-return SiteFiles.at(sitename).count(filename) > 0;
+    auto it = SiteFiles.find(sitename);
+    if (it == SiteFiles.end()) {
+        return false;
+    }
+    return it->second.count(filename) > 0;
 }
 
 bool FileManager::remove(const std::string& filename, const std::string& sitename)
@@ -97,13 +101,22 @@ unsigned long long FileManager::request_remaining_grid_storage() {
 }
 
 unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) {
-    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
-    return SiteStorages.at(sitename);
+    auto it = SiteStorages.find(sitename);
+    if (it == SiteStorages.end()) {
+        // If the site was not registered in storage maps, treat remaining storage as 0
+        // instead of aborting the simulation.
+        return 0;
+    }
+    return it->second;
 }
 
 long long FileManager::get_site_capacity(const std::string& sitename) {
-    if (SiteCapacities.count(sitename) == 0) throw std::runtime_error("Site " + sitename + " does not exist");
-    return SiteCapacities.at(sitename);
+    auto it = SiteCapacities.find(sitename);
+    if (it == SiteCapacities.end()) {
+        // Unknown site capacity: report 0 instead of throwing
+        return 0;
+    }
+    return it->second;
 }
 
 std::vector<std::string> FileManager::get_site_names() {
@@ -123,8 +136,13 @@ std::vector<std::string> FileManager::get_files_on_site(const std::string& siten
 
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){
 
-    //Check if Site exists
-    if (SiteFiles.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
+    // Ensure the site entry exists in our maps instead of aborting if it had no files initially.
+    // register_site() always populates SiteStorages and SiteCapacities for valid sites, but
+    // SiteFiles may be empty if the site started with zero files. In that case we just
+    // create an empty set here.
+    if (SiteFiles.count(sitename) == 0) {
+        SiteFiles[sitename] = {};
+    }
 
     SiteFiles[sitename].insert(filename);
     FileSites[filename].insert(sitename);
@@ -136,7 +154,12 @@ void FileManager::create(const std::string& filename, const unsigned long long& 
 
 sg4::IoPtr FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
 
-    if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site"+comp_sitename+" does not exist");
+    // Ensure the site exists in our bookkeeping even if it started with zero files.
+    // register_site() guarantees that a valid site will have entries in SiteStorages
+    // and SiteCapacities; if SiteFiles doesn't yet have an entry, initialize it.
+    if (SiteFiles.count(comp_sitename) == 0) {
+        SiteFiles[comp_sitename] = {};
+    }
     auto disk = sg4::Host::by_name(comp_host)->get_disk_by_name(comp_disk);
     auto write_activity = sg4::Io::init()->set_disk(disk)->set_size(size)->set_op_type(sg4::Io::OpType::WRITE);
     write_activity->on_this_completion_cb([filename,size,comp_sitename](simgrid::s4u::Io const& io) {

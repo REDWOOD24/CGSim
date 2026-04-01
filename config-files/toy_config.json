@@ -1,6 +1,6 @@
 {
   "Grid_Name": "ATLAS-GRID",
-  "Sites_Information": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_new_site_info.json",
+  "Sites_Information": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_new_site_info_1.json",
   "Sites_Connection_Information": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/toy_data/toy_new_site_conn_info.json",
   "Dispatcher_Plugin": "/Users/kaun-chiehhsu/Documents/projects/redwood/CGSim/dispatch_plugins/simple-test-plugin/build/libSimpleDispatcherPlugin.dylib",
   "Limited_Sites": [],
