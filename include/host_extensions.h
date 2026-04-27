@@ -6,6 +6,7 @@
 #include <set>
 #include <string>
 #include "job.h"
+#include "site_manager.h"
 #include <simgrid/simcall.hpp>
 
 class HostExtensions {
@@ -26,6 +27,7 @@ public:
 private:
   unsigned int cores_used;
   unsigned int cores_available;
+  bool         available = true; //CPU being available means at least 1 core is free.
   std::set<std::string> job_ids;
   std::string name;
 };

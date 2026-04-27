@@ -14,7 +14,7 @@ sg4::Host* SIMPLE_DISPATCHER::findAvailableCPU(const std::vector<sg4::Host*>& cp
         if(cpu->get_name().find("JOB-SERVER_cpu") != std::string::npos) continue;
         if(cpu->get_name().find("_communication_server") != std::string::npos) continue;
         if(cpu->extension<HostExtensions>()->get_cores_available() < j->cores) continue;
-        if(CGSim::FileManager::request_remaining_site_storage(cpu->get_englobing_zone()->get_name()) < storage_needed(j->output_files)) continue;
+        if(CGSim::get_file_manager()->request_remaining_site_storage(cpu->get_englobing_zone()->get_name()) < storage_needed(j->output_files)) continue;
 
         auto d = cpu->get_disks()[0]; //Change later
 
@@ -39,8 +39,8 @@ Job* SIMPLE_DISPATCHER::assignJob(Job* job)
   job->flops = std::stol(site->get_property("GFLOPS"))*job->cpu_consumption_time*job->cores;
   cpu   = findAvailableCPU(site->get_all_hosts(), job);
 
-  if(cpu) {job->status = "assigned";}
-  else    {job->status = "pending";}
+  if(cpu) {job->status = "pending_assigned";}
+  else    {job->status = "pending_not_assigned";}
 
   return job;
 }

@@ -13,6 +13,7 @@
 #include "host_extensions.h"
 #include "file_manager.h"
 #include "job_executor.h"
+#include "site_manager.h"
 
 namespace sg4 = simgrid::s4u;
 static std::unordered_set<std::string> started_transfers; //Hack to avoid double start of comms in callback

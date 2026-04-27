@@ -52,12 +52,14 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         site->set_gateway(comm_host->get_netpoint());
         comm_host->seal();
 
-        CGSim::FileManager::register_site(site,site_info.files);
         site->set_property("total_cores",std::to_string(site_cores));
         sites[site_info.name] = site;
 
         grid_storage += std::stoll(site->get_property("storage_capacity_bytes"));
         grid_cores   += site_cores;
+
+        CGSim::get_file_manager()->register_site(site,site_info.files);
+        CGSim::get_site_manager()->register_site(site);
     }
     platform->set_property("grid_cores",  std::to_string(grid_cores));
     platform->set_property("grid_storage",std::to_string(grid_storage));

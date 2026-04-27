@@ -2,7 +2,7 @@ import json
 
 # Hardcoded file paths
 INPUT_JSON_FILE = "/Users/raekhan/CGSim/data/site_conn_info.json"
-OUTPUT_JSON_FILE = "latency_bandwidth.json"
+OUTPUT_JSON_FILE = "site_conn_info.json"
 
 # Mapping closeness → latency (ms)
 CLOSENESS_LATENCY_MAP = {

@@ -19,12 +19,11 @@ struct Job
     std::string                                 comp_site{};
     std::string                                 comp_host{};
     double                                      memory_usage{};
-    std::string                                 id{};
     int                                         retries{};
     double                                      disk_read_bw{};
     double                                      disk_write_bw{};
     double                                      comp_host_speed{};
-    double                                      cpu_consumption_time;
+    double                                      cpu_consumption_time{};
     double                                      total_io_read_time{};
     double                                      total_io_write_time{};
     double                                      file_transfer_queue_time{};

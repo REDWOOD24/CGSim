@@ -42,8 +42,11 @@ public:
   // Virtual function can be implemented to execute code on simulation end
   virtual void onSimulationEnd(){}
 
-  // Virtual function can be implemented on job submission 
+  // Virtual function can be implemented on job submission to grid
   virtual void onJobSubmission(Job* job){}
+
+  // Virtual function can be implemented on job assignment to site 
+  virtual void onJobAssignment(Job* job){}
 
   // Virtual function can be implemented when a job execution starts
   virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex){}

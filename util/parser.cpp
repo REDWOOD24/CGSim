@@ -65,7 +65,7 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
                 cpu.disk_info.push_back(disk);
             }
 
-            site.cpu_info.push_back(cpu);
+            if (cpu.units != 0) site.cpu_info.push_back(cpu);
         }
 
         // --- Files ---

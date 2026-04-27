@@ -7,20 +7,19 @@ JobQueue                            JOB_EXECUTOR::jobs;
 unsigned long                       JOB_EXECUTOR::MAX_RETRIES = 20;
 unsigned long                       JOB_EXECUTOR::USED_CORES = 0;
 unsigned long                       JOB_EXECUTOR::TOTAL_CORES;
-unsigned long                       JOB_EXECUTOR::DISPATCHED_JOBS;
+unsigned long                       JOB_EXECUTOR::DISPATCHED_JOBS = 0;
 unsigned long                       JOB_EXECUTOR::TOTAL_JOBS;
 
 
 
 void JOB_EXECUTOR::start_job_execution()
 {
-  TOTAL_CORES = 48;/*std::stoul((sg4::Engine::get_instance()->get_netzone_root())->get_property("grid_cores"));
-  attach_callbacks();*/
+  TOTAL_CORES = std::stoul((sg4::Engine::get_instance()->get_netzone_root())->get_property("grid_cores"));
+  attach_callbacks();
   sg4::Host* job_server = sg4::Host::by_name("JOB-SERVER_cpu-0");
   if (!job_server) throw std::runtime_error("JOB-SERVER not initialized properly");
   jobs = std::move(dispatcher->getWorkload());
   TOTAL_JOBS = jobs.size();
-  DISPATCHED_JOBS = 0;
   sg4::Actor::create("JOB-EXECUTOR-actor",job_server,start_server);
   sg4::Engine::get_instance()->run();
 }
@@ -32,10 +31,12 @@ void JOB_EXECUTOR::get_jobs()
     Job* job = jobs.top();
     if (sg4::Engine::get_clock() >= job->creation_time) 
     {
-      CGSim::FileManager::request_file_location(job);
+      CGSim::get_file_manager()->request_file_location(job);
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
       std::cout << job->jobid << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
+      job->status = "pending";
+      CGSim::get_site_manager()->addSystemPendingJob();
       dispatcher->onJobSubmission(job);
       jobs.pop();
     }
@@ -56,7 +57,7 @@ void JOB_EXECUTOR::advance_to_time(double time)
     try 
     {
       pending_activities.wait_any_for(time - sg4::Engine::get_clock());
-      while (pending_activities.test_any()) {pending_activities.wait_any();}
+      while (pending_activities.test_any()){}
     }
     catch (const simgrid::TimeoutException&) {return;}
   }  
@@ -67,6 +68,7 @@ void JOB_EXECUTOR::start_server()
 {
   while (DISPATCHED_JOBS != TOTAL_JOBS)
   {
+    std::cout << DISPATCHED_JOBS << std::endl;
     if(!jobs.empty())
     {
     std::cout << sg4::Engine::get_clock() << std::endl;
@@ -80,14 +82,15 @@ void JOB_EXECUTOR::start_server()
       if((1.0*USED_CORES)/(1.0*TOTAL_CORES) > 0.8) break;
       Job* job = *it;
       dispatcher->assignJob(job);
-      if (job->status == "assigned"){onJobAssignment(job); it = pending_jobs.erase(it);}
-      else if (job->status == "pending"){job->retries++; ++it;}
+      if (job->status == "pending_assigned"){CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+      else if (job->status == "pending_not_assigned"){job->retries++; ++it;}
       else ++it;
     }
 
-    while ((1.0*USED_CORES)/(1.0*TOTAL_CORES) >= 0.6) {pending_activities.wait_any();}
+    while (!pending_activities.empty() && (1.0 * USED_CORES) / (1.0 * TOTAL_CORES) >= 0.6) pending_activities.wait_any();
   }
   while (!pending_activities.empty()){pending_activities.wait_any();}
+  
 }
 
 void JOB_EXECUTOR::onJobAssignment(Job* job)
@@ -96,6 +99,7 @@ void JOB_EXECUTOR::onJobAssignment(Job* job)
   USED_CORES += job->cores; 
   std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
+  dispatcher->onJobAssignment(job);
   sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
   sg4::MessPtr job_transfer = mqueue->put_async(job)->set_name("Transfer_Job_" + std::to_string(job->jobid) + "_to_" + job->comp_host+"_from_JOB-SERVER");
   job_transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {dispatcher->onJobTransferStart(job, me);});
@@ -111,12 +115,13 @@ void JOB_EXECUTOR::execute_job(Job* j)
   std::vector<sg4::CommPtr> comm_activities;
   std::vector<sg4::IoPtr>   write_activities;
 
-  for (const auto& [filename,fileinfo] : j->input_files) {
-    
+  for (const auto& [filename,fileinfo] : j->input_files) 
+  {
     //Take the first location where the file is located, may want to change this behavior later
     auto filelocation = *(fileinfo.second.begin());
 
-    if (filelocation != j->comp_site) { //Check if in list, not first element
+    if (filelocation != j->comp_site) 
+    { //Check if in list, not first element
 
       auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site);
       auto read_activity = Actions::read_file_async(j,filename);
@@ -127,7 +132,8 @@ void JOB_EXECUTOR::execute_job(Job* j)
       comm_activities.push_back(comm_activity);
       read_activities.push_back(read_activity);
     }
-    else{
+    else
+    {
       auto read_activity = Actions::read_file_async(j,filename);
       read_activity->add_successor(exec_activity);
       read_activities.push_back(read_activity);

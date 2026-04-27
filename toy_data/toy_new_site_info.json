@@ -8,9 +8,9 @@
     },
     "CPUInfo": [
       {
-        "units": 1,
+        "units": 2,
         "speed": 30000000.0,
-        "cores": 24,
+        "cores": 18,
         "BW_CPU": "3725GBps",
         "LAT_CPU": "72ns",
         "properties": [
@@ -42,7 +42,7 @@
         ]
       },
       {
-        "units": 1,
+        "units": 0,
         "speed": 20000000.0,
         "cores": 26,
         "BW_CPU": "2092GBps",
