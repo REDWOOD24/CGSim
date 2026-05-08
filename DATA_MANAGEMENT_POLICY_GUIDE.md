@@ -67,14 +67,41 @@ In your simulation config (for example `config-files/toy_config.json`), the data
   "enabled": true,
   "proactive": {
     "enabled": true,
-    "interval": 10.0,
-    "high_utilization_threshold": 0.1,
-    "data_transfer_mode": "MOVE"
+    "interval": 10,
+    "data_transfer_mode": "MOVE",
+    "random_seed": 1337,
+    "transfer_template": [
+      0,
+      [
+        "storage_rebalance",
+        "network_aware_rebalance",
+        "hotset_replication",
+        "custom_policy_agent"
+      ]
+    ],
+    "template_params": {
+      "storage_rebalance": { "..." : "..." },
+      "network_aware_rebalance": { "..." : "..." },
+      "hotset_replication": { "..." : "..." },
+      "custom_policy_agent": { "..." : "..." }
+    }
   },
   "reactive": {
     "enabled": true,
-    "strategy": "prefer_local_then_first",
-    "move_when_replica_count_exceeds": 3
+    "prefer_local_replica": true,
+    "remote_source_template": [
+      0,
+      [
+        "first_replica",
+        "least_utilized_source",
+        "most_utilized_source",
+        "random_replica",
+        "hash_filename_job",
+        "custom_policy_agent"
+      ]
+    ],
+    "random_seed": 1337,
+    "copy_to_move_threshold": 3
   }
 }
 ```
@@ -93,32 +120,61 @@ In your simulation config (for example `config-files/toy_config.json`), the data
   - Period between consecutive policy executions.
   - First execution is scheduled at `current_time + interval` when the simulation starts.
 
-- **`high_utilization_threshold`** (double in \[0,1]):
-  - Site utilization is defined as:
-    - `util = 1.0 - remaining_bytes / capacity_bytes`
-  - A site is considered “highly utilized” if `util ≥ threshold`.
-
 - **`data_transfer_mode`** (`"COPY"` or `"MOVE"`):
   - How proactive transfers change the file layout:
     - `"COPY"`: replicate files (source keeps its copy).
     - `"MOVE"`: migrate files (source copy removed after successful transfer).
+
+- **`random_seed`** (unsigned integer):
+  - Seeds the proactive RNG (used for `file_pick` = `random_fit` inside storage / network templates).
+
+- **`transfer_template`** (2-element array):
+  - Format: `[selected_index, fixed_template_list]` (same pattern as reactive `remote_source_template`).
+  - Fixed list (in order):
+    - **`storage_rebalance`**: move data from sites with `util ≥ high_utilization_threshold` toward sites with `util ≤ low_utilization_threshold`, using `file_pick` and up to `max_transfers_per_tick` actions per tick (no-op if no valid pair/file).
+    - **`network_aware_rebalance`**: same storage gating, plus require a SimGrid link `link_<src>:<dst>` (or reversed name), `link_load ≤ max_path_load`, and pick the best `(src, dst, file)` triple by `path_metric` (`estimated_transfer_time`, `link_load`, or `bandwidth_only`, each as `[index, [...]]` tuples or plain strings).
+    - **`hotset_replication`**: file-centric heuristic using **replica prevalence** `replicas(file) / num_sites`; if prevalence `≥ hotness_threshold` and replicas `< target_replica_count`, copy from the **most utilized** replica host to the **least utilized** site missing the file that has space (`hotness_window` / `prediction_horizon` reserved for future telemetry; `candidate_destination_policy` reserved).
+    - **`custom_policy_agent`**: not implemented; selecting it throws at the first proactive tick (same pattern as reactive stub).
+
+- **`template_params`**:
+  - Object with optional sub-objects named `storage_rebalance`, `network_aware_rebalance`, `hotset_replication`, `custom_policy_agent`; see `config-files/toy_config.json` for a full example.
+
+Backward compatibility: if **`transfer_template` is absent**, the plugin behaves like **`storage_rebalance`** using legacy fields only:
+- **`high_utilization_threshold`**: source-site trigger (no `low_utilization_threshold`; destinations are any site with globally lowest utilization among those that can accept a file).
 
 ### `reactive` section
 
 - **`enabled`** (bool):
   - Turn reactive logic on or off.
 
-- **`strategy`** (string, currently informational):
-  - Default: `"prefer_local_then_first"`.
-  - Describes the selection rule:
-    - Prefer a replica on the job’s compute site.
-    - If none, pick the first available replica.
+- **`prefer_local_replica`** (bool):
+  - If `true`, and a replica already exists on the job’s compute site, that local site is selected.
+  - If `false`, source selection always uses `remote_source_template` across all replicas.
 
-- **`move_when_replica_count_exceeds`** (integer):
+- **`copy_to_move_threshold`** (integer):
   - If the number of replicas of a file **exceeds** this value when a job requests it:
     - The reactive policy suggests `MOVE`.
   - Otherwise:
     - The reactive policy suggests `COPY`.
+
+- **`remote_source_template`** (2-element array):
+  - Format: `[selected_index, fixed_template_list]`
+  - `selected_index` chooses one entry from the list.
+  - The expected fixed template list is:
+    - `"first_replica"`
+    - `"least_utilized_source"`
+    - `"most_utilized_source"`
+    - `"random_replica"`
+    - `"hash_filename_job"`
+    - `"custom_policy_agent"`
+  - Backward compatibility: a plain string value is still accepted by the current parser.
+
+- **`random_seed`** (unsigned integer):
+  - Seed used only when the selected template is `"random_replica"`.
+
+- **`custom_policy_agent`**:
+  - Current implementation is a stub.
+  - If selected, it logs `"not implemented yet."` and stops execution.
 
 ---
 
@@ -154,15 +210,21 @@ Given the context `ctx`:
 
 3. Choose source site:
    - Let `job_site = ctx.job->comp_site`.
-   - If any replica has `replica.sitename == job_site`:
+   - If `prefer_local_replica` is `true` and any replica has `replica.sitename == job_site`:
      - `decision.chosen_site = job_site` (serve locally).
    - Else if `ctx.replicas` is non‑empty:
-     - `decision.chosen_site = ctx.replicas.front().sitename` (fallback: first replica).
+     - `decision.chosen_site` is selected by `reactive.remote_source_template`:
+       - `"first_replica"`: first replica in list.
+       - `"least_utilized_source"`: minimum storage utilization site among replicas.
+       - `"most_utilized_source"`: maximum storage utilization site among replicas.
+       - `"random_replica"`: random replica (seeded by `reactive.random_seed`).
+       - `"hash_filename_job"`: deterministic hash pick using `filename#jobid`.
+       - `"custom_policy_agent"`: logs `"not implemented yet."` and throws runtime error.
    - Else:
      - Leave `chosen_site` empty (no known replicas; core’s default is used).
 
 4. Choose transfer mode:
-   - If `replica_count > move_when_replica_count_exceeds_`:
+   - If `replica_count > copy_to_move_threshold_`:
      - `decision.mode = MOVE` (thin out overly replicated files).
    - Else:
      - `decision.mode = COPY`.
@@ -187,94 +249,30 @@ This tells you:
 
 ## Proactive behavior: timer‑driven balancing
 
-The proactive plugin uses SimGrid’s **kernel timers** to run periodically and rebalance storage across sites.
+The proactive plugin uses SimGrid **kernel timers** to run **`performDataManagementOperations(t)`** on every interval tick. Each tick selects a template via `transfer_template` and runs at most **`max_transfers_per_tick`** transfers (possibly zero).
 
-### Scheduling
+### Scheduling (unchanged)
 
-- At `onSimulationStart()`:
-  - If `proactive_enabled_` and `interval > 0`:
-    - Compute `next_time = current_time + interval`.
-    - Call `timer::Timer::set(next_time, callback)`.
+- At `onSimulationStart()`: schedules `current_time + interval` when enabled and `interval > 0`.
+- Callback increments `execution_count_`, invokes `performDataManagementOperations`, then schedules the next tick.
+- `onSimulationEnd()` removes the timer if active.
 
-- The callback:
-  - Increments `execution_count_`.
-  - Calls `performDataManagementOperations(sg4::Engine::get_clock())`.
-  - Schedules the **next** timer at `current_time + interval`.
+### Core dispatch (`performDataManagementOperations`)
 
-- At `onSimulationEnd()`:
-  - If a timer exists:
-    - `current_timer_->remove(); current_timer_ = nullptr;`
+Depending on **`transfer_template`**:
 
-### Core algorithm (`performDataManagementOperations`)
+1. **`storage_rebalance`**: greedy search over `(src_site, dst_site)` with `src.util ≥ high` and `dst.util ≤ low`, using `file_pick` (`first_fit`, `largest_fit`, `smallest_fit`, or `random_fit` as `[index, list]` tuples or strings). Skips `(filename, src_site)` in `in_flight_transfers_`.
+2. **`network_aware_rebalance`**: same storage filters, additionally requires named inter-site **`link_<a>:<b>`** (same convention as dispatcher output), rejects when `link_load > max_path_load`, then minimizes a lexicographic key derived from `path_metric`.
+3. **`hotset_replication`**: prevalence-based copy of “hot” files (see **`template_params`** above).
+4. **`custom_policy_agent`**: stub that logs and **`throw`s** (“not implemented yet”).
 
-At each execution time \(t\):
+### Transfer mechanics (shared)
 
-1. Query all sites:
-   - `sites = FileManager::get_site_names()`.
-   - For each `sitename`:
-     - `capacity = FileManager::get_site_capacity(sitename)`.
-     - `remaining = FileManager::request_remaining_site_storage(sitename)`.
-     - `util = 1.0 - remaining / capacity`.
+Transfers use communication hosts **`{site}_communication`**, detached `Comm::sendto_init()`, completion callback `FileManager::create` (+ `remove` when `MOVE`), and **`in_flight_transfers_`** book-keeping identical to older builds.
 
-2. Build `site_utilization`:
-   - `std::vector<std::pair<std::string, double>>` of `(sitename, util)`.
+### Logging
 
-3. For each `src_site` in `site_utilization`:
-   - If `util < high_utilization_threshold_`:
-     - Skip (source not considered “full”).
-
-   - Find candidate `dst_site`:
-     - The site with **lowest utilization**, `u_dst`, such that:
-       - `dst_site != src_site`.
-       - Has enough remaining space for at least one file from `src_site`.
-
-   - If no such `dst_site` exists:
-     - Continue to next `src_site`.
-
-   - Query files on `src_site`:
-     - `files_on_site = FileManager::get_files_on_site(src_site)`.
-     - For each `filename`:
-       - Skip if `FileManager::exists(filename, dst_site)` (already has a replica).
-       - Skip if the pair `(filename, src_site)` is currently in `in_flight_transfers_`.
-       - Query `size = FileManager::request_file_size(filename)`.
-       - If `size ≤ remaining_dst`:
-         - Select this `filename_to_copy`, `file_size` and break.
-
-   - If no candidate file found:
-     - Continue to next `src_site`.
-
-   - Initiate transfer:
-     - Resolve communication hosts:
-       - `src_host = Engine::host_by_name_or_null(src_site + "_communication")`.
-       - `dst_host = Engine::host_by_name_or_null(dst_site + "_communication")`.
-     - Create a detached `Comm`:
-       - `Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(file_size)`.
-     - Name the activity:
-       - `"DataMgmt_move_<file>_from_<src>_to_<dst>"` or `"DataMgmt_copy_..."`.
-     - Register completion callback:
-       - On completion:
-         - `FileManager::create(file, size, dst_site)`.
-         - If `data_transfer_mode_ == MOVE`:
-           - `FileManager::remove(file, src_site)` (free space and update maps).
-         - Remove `(file, src_site)` from `in_flight_transfers_`.
-
-   - Log **initiation** and **completion**:
-
-     - Initiation (reason included):
-
-     ```text
-     Proactive Data Management: initiating MOVE of '17' from AGLT2_site_3 (util 85.00%) to AGLT2_site_5
-     (util 20.00%) at time 100 because src_util >= threshold (85.00% >= 80.00%) and dst has enough free storage
-     ```
-
-     - Completion:
-
-     ```text
-     Proactive Data Management: completed MOVE of '17' (524288000 bytes) from AGLT2_site_3 to AGLT2_site_5
-     ```
-
-4. Only **one** transfer is initiated per policy execution:
-   - After the first successful initiation, the loop `break`s.
+Each initiation line includes the template tag in brackets, for example **`[storage_rebalance]`** or **`[network_aware_rebalance]`**.
 
 
 ### Combined reactive + proactive flow diagram
@@ -328,7 +326,7 @@ flowchart LR
   R2 -- no --> R3[Use default source<br/>(first location), mode=COPY]:::op
   R2 -- yes --> R4[onFileRequest(ctx):<br/>pick chosen_src_site]:::op
   R4 --> R6[Compute replica_count]:::op
-  R6 --> R7{replica_count ><br/>move_when_replica_count_exceeds?}:::decision
+  R6 --> R7{replica_count ><br/>copy_to_move_threshold?}:::decision
   R7 -- yes --> R8[decision.mode = MOVE]:::op
   R7 -- no --> R9[decision.mode = COPY]:::op
   R8 --> R10
@@ -447,30 +445,31 @@ Ignoring the exact numeric values of thresholds/intervals and focusing only on s
 
 - Reactive:
   - `reactive.enabled` ∈ {true, false}
-  - `strategy` – currently effectively `"prefer_local_then_first"` but could be extended to a small enum of K strategies.
-  - `move_when_replica_count_exceeds` – an integer threshold in some finite range \[0, R] (R being a “max reasonable replica count”).
+  - `prefer_local_replica` ∈ {true, false}
+  - `remote_source_template` index over 6 templates.
+  - `copy_to_move_threshold` – an integer threshold in some finite range \[0, R] (R being a “max reasonable replica count”).
 
 If we bound ourselves to:
 
-- 3 booleans (`enabled`, `proactive.enabled`, `reactive.enabled`) → \(2^3 = 8\) combinations.
+- 4 booleans (`enabled`, `proactive.enabled`, `reactive.enabled`, `prefer_local_replica`) → \(2^4 = 16\) combinations.
 - 2 values for `data_transfer_mode`.
-- K possible strategies.
+- 6 template choices.
 - T distinct values for the integer threshold.
 
 then the number of structurally distinct policies is on the order of:
 
 \[
-N_\text{discrete} = 2^3 \times 2 \times K \times T = 16 \times K \times T.
+N_\text{discrete} = 2^4 \times 2 \times 6 \times T = 192 \times T.
 \]
 
-For example, with K = 3 strategy options and T = 10 threshold options, you already have
-\(16 × 3 × 10 = 480\) different “shapes” of policy, before considering timing/threshold parameters.
+For example, with T = 10 threshold options, you already have
+\(192 × 10 = 1{,}920\) different “shapes” of policy, before considering timing/threshold parameters.
 
 Qualitatively, these discrete switches let you control:
 
 - Whether the system is **proactive only**, **reactive only**, **both**, or **disabled**.
 - Whether transfers are biased toward **replication (COPY)** or **migration (MOVE)**.
-- How aggressively the reactive layer converts “many replicas” into MOVE operations via `move_when_replica_count_exceeds`.
+- How aggressively the reactive layer converts “many replicas” into MOVE operations via `copy_to_move_threshold`.
 
 ### Continuous configuration space
 
@@ -509,8 +508,8 @@ Rather than enumerating all combinations, it’s more intuitive to think in term
   - Ranges from “never runs” → “occasionally rebalances full sites” → “constant background shuffling”.
 
 - **Reactive aggressiveness axis**:
-  - Controlled by `reactive.enabled`, `strategy`, and `move_when_replica_count_exceeds`.
-  - Ranges from “no influence (off)” → “just choose best source” → “actively converting surplus replicas into MOVE operations”.
+  - Controlled by `reactive.enabled`, `prefer_local_replica`, `remote_source_template`, and `copy_to_move_threshold`.
+  - Ranges from “no influence (off)” → “locality-first or template-driven source selection” → “actively converting surplus replicas into MOVE operations”.
 
 - **Replication vs migration axis**:
   - Controlled by `data_transfer_mode` and the reactive MOVE/COPY decisions.
