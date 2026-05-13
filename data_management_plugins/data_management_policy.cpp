@@ -367,9 +367,22 @@ public:
             replica_sites_str += replica_sites[i];
         }
 
+        unsigned long long file_bytes = 0;
+        if (!ctx.replicas.empty()) {
+            file_bytes = ctx.replicas.front().size;
+            if (!decision.chosen_site.empty()) {
+                for (const auto& replica : ctx.replicas) {
+                    if (replica.sitename == decision.chosen_site) {
+                        file_bytes = replica.size;
+                        break;
+                    }
+                }
+            }
+        }
+
         CG_SIM_LOG_INFO(
             "Reactive Data Management: job {} requesting file '{}'; replicas={}, chosen_src_site='{}', "
-            "dst_site='{}', decision_mode={}, remote_source_template={} [replica_sites={}]", 
+            "dst_site='{}', decision_mode={}, remote_source_template={} [replica_sites={}], file_bytes={}",
             ctx.job->jobid,
             ctx.filename,
             replica_count,
@@ -377,7 +390,8 @@ public:
             dst_site,
             mode_str,
             remoteSourceTemplateToString(remote_source_template_),
-            replica_sites_str);
+            replica_sites_str,
+            file_bytes);
 
         return decision;
     }

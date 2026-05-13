@@ -1,0 +1,2 @@
+# Optional dependencies for data-management log plots (heatmap / stacked bars)
+matplotlib>=3.7

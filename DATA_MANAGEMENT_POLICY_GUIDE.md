@@ -523,3 +523,24 @@ By picking a small set of representative points along these axes, you can:
 
 The plugin design is intentionally modular so that adding more knobs (new strategies, extra thresholds, hysteresis, per‑file or per‑site parameters) simply extends the same discrete×continuous structure, without requiring changes to the core CGSim engine. 
 
+---
+
+## Policy sweep outputs and visualization
+
+The helper script `generate_policy_variants.py` writes each run under a **timestamped** directory:
+
+- `config-files/runs_<YYYYMMDD_HHMMSS>/<config_name>/toy_config.json`
+- `config-files/runs_<YYYYMMDD_HHMMSS>/<config_name>/atlas_grid_simulation.log` (moved from `build/logs/` after each `cg-sim` run)
+- `config-files/runs_<YYYYMMDD_HHMMSS>/<config_name>/transfer_heatmap_bytes.png` — site×site bytes (log1p color), axes ordered from `toy_data/mimic_new_site_info.json` top-level keys
+- `config-files/runs_<YYYYMMDD_HHMMSS>/<config_name>/transfer_stacked_by_edge.png` — stacked bytes per directed site edge, segments `reactive|<template>` vs `proactive|<template>`
+- `config-files/runs_<YYYYMMDD_HHMMSS>/cross_config_transfer_stacked.png` — one stacked bar per configuration (same segment keys), sorted by total bytes
+
+**Dependencies:** `pip install -r requirements-viz.txt` (matplotlib).
+
+**CLI shortcuts:**
+
+- `python3 generate_policy_variants.py --plot-only config-files/runs_<ts>` — regenerate figures from existing logs.
+- `python3 -m plotting --plot-only config-files/runs_<ts> [--site-info toy_data/mimic_new_site_info.json]`
+
+Reactive transfer sizes in logs omit byte counts; the parser **imputes** sizes from proactive initiation lines for the same filename when possible (scan proactive first, then reactive).
+

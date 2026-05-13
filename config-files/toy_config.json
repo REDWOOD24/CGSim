@@ -25,8 +25,9 @@
     },
     "proactive": {
       "enabled": true,
-      "interval": 10,
+      "interval": 1.0,
       "data_transfer_mode": "MOVE",
+      "random_seed": 1337,
       "transfer_template": [
         0,
         [
@@ -38,24 +39,25 @@
       ],
       "template_params": {
         "storage_rebalance": {
-          "high_utilization_threshold": 0.85,
-          "low_utilization_threshold": 0.60,
+          "high_utilization_threshold": 0.05,
+          "low_utilization_threshold": 1.0,
           "file_pick": [0, ["first_fit", "largest_fit", "smallest_fit", "random_fit"]],
-          "max_transfers_per_tick": 1
+          "max_transfers_per_tick": 1,
+          "skip_if_already_replica_on_destination": true
         },
         "network_aware_rebalance": {
-          "high_utilization_threshold": 0.85,
-          "low_utilization_threshold": 0.60,
+          "high_utilization_threshold": 0.05,
+          "low_utilization_threshold": 1.0,
           "path_metric": [0, ["estimated_transfer_time", "link_load", "bandwidth_only"]],
-          "max_path_load": 0.80,
+          "max_path_load": 1.0,
           "file_pick": [0, ["first_fit", "largest_fit", "smallest_fit", "random_fit"]],
           "max_transfers_per_tick": 1
         },
         "hotset_replication": {
           "hotness_window": 100,
-          "hotness_threshold": 0.70,
+          "hotness_threshold": 0.08,
           "prediction_horizon": 50,
-          "target_replica_count": 3,
+          "target_replica_count": 4,
           "candidate_destination_policy": [0, ["requesting_sites_first", "least_utilized_among_requesting"]],
           "max_transfers_per_tick": 1
         },
