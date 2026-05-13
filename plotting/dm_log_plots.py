@@ -19,6 +19,11 @@ from plotting.dm_log_parser import (
     stack_segment_display_label,
     stack_segment_key,
 )
+from plotting.job_metrics import (
+    SeriesStats,
+    format_cross_config_timing_report,
+    job_timing_stats_bundle_for_config_dir,
+)
 from plotting.plot_defaults import PLOT_DEFAULTS
 
 
@@ -172,13 +177,47 @@ def _aggregate_edge_stacks(
     return ordered, edge_vals
 
 
-def _tab20_colors(n: int) -> list:
-    import matplotlib.cm as cm  # noqa: WPS433
+def _stack_layer_prefix(segment_key: str) -> str:
+    """First field of ``layer|mode|template`` keys."""
+    i = segment_key.find("|")
+    return segment_key[:i] if i >= 0 else "other"
 
-    cmap = cm.get_cmap(str(PLOT_DEFAULTS["stack_colormap"]))
-    if n <= 0:
-        return []
-    return [cmap(i / max(n - 1, 1)) for i in range(n)]
+
+def _stack_segment_fill_colors(keys: list[str]) -> dict[str, object]:
+    """Blues family for reactive, oranges for proactive, greys for anything else."""
+    import matplotlib  # noqa: WPS433
+
+    react = [k for k in keys if _stack_layer_prefix(k) == "reactive"]
+    proact = [k for k in keys if _stack_layer_prefix(k) == "proactive"]
+    rest = [k for k in keys if k not in set(react) | set(proact)]
+    out: dict[str, object] = {}
+
+    def assign_shades(cmap_name: str, group: list[str], lo: float, hi: float) -> None:
+        if hasattr(matplotlib, "colormaps"):
+            cmap = matplotlib.colormaps[cmap_name]
+        else:
+            import matplotlib.cm as cm  # noqa: WPS433
+
+            cmap = cm.get_cmap(cmap_name)
+        n = len(group)
+        if n <= 0:
+            return
+        for i, k in enumerate(group):
+            t = lo + (hi - lo) * (i / max(n - 1, 1)) if n > 1 else (lo + hi) / 2.0
+            out[k] = cmap(t)
+
+    assign_shades(str(PLOT_DEFAULTS["stack_reactive_cmap"]), react, 0.38, 0.92)
+    assign_shades(str(PLOT_DEFAULTS["stack_proactive_cmap"]), proact, 0.38, 0.92)
+    assign_shades(str(PLOT_DEFAULTS["stack_other_cmap"]), rest, 0.35, 0.75)
+    return out
+
+
+def _set_stacked_bar_ylim(ax, column_totals: list[float]) -> None:
+    """Leave headroom so the tallest stack stays below the axes top."""
+    mx = max(column_totals) if column_totals else 0.0
+    factor = float(PLOT_DEFAULTS["stack_bar_ymax_factor"])
+    top = max(mx * factor, mx + 1.0)
+    ax.set_ylim(0.0, top)
 
 
 def plot_stacked_transfers_by_edge(
@@ -201,8 +240,7 @@ def plot_stacked_transfers_by_edge(
 
     ordered = ordered[:me]
     keys = _sort_stack_segment_keys(list({k for e in ordered for k in edge_vals[e]}))
-    colors = _tab20_colors(len(keys))
-    key_color = {keys[i]: colors[i] for i in range(len(keys))}
+    key_color = _stack_segment_fill_colors(keys)
 
     labels = [f"{s}\n→\n{d}" for s, d in ordered]
     x = list(range(len(labels)))
@@ -241,6 +279,7 @@ def plot_stacked_transfers_by_edge(
         ncol=ncol,
     )
     fig.tight_layout()
+    _set_stacked_bar_ylim(ax, bottom)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=int(PLOT_DEFAULTS["dpi"]), bbox_inches="tight")
     plt.close(fig)
@@ -253,7 +292,7 @@ def plot_cross_configuration_stacked(
     title: str = "All configurations — transfer bytes by layer, mode, and template",
 ) -> None:
     plt = _ensure_matplotlib()
-    rows: list[tuple[str, float, dict[str, float]]] = []
+    rows: list[tuple[Path, str, float, dict[str, float]]] = []
     for d in iter_config_run_directories(run_root):
         logf = d / "atlas_grid_simulation.log"
         if not logf.is_file():
@@ -266,7 +305,7 @@ def plot_cross_configuration_stacked(
                 continue
             by_k[stack_segment_key(r)] += r.bytes
             tot += r.bytes
-        rows.append((d.name, tot, dict(by_k)))
+        rows.append((d, d.name, tot, dict(by_k)))
 
     if not rows:
         fig, ax = plt.subplots(figsize=(8, 4))
@@ -276,12 +315,11 @@ def plot_cross_configuration_stacked(
         plt.close(fig)
         return
 
-    rows.sort(key=lambda r: r[1], reverse=True)
-    all_keys = _sort_stack_segment_keys(list({k for _, _, bk in rows for k in bk}))
-    configs = [r[0] for r in rows]
+    rows.sort(key=lambda r: r[2], reverse=True)
+    all_keys = _sort_stack_segment_keys(list({k for _, _, _, bk in rows for k in bk}))
+    configs = [r[1] for r in rows]
 
-    colors = _tab20_colors(len(all_keys))
-    key_color = {all_keys[i]: colors[i] for i in range(len(all_keys))}
+    key_color = _stack_segment_fill_colors(all_keys)
 
     x = list(range(len(configs)))
     bottom = [0.0] * len(configs)
@@ -290,8 +328,10 @@ def plot_cross_configuration_stacked(
         len(configs) * float(PLOT_DEFAULTS["cross_bar_inches_per_config"]),
     )
     fig, ax = plt.subplots(figsize=(fig_w, float(PLOT_DEFAULTS["cross_bar_fig_height"])))
+    ax.set_axisbelow(True)
+    ax.grid(axis="y", color="0.75", linestyle="-", linewidth=0.7, alpha=0.95)
     for key in all_keys:
-        heights = [r[2].get(key, 0.0) for r in rows]
+        heights = [r[3].get(key, 0.0) for r in rows]
         if sum(heights) == 0:
             continue
         ax.bar(
@@ -313,17 +353,93 @@ def plot_cross_configuration_stacked(
     ax.set_ylabel("Bytes")
     ax.set_title(title)
     _bytes_axis_scientific(ax.yaxis)
+
+    time_vals: list[float] = []
+    e2e_avg: list[float | None] = []
+    queue_avg: list[float | None] = []
+    timing_entries: list[tuple[str, Path | None, SeriesStats | None, SeriesStats | None]] = []
+    for r in rows:
+        jp, e2e_st, q_st = job_timing_stats_bundle_for_config_dir(r[0])
+        timing_entries.append((r[1], jp, e2e_st, q_st))
+        if e2e_st is not None and q_st is not None:
+            e2e_avg.append(e2e_st.mean_s)
+            queue_avg.append(q_st.mean_s)
+            time_vals.append(e2e_st.mean_s)
+            time_vals.append(q_st.mean_s)
+        else:
+            e2e_avg.append(None)
+            queue_avg.append(None)
+
+    report_path = out_path.with_name("cross_config_job_timing_stats.txt")
+    report_text = format_cross_config_timing_report(run_root, timing_entries)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(report_text, encoding="utf-8")
+    print(report_text, end="")
+
+    ax2 = None
+    if time_vals:
+        ax2 = ax.twinx()
+        e2e_y = [v if v is not None else float("nan") for v in e2e_avg]
+        queue_y = [v if v is not None else float("nan") for v in queue_avg]
+        ax2.plot(
+            x,
+            e2e_y,
+            "o-",
+            color="#c0392b",
+            linewidth=1.5,
+            markersize=5,
+            label="Avg job lifetime (s)",
+            zorder=4,
+        )
+        ax2.plot(
+            x,
+            queue_y,
+            "s-",
+            color="#1e8449",
+            linewidth=1.5,
+            markersize=5,
+            label="Avg queue time (s)",
+            zorder=4,
+        )
+        ax2.set_ylabel("Time (s)", fontsize=11)
+        ax2.tick_params(axis="y", labelsize=int(PLOT_DEFAULTS["cross_label_fontsize"]))
+        plot_max = 0.0
+        for v in e2e_avg + queue_avg:
+            if v is not None:
+                plot_max = max(plot_max, float(v))
+        if plot_max > 0.0:
+            ax2.set_ylim(0.0, plot_max * 1.12 + 1.0)
+        else:
+            ax2.set_ylim(0.0, 1.0)
+
     leg_fs = int(PLOT_DEFAULTS["stack_legend_fontsize"])
     ncol = 2 if len(all_keys) > 12 else int(PLOT_DEFAULTS["stack_legend_ncol"])
-    ax.legend(
-        loc="upper right",
-        fontsize=leg_fs,
-        frameon=True,
-        fancybox=True,
-        framealpha=0.92,
-        ncol=ncol,
-    )
+    h1, l1 = ax.get_legend_handles_labels()
+    if ax2 is not None:
+        h2, l2 = ax2.get_legend_handles_labels()
+        ax.legend(
+            h1 + h2,
+            l1 + l2,
+            loc="upper right",
+            fontsize=leg_fs,
+            frameon=True,
+            fancybox=True,
+            framealpha=0.92,
+            ncol=ncol,
+        )
+    else:
+        ax.legend(
+            h1,
+            l1,
+            loc="upper right",
+            fontsize=leg_fs,
+            frameon=True,
+            fancybox=True,
+            framealpha=0.92,
+            ncol=ncol,
+        )
     fig.tight_layout()
+    _set_stacked_bar_ylim(ax, bottom)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=int(PLOT_DEFAULTS["dpi"]), bbox_inches="tight")
     plt.close(fig)

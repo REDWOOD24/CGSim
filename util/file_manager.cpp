@@ -129,9 +129,16 @@ std::vector<std::string> FileManager::get_site_names() {
 }
 
 std::vector<std::string> FileManager::get_files_on_site(const std::string& sitename) {
-    if (SiteFiles.count(sitename) == 0) throw std::runtime_error("Site " + sitename + " does not exist");
-    std::vector<std::string> files(SiteFiles.at(sitename).begin(), SiteFiles.at(sitename).end());
-    return files;
+    auto it = SiteFiles.find(sitename);
+    if (it != SiteFiles.end()) {
+        return std::vector<std::string>(it->second.begin(), it->second.end());
+    }
+    // Site was registered with zero initial files: register_site() never inserted into
+    // SiteFiles, but SiteStorages / SiteCapacities were populated. Treat as an empty file set.
+    if (SiteStorages.find(sitename) != SiteStorages.end()) {
+        return {};
+    }
+    throw std::runtime_error("Site " + sitename + " does not exist");
 }
 
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){

@@ -25,6 +25,10 @@ PLOT_DEFAULTS: dict[str, float | int | str] = {
     "legend_fontsize": 7,
     "stack_legend_fontsize": 11,
     "stack_legend_ncol": 1,
+    "stack_bar_ymax_factor": 1.18,
+    "stack_reactive_cmap": "Blues",
+    "stack_proactive_cmap": "Oranges",
+    "stack_other_cmap": "Greys",
 }
 
 
