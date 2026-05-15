@@ -68,26 +68,40 @@ void JOB_EXECUTOR::start_server()
 {
   while (DISPATCHED_JOBS != TOTAL_JOBS)
   {
-    std::cout << DISPATCHED_JOBS << std::endl;
+    std::cout << DISPATCHED_JOBS << " / " << TOTAL_JOBS << " jobs dispatched" << std::endl;
+    std::cout << "Pending Jobs: " << pending_jobs.size() << std::endl;
+    std::cout << "Pending Activities: " <<  pending_activities.size() << std::endl;
+    std::cout << "Current Simulated Time: " << sg4::Engine::get_clock() << std::endl;
+    std::cout << "CORE USAGE: " << (1.0*USED_CORES)/(1.0*TOTAL_CORES) << std::endl;
+
     if(!jobs.empty())
     {
-    std::cout << sg4::Engine::get_clock() << std::endl;
-    std::cout << jobs.top()->creation_time << std::endl;
     if(sg4::Engine::get_clock() < jobs.top()->creation_time) advance_to_time(jobs.top()->creation_time);
     get_jobs();
     }
-
+    
+    bool nothing_assigned = true;
+    bool activities_finished = false;
     for (auto it = pending_jobs.begin(); it != pending_jobs.end();)
     {
       if((1.0*USED_CORES)/(1.0*TOTAL_CORES) > 0.8) break;
       Job* job = *it;
       dispatcher->assignJob(job);
-      if (job->status == "pending_assigned"){CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+      if (job->status == "pending_assigned"){nothing_assigned = false; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
       else if (job->status == "pending_not_assigned"){job->retries++; ++it;}
       else ++it;
     }
 
-    while (!pending_activities.empty() && (1.0 * USED_CORES) / (1.0 * TOTAL_CORES) >= 0.6) pending_activities.wait_any();
+    while (!pending_activities.empty() && (1.0 * USED_CORES) / (1.0 * TOTAL_CORES) >= 0.6){activities_finished = true; pending_activities.wait_any();}
+
+    if(!pending_activities.empty() && nothing_assigned && !activities_finished)
+    {
+      while(!pending_activities.empty())
+      {
+        auto act = pending_activities.wait_any();
+        if(act->get_name().find("Exec") != std::string::npos) break;
+      }
+    }
   }
   while (!pending_activities.empty()){pending_activities.wait_any();}
   
@@ -97,7 +111,7 @@ void JOB_EXECUTOR::onJobAssignment(Job* job)
 {
   DISPATCHED_JOBS++;
   USED_CORES += job->cores; 
-  std::cout << "Job: " << job->jobid << ", Status: " << job->status << " after " << job->retries << " tries" <<std::endl;
+  std::cout << "Job: " << job->jobid << ", Cores: " << job->cores  << ", Status: " << job->status << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
   dispatcher->onJobAssignment(job);
   sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");

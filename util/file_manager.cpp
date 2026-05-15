@@ -10,19 +10,28 @@ FileManager& FileManager::instance()
 
 bool FileManager::exists(const std::string& filename)
 {
-return FileSizes.count(filename) > 0;
+    return FileSizes.count(filename) > 0;
 }
 
 bool FileManager::exists(const std::string& filename, const std::string& sitename)
 {
-if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
-return SiteFiles.at(sitename).count(filename) > 0;
+    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
+    return SiteFiles.at(sitename).count(filename) > 0;
 }
 
-//Fix Later, Dont remove FileSizes as that erases grid wide
 bool FileManager::remove(const std::string& filename, const std::string& sitename)
 {
-return (FileSizes.erase(filename) > 0 && SiteFiles.at(sitename).erase(filename) > 0 && FileSites.at(filename).erase(sitename) > 0);
+    if (!exists(filename, sitename))
+        return false;
+
+    auto size = FileSizes.at(filename);
+
+    SiteFiles.at(sitename).erase(filename);
+    FileSites.at(filename).erase(sitename);
+    SiteStorages.at(sitename) += size;
+    if(FileSites.at(filename).empty()) {FileSites.erase(filename); FileSizes.erase(filename);}
+
+    return true;
 }
 
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
@@ -110,6 +119,7 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
     return read_activity;
 }
 
+//@ToDo Move creation of file into here from actions on file transfer completition
 sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site){
 
     if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");

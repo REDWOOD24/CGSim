@@ -11,13 +11,13 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
     exec_activity->on_this_start_cb([j](simgrid::s4u::Exec const& ex) {
         j->status = "running";
         CGSim::get_site_manager()->movePendingtoRunningJob(j->comp_site);
-        std::cout << "Site: " << j->comp_site << ", Jobs in Pending: " << CGSim::get_site_manager()->getPendingJobs(j->comp_site) << std::endl;
-        std::cout << "Site: " << j->comp_site << ", Jobs in Running: " << CGSim::get_site_manager()->getRunningJobs(j->comp_site) << std::endl;
-        std::cout << "Site: " << j->comp_site << ", Jobs in Finished: " << CGSim::get_site_manager()->getFinishedJobs(j->comp_site) << std::endl;
-        std::cout << "Site: " << j->comp_site << ", CPUs Available: " << CGSim::get_site_manager()->getCPUsAvailable(j->comp_site) << std::endl;
-        std::cout << "Site: " << j->comp_site << ", CPUs Used: " << CGSim::get_site_manager()->getCPUsUsed(j->comp_site) << std::endl;
-        std::cout << "Site: " << j->comp_site << ", Cores Available: " << CGSim::get_site_manager()->getCoresAvailable(j->comp_site) << std::endl;
-        std::cout << "Site: " << j->comp_site << ", Cores Used: " << CGSim::get_site_manager()->getCoresUsed(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", Jobs in Pending: " << CGSim::get_site_manager()->getPendingJobs(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", Jobs in Running: " << CGSim::get_site_manager()->getRunningJobs(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", Jobs in Finished: " << CGSim::get_site_manager()->getFinishedJobs(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", CPUs Available: " << CGSim::get_site_manager()->getCPUsAvailable(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", CPUs Used: " << CGSim::get_site_manager()->getCPUsUsed(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", Cores Available: " << CGSim::get_site_manager()->getCoresAvailable(j->comp_site) << std::endl;
+        //std::cout << "Site: " << j->comp_site << ", Cores Used: " << CGSim::get_site_manager()->getCoresUsed(j->comp_site) << std::endl;
         j->file_transfer_queue_time = sg4::Engine::get_clock() - j->resource_waiting_queue_time - j->total_io_read_time;
         JOB_EXECUTOR::dispatcher->onJobExecutionStart(j,ex);
     });
