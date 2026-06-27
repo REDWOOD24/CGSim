@@ -9,6 +9,8 @@ unsigned long                        JOB_EXECUTOR::MAX_RETRIES = 20;
 unsigned long                        JOB_EXECUTOR::USED_CORES = 0;
 unsigned long                        JOB_EXECUTOR::TOTAL_CORES;
 unsigned long                        JOB_EXECUTOR::DISPATCHED_JOBS = 0;
+unsigned long                        JOB_EXECUTOR::ACTIVATED_JOBS = 0;
+unsigned long                        JOB_EXECUTOR::FINISHED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::TOTAL_JOBS;
 
 unsigned long JOB_EXECUTOR::totalJobs(JobQueue jobs)
@@ -63,6 +65,13 @@ void JOB_EXECUTOR::advance_to_time(double time)
   {
     if (pending_activities.empty()) 
     {
+
+      if (ACTIVATED_JOBS < DISPATCHED_JOBS)
+        {
+          sg4::this_actor::yield();
+          continue;
+        }
+
       sg4::this_actor::sleep_until(time);
       return;
     }
@@ -100,9 +109,9 @@ void JOB_EXECUTOR::start_server()
       if((1.0*USED_CORES)/(1.0*TOTAL_CORES) > 0.8) break;
       Job* job = *it;
       dispatcher->assignJob(job);
-      if (job->status == "assigned"){nothing_assigned = false; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
-      else if (job->status == "pending"){job->retries++; ++it;}
-      else ++it;
+      if(job->comp_host != ""){job->status = "assigned"; nothing_assigned = false; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+      else {job->status = "pending"; job->retries++; ++it;}
+      //else ++it;
     }
 
     while (!pending_activities.empty() && (1.0 * USED_CORES) / (1.0 * TOTAL_CORES) >= 0.6){activities_finished = true; pending_activities.wait_any();}
@@ -116,7 +125,12 @@ void JOB_EXECUTOR::start_server()
       }
     }
   }
-  while (!pending_activities.empty()){pending_activities.wait_any();}
+
+  while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
+    {
+      if (!pending_activities.empty()) pending_activities.wait_any();
+      else sg4::this_actor::yield();
+    }
   
 }
 
@@ -186,6 +200,7 @@ void JOB_EXECUTOR::execute_job(Job* j)
   exec_activity->start();
   for (const auto& write_activity : write_activities) {write_activity->start();}
 
+  ACTIVATED_JOBS++;
 }
 
 [[noreturn]] void JOB_EXECUTOR::receiver(const std::string& MQ_name)

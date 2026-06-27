@@ -55,13 +55,8 @@ void DISPATCHER::findAvailableCPU(Job* j)
 
 Job* DISPATCHER::assignJob(Job* job)
 {
-
   findBestSite(job);
   findAvailableCPU(job);
-
-  if(job->comp_host != "") job->status = "assigned";
-  else job->status = "pending";
-
   return job;
 }
 

@@ -23,7 +23,7 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
         job->jobid                 = i;
         job->creation_time         = random_number(0,300000);
         job->cores                 = random_number(1,8);
-        job->flops                 = random_number(10000,20000);
+        job->flops                 = random_number(1000000,2000000);
 
         int number_of_input_files  = random_number(1,5);
         int number_of_output_files = 1; //random_number(1,3);

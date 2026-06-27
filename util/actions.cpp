@@ -11,7 +11,6 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
     exec_activity->on_this_start_cb([j](simgrid::s4u::Exec const& ex) {
         j->status = "running";
         CGSim::get_site_manager()->movePendingtoRunningJob(j->comp_site);
-        j->file_transfer_queue_time = sg4::Engine::get_clock() - j->resource_waiting_queue_time - j->total_io_read_time;
         JOB_EXECUTOR::dispatcher->onJobExecutionStart(j,ex);
     });
 
@@ -19,6 +18,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
         j->status = "finished";
         CGSim::get_site_manager()->moveRunningtoFinishedJob(j->comp_site);
         host->extension<HostExtensions>()->onJobFinish(j);
+        JOB_EXECUTOR::FINISHED_JOBS++;
         JOB_EXECUTOR::USED_CORES -= j->cores;
         JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
 
@@ -96,6 +96,7 @@ sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, c
 
     transfer_activity->on_this_completion_cb([filename,size,src_site,dst_site,j](simgrid::s4u::Comm const& co) {
         started_transfers.erase(co.get_name());
+        j->file_transfer_queue_time = std::max(j->file_transfer_queue_time , co.get_finish_time() - co.get_start_time());
         JOB_EXECUTOR::dispatcher->onFileTransferEnd(j,filename,size,co,src_site,dst_site);
         });
 

@@ -43,6 +43,8 @@ private:
     static   unsigned long                        USED_CORES;
     static   unsigned long                        TOTAL_CORES;
     static   unsigned long                        DISPATCHED_JOBS;
+    static   unsigned long                        FINISHED_JOBS;
+    static   unsigned long                        ACTIVATED_JOBS;
     static   unsigned long                        TOTAL_JOBS;
     static   unsigned long                        MAX_RETRIES;
     static   JobQueue                             jobs;
