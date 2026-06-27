@@ -82,35 +82,36 @@ JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
 
             // Safely get each column, providing defaults if missing
             job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
-            job->creation_time         = std::stod(getColumn(row, column_map, "creationtime", "0"));
+            job->creation_time         = std::stod(getColumn(row, column_map, "creationtime_sec", "0"));
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
             job->comp_site             = getColumn(row, column_map, "computingsite", "");
             job->cores                 = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
             job->status                = "created";
             job->retries               = 0;
+            //job->add_child(new Job(), 0.0);
 
 
-            double no_of_out_files       = std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));
+            int no_of_out_files       = 1;/*std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));*/
             double out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
 
 
             unsigned long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
             for (int f = 1; f <= no_of_out_files; ++f) {
                 std::string filename = "user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
-                job->output_files[filename] = size_per_out_file;
+                job->output_files[filename] = size_per_out_file/10000;
             }
 
-            double no_of_inp_files       = std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));
+            int no_of_inp_files       = 1;/*std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));*/
             double inp_file_bytes        = std::stod(getColumn(row, column_map, "inputfilebytes", "0"));
 
             unsigned long long size_per_inp_file = no_of_inp_files > 0 ? inp_file_bytes / no_of_inp_files : 0;
             for (int f = 1; f <= no_of_inp_files; ++f) {
                 std::string filename = "user.input." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
                 job->input_files[filename] = {0.0, {}};
-                CGSim::get_file_manager()->create(filename,size_per_inp_file,job->comp_site);
+                CGSim::get_file_manager()->create(filename,size_per_inp_file/10000,job->comp_site);
             }
 
-            jobs.push(job);
+            if(job->comp_site!="") jobs.push(job);
 
 
         } catch (const std::exception& e) {

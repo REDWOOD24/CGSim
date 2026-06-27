@@ -1,25 +1,37 @@
 #include "job_executor.h"
 
-std::unique_ptr<DispatcherPlugin>   JOB_EXECUTOR::dispatcher;
-sg4::ActivitySet                    JOB_EXECUTOR::pending_activities;
-std::vector<Job*>                   JOB_EXECUTOR::pending_jobs;
-JobQueue                            JOB_EXECUTOR::jobs;
-unsigned long                       JOB_EXECUTOR::MAX_RETRIES = 20;
-unsigned long                       JOB_EXECUTOR::USED_CORES = 0;
-unsigned long                       JOB_EXECUTOR::TOTAL_CORES;
-unsigned long                       JOB_EXECUTOR::DISPATCHED_JOBS = 0;
-unsigned long                       JOB_EXECUTOR::TOTAL_JOBS;
+std::unique_ptr<DispatcherPlugin>    JOB_EXECUTOR::dispatcher;
+sg4::ActivitySet                     JOB_EXECUTOR::pending_activities;
+std::unordered_map<long long, Job*>  JOB_EXECUTOR::all_jobs;
+std::vector<Job*>                    JOB_EXECUTOR::pending_jobs;
+JobQueue                             JOB_EXECUTOR::jobs;
+unsigned long                        JOB_EXECUTOR::MAX_RETRIES = 20;
+unsigned long                        JOB_EXECUTOR::USED_CORES = 0;
+unsigned long                        JOB_EXECUTOR::TOTAL_CORES;
+unsigned long                        JOB_EXECUTOR::DISPATCHED_JOBS = 0;
+unsigned long                        JOB_EXECUTOR::TOTAL_JOBS;
 
-
+unsigned long JOB_EXECUTOR::totalJobs(JobQueue jobs)
+{
+    while (!jobs.empty()) 
+    {
+        auto* job = jobs.top();
+        all_jobs[job->jobid] = job;
+        jobs.pop();
+    }
+    return all_jobs.size();
+}
 
 void JOB_EXECUTOR::start_job_execution()
 {
+  start_receivers();
   TOTAL_CORES = std::stoul((sg4::Engine::get_instance()->get_netzone_root())->get_property("grid_cores"));
   attach_callbacks();
   sg4::Host* job_server = sg4::Host::by_name("JOB-SERVER_cpu-0");
   if (!job_server) throw std::runtime_error("JOB-SERVER not initialized properly");
   jobs = std::move(dispatcher->getWorkload());
-  TOTAL_JOBS = jobs.size();
+  TOTAL_JOBS = totalJobs(jobs);
+  std::cout << "TOTAL_JOBS: " << TOTAL_JOBS << std::endl;
   sg4::Actor::create("JOB-EXECUTOR-actor",job_server,start_server);
   sg4::Engine::get_instance()->run();
 }
@@ -29,13 +41,14 @@ void JOB_EXECUTOR::get_jobs()
   while(!jobs.empty())
   {
     Job* job = jobs.top();
+    if(job->creation_time < 0) break;
     if (sg4::Engine::get_clock() >= job->creation_time) 
     {
       CGSim::get_file_manager()->request_file_location(job);
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
       std::cout << job->jobid << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
-      job->status = "pending";
+      job->status = "submitted";
       CGSim::get_site_manager()->addSystemPendingJob();
       dispatcher->onJobSubmission(job);
       jobs.pop();
@@ -74,7 +87,7 @@ void JOB_EXECUTOR::start_server()
     std::cout << "Current Simulated Time: " << sg4::Engine::get_clock() << std::endl;
     std::cout << "CORE USAGE: " << (1.0*USED_CORES)/(1.0*TOTAL_CORES) << std::endl;
 
-    if(!jobs.empty())
+    if(pending_jobs.size() + DISPATCHED_JOBS != TOTAL_JOBS) //PENDING_JOBS.size() + DISPATCHED JOBS = TOTAL JOBS
     {
     if(sg4::Engine::get_clock() < jobs.top()->creation_time) advance_to_time(jobs.top()->creation_time);
     get_jobs();
@@ -87,8 +100,8 @@ void JOB_EXECUTOR::start_server()
       if((1.0*USED_CORES)/(1.0*TOTAL_CORES) > 0.8) break;
       Job* job = *it;
       dispatcher->assignJob(job);
-      if (job->status == "pending_assigned"){nothing_assigned = false; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
-      else if (job->status == "pending_not_assigned"){job->retries++; ++it;}
+      if (job->status == "assigned"){nothing_assigned = false; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+      else if (job->status == "pending"){job->retries++; ++it;}
       else ++it;
     }
 
@@ -129,10 +142,12 @@ void JOB_EXECUTOR::execute_job(Job* j)
   std::vector<sg4::CommPtr> comm_activities;
   std::vector<sg4::IoPtr>   write_activities;
 
-  for (const auto& [filename,fileinfo] : j->input_files) 
+  for (const auto& [filename,fileinfo] : j->input_files_sizes_locations) 
   {
-    //Take the first location where the file is located, may want to change this behavior later
-    auto filelocation = *(fileinfo.second.begin());
+    //Change this behavior later
+    std::string filelocation = "";
+    if(fileinfo.second.find(j->comp_site) != fileinfo.second.end()) filelocation = j->comp_site;
+    else filelocation = *(fileinfo.second.begin());
 
     if (filelocation != j->comp_site) 
     { //Check if in list, not first element

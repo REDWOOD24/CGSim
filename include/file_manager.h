@@ -15,6 +15,11 @@ namespace sg4 = simgrid::s4u;
 
 namespace CGSim {
 
+enum class FileTransferDecisionMode {
+    COPY,
+    MOVE
+};
+
 class FileManager {
 public:
     FileManager(const FileManager&) = delete;

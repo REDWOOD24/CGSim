@@ -55,7 +55,6 @@ int main(int argc, char** argv)
 
     // Create and set up executor
     JOB_EXECUTOR::set_dispatcher(dispatcher);
-    JOB_EXECUTOR::start_receivers();
     JOB_EXECUTOR::start_job_execution();
 
     // Print version

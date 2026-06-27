@@ -50,11 +50,10 @@ void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std
 }
 
 Job* FileManager::request_file_location(Job* j){
-    for(auto& [file,file_info]: j->input_files)
+    for(auto& file: j->input_files)
     {
         if (!exists(file)) throw std::runtime_error("File: " +file+ " does not exist");
-        file_info.first  = FileSizes.at(file);
-        file_info.second = FileSites.at(file);
+        j->input_files_sizes_locations[file] = {FileSizes.at(file), FileSites.at(file)};
     }
     return j;
 }
@@ -100,9 +99,8 @@ sg4::IoPtr FileManager::write(const std::string& filename, const unsigned long l
     if (exists(filename)) throw std::runtime_error("File: "+filename+" already exists on the grid");
     auto disk = sg4::Host::by_name(comp_host)->get_disk_by_name(comp_disk);
     auto write_activity = sg4::Io::init()->set_disk(disk)->set_size(size)->set_op_type(sg4::Io::OpType::WRITE);
-    write_activity->on_this_completion_cb([filename,size,comp_sitename](simgrid::s4u::Io const& io) {
-        FileManager::instance().create(filename,size,comp_sitename);
-      });
+    write_activity->on_this_completion_cb([this,filename,size,comp_sitename](simgrid::s4u::Io const& io) 
+    {create(filename,size,comp_sitename);});
     return write_activity;
 }
 
@@ -113,22 +111,23 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
     auto size_in_bytes = FileSizes.at(filename);
     auto read_activity = sg4::Io::init()->set_disk(disk)->set_size(size_in_bytes)->set_op_type(sg4::Io::OpType::READ);
 
-    read_activity->on_this_start_cb([filename,comp_sitename](simgrid::s4u::Io const& io) {
-        if (!FileManager::instance().exists(filename,comp_sitename)) throw std::runtime_error("File: " +filename+
+    read_activity->on_this_start_cb([this,filename,comp_sitename](simgrid::s4u::Io const& io) {
+        if (!exists(filename,comp_sitename)) throw std::runtime_error("File: " +filename+
             " does not exist on Site: "+comp_sitename);});
     return read_activity;
 }
 
-//@ToDo Move creation of file into here from actions on file transfer completition
 sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site){
 
     if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");
-    if(exists(filename,dst_site)) throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
+    if(exists(filename,dst_site))  throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
     auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
     auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication_server");
     auto size     = FileSizes.at(filename);
     auto transfer_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
     transfer_activity->set_name("Transfer_File_" + filename + "_from_" + src_site + "_to_" + dst_site);
+    transfer_activity->on_this_completion_cb([this,filename,size,src_site,dst_site]
+        (simgrid::s4u::Comm const& co) {create(filename,size,dst_site);});
     return transfer_activity;
   }
 

@@ -2,6 +2,7 @@
 #include "track4_dispatcher.h"
 #include "track4_workload_manager.h"
 #include "track4_output.h"
+#include "track4_output_calibration.h"
 
 class Track4Plugin : public DispatcherPlugin {
 
@@ -20,6 +21,7 @@ private:
     std::unique_ptr<TRACK4_DISPATCHER>        t4d = std::make_unique<TRACK4_DISPATCHER>();
     std::unique_ptr<TRACK4_WORKLOAD_MANAGER>  t4wm = std::make_unique<TRACK4_WORKLOAD_MANAGER>();
     std::unique_ptr<TRACK4_OUTPUT>            t4ou = std::make_unique<TRACK4_OUTPUT>();
+    //std::unique_ptr<TRACK4_OUTPUT_CALIBRATION> t4ouc = std::make_unique<TRACK4_OUTPUT_CALIBRATION>();
 
 };
 
@@ -54,6 +56,7 @@ void Track4Plugin::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
 
 void Track4Plugin::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
 {
+   //t4ouc->onJobExecutionEnd(job,ex);
    t4ou->onJobStatusChange(job);
 }
 

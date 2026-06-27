@@ -13,7 +13,7 @@ class HostExtensions {
 public:
   static simgrid::xbt::Extension<simgrid::s4u::Host, HostExtensions> EXTENSION_ID;
   explicit HostExtensions(const simgrid::s4u::Host* h)
-      : cores_used(0), cores_available(h->get_core_count()), name(h->get_name()) {}
+      : host(h), cores_used(0), cores_available(h->get_core_count()), name(h->get_name()) {}
 
   HostExtensions(const HostExtensions&) = delete;
   HostExtensions& operator=(const HostExtensions&) = delete;
@@ -25,6 +25,7 @@ public:
   [[nodiscard]] unsigned int get_cores_available() const;
 
 private:
+  const simgrid::s4u::Host* host;
   unsigned int cores_used;
   unsigned int cores_available;
   bool         available = true; //CPU being available means at least 1 core is free.

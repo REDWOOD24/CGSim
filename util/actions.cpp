@@ -11,13 +11,6 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
     exec_activity->on_this_start_cb([j](simgrid::s4u::Exec const& ex) {
         j->status = "running";
         CGSim::get_site_manager()->movePendingtoRunningJob(j->comp_site);
-        //std::cout << "Site: " << j->comp_site << ", Jobs in Pending: " << CGSim::get_site_manager()->getPendingJobs(j->comp_site) << std::endl;
-        //std::cout << "Site: " << j->comp_site << ", Jobs in Running: " << CGSim::get_site_manager()->getRunningJobs(j->comp_site) << std::endl;
-        //std::cout << "Site: " << j->comp_site << ", Jobs in Finished: " << CGSim::get_site_manager()->getFinishedJobs(j->comp_site) << std::endl;
-        //std::cout << "Site: " << j->comp_site << ", CPUs Available: " << CGSim::get_site_manager()->getCPUsAvailable(j->comp_site) << std::endl;
-        //std::cout << "Site: " << j->comp_site << ", CPUs Used: " << CGSim::get_site_manager()->getCPUsUsed(j->comp_site) << std::endl;
-        //std::cout << "Site: " << j->comp_site << ", Cores Available: " << CGSim::get_site_manager()->getCoresAvailable(j->comp_site) << std::endl;
-        //std::cout << "Site: " << j->comp_site << ", Cores Used: " << CGSim::get_site_manager()->getCoresUsed(j->comp_site) << std::endl;
         j->file_transfer_queue_time = sg4::Engine::get_clock() - j->resource_waiting_queue_time - j->total_io_read_time;
         JOB_EXECUTOR::dispatcher->onJobExecutionStart(j,ex);
     });
@@ -28,6 +21,28 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
         host->extension<HostExtensions>()->onJobFinish(j);
         JOB_EXECUTOR::USED_CORES -= j->cores;
         JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
+
+        //See if dependent jobs are ready to run
+        for(const auto& [child_job_id,rel_creation_time]: j->children)
+        {
+            auto* child_job = JOB_EXECUTOR::all_jobs[child_job_id];
+
+            bool active = true;
+            for(const auto& parent_job_id: child_job->parents)
+            {
+                if(JOB_EXECUTOR::all_jobs[parent_job_id]->status != "finished") active = false;
+            }
+
+            if(active)
+            {
+                Job* new_child_job = new Job(*child_job);
+                new_child_job->creation_time = sg4::Engine::get_clock() +  rel_creation_time;
+                JOB_EXECUTOR::all_jobs[child_job_id] = new_child_job;
+                JOB_EXECUTOR::jobs.push(new_child_job);
+            } 
+
+        }
+
         });
 
     return exec_activity;
@@ -80,7 +95,6 @@ sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, c
         });
 
     transfer_activity->on_this_completion_cb([filename,size,src_site,dst_site,j](simgrid::s4u::Comm const& co) {
-        CGSim::get_file_manager()->create(filename,size,dst_site);
         started_transfers.erase(co.get_name());
         JOB_EXECUTOR::dispatcher->onFileTransferEnd(j,filename,size,co,src_site,dst_site);
         });

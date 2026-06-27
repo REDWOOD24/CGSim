@@ -1,0 +1,110 @@
+#include "DispatcherPlugin.h"
+#include "dispatcher.h"
+#include "workload_manager.h"
+#include "output.h"
+
+class TestingPlugin : public DispatcherPlugin {
+
+public:
+    TestingPlugin();
+    virtual JobQueue getWorkload() final override;
+    virtual Job* assignJob(Job* job) final override;
+
+    virtual void onSimulationStart() final override;
+    virtual void onSimulationEnd() final override;
+    virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex) final override;
+    virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
+    virtual void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me) final override;
+    virtual void onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me) final override;
+    virtual void onFileTransferStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site) final override;
+    virtual void onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site) final override;
+    virtual void onFileReadStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileReadEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileWriteStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+
+private:
+  std::unique_ptr<DISPATCHER>        sd = std::make_unique<DISPATCHER>();
+  std::unique_ptr<WORKLOAD_MANAGER>  wm = std::make_unique<WORKLOAD_MANAGER>();
+  std::unique_ptr<OUTPUT>            ou = std::make_unique<OUTPUT>();
+
+};
+
+TestingPlugin::TestingPlugin()
+{
+}
+
+JobQueue TestingPlugin::getWorkload()
+{
+  return wm->getWorkload();
+}
+
+Job* TestingPlugin::assignJob(Job* job)
+{
+  return sd->assignJob(job);
+}
+
+void TestingPlugin::onSimulationStart()
+{
+  ou->onSimulationStart();
+}
+
+void TestingPlugin::onSimulationEnd()
+{
+   ou->onSimulationEnd();
+}
+
+void TestingPlugin::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
+{
+   ou->onJobExecutionStart(job,ex);
+}
+
+void TestingPlugin::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
+{
+   ou->onJobExecutionEnd(job,ex);
+}
+
+void TestingPlugin::onJobTransferStart(Job* job, simgrid::s4u::Mess const& me)
+{
+   ou->onJobTransferStart(job,me);
+}
+
+void TestingPlugin::onJobTransferEnd(Job* job, simgrid::s4u::Mess const& me)
+{
+   ou->onJobTransferEnd(job,me);
+}
+
+void TestingPlugin::onFileTransferStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site)
+{
+   ou->onFileTransferStart(job,filename, filesize, co,src_site,dst_site);
+}
+
+void TestingPlugin::onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site)
+{
+   ou->onFileTransferEnd(job,filename, filesize, co,src_site,dst_site);
+}
+
+void TestingPlugin::onFileReadStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
+{
+   ou->onFileReadStart(job,filename, filesize, io);
+}
+
+void TestingPlugin::onFileReadEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
+{
+   ou->onFileReadEnd(job,filename, filesize, io);
+}
+
+void TestingPlugin::onFileWriteStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
+{
+   ou->onFileWriteStart(job,filename, filesize, io);
+}
+
+void TestingPlugin::onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
+{
+   ou->onFileWriteEnd(job,filename, filesize, io);
+}
+
+extern "C" TestingPlugin* createTestingPlugin()
+{
+    return new TestingPlugin;
+}

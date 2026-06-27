@@ -4,6 +4,10 @@ simgrid::xbt::Extension<simgrid::s4u::Host, HostExtensions> HostExtensions::EXTE
 
 void HostExtensions::registerJob(Job* j) {
     simgrid::kernel::actor::simcall_answered([this, j] {
+
+        if(host->get_name().find("JOB-SERVER_cpu") != std::string::npos) throw std::runtime_error("Can't register job on main server");
+        if(host->get_name().find("_communication_server") != std::string::npos) throw std::runtime_error("Can't register job on communication server: " + host->get_name());
+
         job_ids.insert(std::to_string(j->jobid));
         cores_used      += j->cores;
         cores_available -= j->cores;

@@ -3,6 +3,7 @@
 
 #include "job.h"
 #include <simgrid/s4u.hpp>
+#include "file_manager.h"
 
 class DispatcherPlugin {
 public:
@@ -77,6 +78,12 @@ public:
 
   // Virtual function can be implemented when a file write ends
   virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
+
+  /*------Policy Module Interface------*/
+  virtual void onFileRequest(CGSim::FileTransferDecisionMode mode, std::string& source_site){}
+
+  
+
 
 };
 
