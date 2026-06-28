@@ -7,6 +7,10 @@
 
 namespace sg4 = simgrid::s4u;
 
+class JOB_EXECUTOR;
+
+namespace CGSim {
+
 struct Policy
 {
     bool active = true;
@@ -17,23 +21,22 @@ struct Policy
     std::string name;
 };
 
-namespace CGSim {
-
 class PolicyManager
 {
 public:
     PolicyManager() = delete;
     PolicyManager(const PolicyManager&) = delete;
     PolicyManager& operator=(const PolicyManager&) = delete;
+    friend class ::JOB_EXECUTOR;
 
-    //PolicyManager takes ownership of the pointer.
-    static void addPolicy(Policy* policy);
+
+    static void addPolicy(CGSim::Policy* policy);
 
 private:
-    static void run_policy(Policy* policy);
-    static void deactivate_policy(Policy* policy);
-
-    static std::unordered_map<std::string, Policy*> policies;
+    static void run_policy(CGSim::Policy* policy);
+    static void deactivate_policy(CGSim::Policy* policy);
+    static std::unordered_map<std::string, CGSim::Policy*> policies;
+    inline static bool RUNNING = true;
 };
 
 } // namespace CGSim

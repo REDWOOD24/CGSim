@@ -10,10 +10,13 @@ class WORKLOAD_MANAGER {
 public:
     WORKLOAD_MANAGER(){};
    ~WORKLOAD_MANAGER(){};
+    Job* createJob();
     JobQueue getWorkload();
+
 
 private:
    long long random_number(long long min, long long max);
+   static int JOB_ID;
    
 };
 

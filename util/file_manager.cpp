@@ -58,6 +58,18 @@ Job* FileManager::request_file_location(Job* j){
     return j;
 }
 
+std::unordered_set<std::string> FileManager::request_site_files(const std::string& sitename)
+{
+    if(SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: " +sitename+ " does not exist");
+    return SiteFiles.at(sitename);
+}
+
+std::unordered_set<std::string> FileManager::request_file_sites(const std::string& filename)
+{
+    if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");
+    return FileSites.at(filename);
+}
+
 unsigned long long FileManager::request_file_size(const std::string& filename)
 {
     if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");

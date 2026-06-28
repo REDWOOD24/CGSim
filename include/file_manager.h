@@ -11,7 +11,9 @@
 #include <simgrid/s4u/Mess.hpp>
 #include <stdexcept>
 #include "job.h"
+
 namespace sg4 = simgrid::s4u;
+class Actions;
 
 namespace CGSim {
 
@@ -24,22 +26,21 @@ class FileManager {
 public:
     FileManager(const FileManager&) = delete;
     FileManager& operator=(const FileManager&) = delete;
+    friend class ::Actions;
 
     static FileManager& instance();
 
+    bool exists(const std::string& filename);
+    bool exists(const std::string& filename, const std::string& sitename);
     void register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files);
     Job* request_file_location(Job* j);
+    std::unordered_set<std::string> request_site_files(const std::string& sitename);
+    std::unordered_set<std::string> request_file_sites(const std::string& filename);
     unsigned long long request_file_size(const std::string& filename);
     unsigned long long request_remaining_site_storage(const std::string& sitename);
     unsigned long long request_remaining_grid_storage();
+
     
-    void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
-    sg4::IoPtr write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
-    sg4::IoPtr read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
-    sg4::CommPtr transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site);
-    bool exists(const std::string& filename);
-    bool exists(const std::string& filename, const std::string& sitename);
-    bool remove(const std::string& filename, const std::string& sitename);
     
 
 private:
@@ -48,6 +49,14 @@ private:
     std::unordered_map<std::string, std::unordered_set<std::string>> FileSites;
     std::unordered_map<std::string, unsigned long long> FileSizes;
     std::unordered_map<std::string, unsigned long long> SiteStorages;
+
+    void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
+    sg4::IoPtr write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
+    sg4::IoPtr read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
+    sg4::CommPtr transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site);
+    bool remove(const std::string& filename, const std::string& sitename);
+
+    
 
 
 };

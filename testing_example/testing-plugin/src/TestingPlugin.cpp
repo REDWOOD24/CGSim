@@ -2,6 +2,7 @@
 #include "dispatcher.h"
 #include "workload_manager.h"
 #include "output.h"
+#include "policy.h"
 
 class TestingPlugin : public DispatcherPlugin {
 
@@ -27,6 +28,7 @@ private:
   std::unique_ptr<DISPATCHER>        sd = std::make_unique<DISPATCHER>();
   std::unique_ptr<WORKLOAD_MANAGER>  wm = std::make_unique<WORKLOAD_MANAGER>();
   std::unique_ptr<OUTPUT>            ou = std::make_unique<OUTPUT>();
+  std::unique_ptr<POLICY>            po = std::make_unique<POLICY>();
 
 };
 
@@ -46,6 +48,7 @@ Job* TestingPlugin::assignJob(Job* job)
 
 void TestingPlugin::onSimulationStart()
 {
+  po->addPolicies();
   ou->onSimulationStart();
 }
 

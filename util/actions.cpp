@@ -102,3 +102,21 @@ sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, c
 
     return transfer_activity;
 }
+
+void Actions::background_transfer_file_async(const std::string& filename, const std::string& src_site, const std::string& dst_site)
+{
+    auto transfer_activity = CGSim::get_file_manager()->transfer(filename,src_site,dst_site);
+    const auto size = static_cast<unsigned long long>(transfer_activity->get_remaining());
+
+    transfer_activity->on_this_start_cb([filename,size,src_site,dst_site](simgrid::s4u::Comm const& co) {
+        if (!started_transfers.insert(co.get_name()).second) return;
+        JOB_EXECUTOR::dispatcher->onBackGroundFileTransferStart(filename,size,co,src_site,dst_site);
+        });
+
+    transfer_activity->on_this_completion_cb([filename,size,src_site,dst_site](simgrid::s4u::Comm const& co) {
+        started_transfers.erase(co.get_name());
+        JOB_EXECUTOR::dispatcher->onBackGroundFileTransferEnd(filename,size,co,src_site,dst_site);
+        });
+
+     transfer_activity->detach();
+}

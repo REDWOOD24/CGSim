@@ -40,7 +40,7 @@ void JOB_EXECUTOR::start_job_execution()
 
 void JOB_EXECUTOR::get_jobs()
 {
-  while(!jobs.empty())
+  while(DISPATCHED_JOBS != TOTAL_JOBS)
   {
     Job* job = jobs.top();
     if(job->creation_time < 0) break;
@@ -114,6 +114,12 @@ void JOB_EXECUTOR::start_server()
       //else ++it;
     }
 
+    if(pending_activities.empty() && DISPATCHED_JOBS != TOTAL_JOBS)
+    {
+      sg4::this_actor::yield();
+      continue;
+    }
+
     while (!pending_activities.empty() && (1.0 * USED_CORES) / (1.0 * TOTAL_CORES) >= 0.6){activities_finished = true; pending_activities.wait_any();}
 
     if(!pending_activities.empty() && nothing_assigned && !activities_finished)
@@ -124,6 +130,7 @@ void JOB_EXECUTOR::start_server()
         if(act->get_name().find("Exec") != std::string::npos) break;
       }
     }
+
   }
 
   while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
@@ -131,7 +138,8 @@ void JOB_EXECUTOR::start_server()
       if (!pending_activities.empty()) pending_activities.wait_any();
       else sg4::this_actor::yield();
     }
-  
+
+  CGSim::PolicyManager::RUNNING = false;
 }
 
 void JOB_EXECUTOR::onJobAssignment(Job* job)

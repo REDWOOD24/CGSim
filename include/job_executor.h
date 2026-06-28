@@ -10,8 +10,6 @@
 #include <simgrid/kernel/Timer.hpp>
 
 class Actions;
-namespace CGSim {class PolicyManager;}
-
 
 class JOB_EXECUTOR
 {
@@ -21,7 +19,6 @@ public:
      JOB_EXECUTOR()= default;
     ~JOB_EXECUTOR()= default;
     friend class Actions;
-    friend class CGSim::PolicyManager;
 
     static void                set_dispatcher(std::unique_ptr<DispatcherPlugin>& d){dispatcher = std::move(d);}
     static void                start_job_execution();
