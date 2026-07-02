@@ -40,7 +40,7 @@ void JOB_EXECUTOR::start_job_execution()
 
 void JOB_EXECUTOR::get_jobs()
 {
-  while(DISPATCHED_JOBS != TOTAL_JOBS)
+  while(DISPATCHED_JOBS != TOTAL_JOBS  && !jobs.empty())
   {
     Job* job = jobs.top();
     if(job->creation_time < 0) break;
