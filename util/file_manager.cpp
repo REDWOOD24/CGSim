@@ -129,7 +129,7 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
     return read_activity;
 }
 
-sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode){
 
     if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");
     if(exists(filename,dst_site))  throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
@@ -138,8 +138,12 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
     auto size     = FileSizes.at(filename);
     auto transfer_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
     transfer_activity->set_name("Transfer_File_" + filename + "_from_" + src_site + "_to_" + dst_site);
-    transfer_activity->on_this_completion_cb([this,filename,size,src_site,dst_site]
-        (simgrid::s4u::Comm const& co) {create(filename,size,dst_site);});
+    transfer_activity->on_this_completion_cb([this,mode,filename,size,src_site,dst_site]
+        (simgrid::s4u::Comm const& co) 
+        {
+            create(filename,size,dst_site);
+            if(mode == CGSim::FileTransferDecisionMode::MOVE) remove(filename, src_site);
+        });
     return transfer_activity;
   }
 

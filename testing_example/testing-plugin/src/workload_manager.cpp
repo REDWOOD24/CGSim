@@ -28,16 +28,16 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
         int number_of_input_files  = random_number(1,5);
         int number_of_output_files = 1; //random_number(1,3);
 
-        for(int j = 0; j <= number_of_input_files; j++)
+        for(int j = 0; j < number_of_input_files; j++)
         {
             auto file = std::to_string(random_number(0,29999));
             job->input_files.insert(file);
         }
 
-        for(int j = 0; j <= number_of_output_files; j++)
+        for(int j = 0; j < number_of_output_files; j++)
         {
             auto output_file_name = "output_" + std::to_string(job->jobid) + "_" +std::to_string(j) + ".root";
-            auto output_file_size = random_number(200000,300000);
+            auto output_file_size = random_number(200000000,300000000);
             job->output_files[output_file_name] = output_file_size;
         }
 

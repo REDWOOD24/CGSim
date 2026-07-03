@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <queue>
 #include <unordered_set>
-using Files = std::unordered_map<std::string, std::pair<unsigned long long, std::unordered_set<std::string>>>;
+using Files = std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>;
 
 //Information needed to a specify a Job
 struct Job 

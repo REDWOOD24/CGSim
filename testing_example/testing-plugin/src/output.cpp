@@ -308,6 +308,65 @@ void OUTPUT::onFileWriteEnd(Job* job,
 }
 
 
+void OUTPUT::onPolicyFileTransferStart(const std::string& policy, const std::string& filename, 
+    const unsigned long long filesize, simgrid::s4u::Comm const& co, 
+    const std::string& src_site, const std::string& dst_site)
+{
+
+    auto link = get_link(src_site, dst_site);
+
+    json payload = {
+        {"Policy", policy},
+        {"file", filename},
+        {"size", filesize},
+        {"source_site", src_site},
+        {"destination_site", dst_site},
+        {"bandwidth", link->get_bandwidth()},
+        {"latency", link->get_latency()},
+        {"link_load", link->get_load()},
+        {"src_site_storage_util", calculate_site_storage_util(src_site)},
+        {"dst_site_storage_util", calculate_site_storage_util(dst_site)},
+        {"grid_storage_util", calculate_grid_storage_util()}
+    };
+
+    insert_event("BackGroundFileTransfer", "Started",
+                 "",
+                 "",
+                 co.get_start_time(),
+                 payload.dump());
+
+
+}
+
+void OUTPUT::onPolicyFileTransferEnd(const std::string& policy, const std::string& filename, 
+    const unsigned long long filesize, simgrid::s4u::Comm const& co, 
+    const std::string& src_site, const std::string& dst_site)
+{
+    auto link = get_link(src_site, dst_site);
+
+    json payload = {
+        {"Policy", policy},
+        {"file", filename},
+        {"size", filesize},
+        {"source_site", src_site},
+        {"destination_site", dst_site},
+        {"duration", co.get_finish_time() - co.get_start_time()},
+        {"bandwidth", link->get_bandwidth()},
+        {"latency", link->get_latency()},
+        {"link_load", link->get_load()},
+        {"src_site_storage_util", calculate_site_storage_util(src_site)},
+        {"dst_site_storage_util", calculate_site_storage_util(dst_site)},
+        {"grid_storage_util", calculate_grid_storage_util()}
+    };
+
+    insert_event("BackGroundFileTransfer", "Finished",
+                 "",
+                 "",
+                 co.get_finish_time(),
+                 payload.dump());
+
+}
+
 sg4::Link* OUTPUT::get_link(const std::string& src_site, const std::string& dst_site)
 {
 
@@ -330,7 +389,7 @@ double OUTPUT::calculate_grid_cpu_util()
     return cores_used/total_cores;
 }
 
-double OUTPUT::calculate_site_cpu_util(std::string& site_name)
+double OUTPUT::calculate_site_cpu_util(const std::string& site_name)
 {
     auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_cores = std::stoul(site->get_property("total_cores"));
@@ -350,7 +409,7 @@ double OUTPUT::calculate_grid_storage_util()
     return (1.0-remaining_storage/total_storage);
 }
 
-double OUTPUT::calculate_site_storage_util(std::string& site_name)
+double OUTPUT::calculate_site_storage_util(const std::string& site_name)
 {
     auto   site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_storage = std::stoull(site->get_property("storage_capacity_bytes"));

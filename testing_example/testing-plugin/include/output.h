@@ -41,11 +41,14 @@ public:
     void onFileWriteStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io);
     void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io);
 
+    void onPolicyFileTransferStart(const std::string& policy, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site);
+    void onPolicyFileTransferEnd(const std::string& policy, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site);
+
 
     double calculate_grid_cpu_util();
-    double calculate_site_cpu_util(std::string& site_name);
+    double calculate_site_cpu_util(const std::string& site_name);
     double calculate_grid_storage_util();
-    double calculate_site_storage_util(std::string& site_name);
+    double calculate_site_storage_util(const std::string& site_name);
     sg4::Link* get_link(const std::string& src_site, const std::string& dst_site);
 
 

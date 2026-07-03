@@ -67,12 +67,6 @@ public:
   // Virtual function can be implemented when a file transfer ends
   virtual void onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
-  // Virtual function can be implemented when a file transfer starts
-  virtual void onBackGroundFileTransferStart(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
-
-  // Virtual function can be implemented when a file transfer ends
-  virtual void onBackGroundFileTransferEnd(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
-
   // Virtual function can be implemented when a file read starts
   virtual void onFileReadStart(Job* job,const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
@@ -86,7 +80,7 @@ public:
   virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
   /*------Policy Module Interface------*/
-  virtual void onFileRequest(CGSim::FileTransferDecisionMode mode, std::string& source_site){}
+  virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode){}
 
   
 

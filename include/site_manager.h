@@ -37,17 +37,18 @@ public:
     void removeRunningJob(const std::string& site);
 
 
-    long long getSystemPendingJobs();
-    long getPendingJobs(const std::string& site);
-    long getRunningJobs(const std::string& site);
-    long getFinishedJobs(const std::string& site);
-    long getFailedJobs(const std::string& site);
-    long getActiveJobs(const std::string& site);
+    long long               getSystemPendingJobs();
+    long                    getPendingJobs(const std::string& site);
+    long                    getRunningJobs(const std::string& site);
+    long                    getFinishedJobs(const std::string& site);
+    long                    getFailedJobs(const std::string& site);
+    long                    getActiveJobs(const std::string& site);
+    std::set<std::string>   get_all_sites(){return Sites;}
 
-    long getCPUsAvailable(const std::string& site);
-    long getCPUsUsed(const std::string& site);
-    long getCoresAvailable(const std::string& site);
-    long getCoresUsed(const std::string& site);
+    long   getCPUsAvailable(const std::string& site);
+    long   getCPUsUsed(const std::string& site);
+    long   getCoresAvailable(const std::string& site);
+    long   getCoresUsed(const std::string& site);
     double getCPUUtilization(const std::string& site);
 
 

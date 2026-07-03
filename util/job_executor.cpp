@@ -168,13 +168,15 @@ void JOB_EXECUTOR::execute_job(Job* j)
   {
     //Change this behavior later
     std::string filelocation = "";
-    if(fileinfo.second.find(j->comp_site) != fileinfo.second.end()) filelocation = j->comp_site;
-    else filelocation = *(fileinfo.second.begin());
+    CGSim::FileTransferDecisionMode mode = CGSim::FileTransferDecisionMode::COPY;
+
+    dispatcher->onFileRequest(j, filename, fileinfo.first, fileinfo.second, filelocation, mode);
+    if(filelocation.empty()) throw std::runtime_error("File location not specified for file: "+filename);
 
     if (filelocation != j->comp_site) 
-    { //Check if in list, not first element
+    { 
 
-      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site);
+      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,mode);
       auto read_activity = Actions::read_file_async(j,filename);
 
       comm_activity->add_successor(read_activity);

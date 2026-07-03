@@ -23,17 +23,20 @@ public:
     virtual void onFileReadEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
     virtual void onFileWriteStart(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
     virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io) final override;
+    
+    virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode) final override;
 
 private:
   std::unique_ptr<DISPATCHER>        sd = std::make_unique<DISPATCHER>();
   std::unique_ptr<WORKLOAD_MANAGER>  wm = std::make_unique<WORKLOAD_MANAGER>();
-  std::unique_ptr<OUTPUT>            ou = std::make_unique<OUTPUT>();
+  std::shared_ptr<OUTPUT>            ou = std::make_unique<OUTPUT>();
   std::unique_ptr<POLICY>            po = std::make_unique<POLICY>();
 
 };
 
 TestingPlugin::TestingPlugin()
 {
+   po->set_output(ou);
 }
 
 JobQueue TestingPlugin::getWorkload()
@@ -105,6 +108,12 @@ void TestingPlugin::onFileWriteStart(Job* job, const std::string& filename, cons
 void TestingPlugin::onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io)
 {
    ou->onFileWriteEnd(job,filename, filesize, io);
+}
+
+void TestingPlugin::onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode)
+{
+   if(file_locations.find(j->comp_site) != file_locations.end()) source_site = j->comp_site;
+   else source_site = *(file_locations.begin());
 }
 
 extern "C" TestingPlugin* createTestingPlugin()

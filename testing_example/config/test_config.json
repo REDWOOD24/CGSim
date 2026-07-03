@@ -6,7 +6,7 @@
     "Limited_Sites": [],
     "Custom_Parameters":
     {
-	"Num_of_Jobs": "1000",
+	"Num_of_Jobs": "2",
 	"output_file": "/Users/raekhan/CGSim/testing_example/output/testing.db"
     }
 }
