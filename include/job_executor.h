@@ -20,7 +20,7 @@ public:
     ~JOB_EXECUTOR()= default;
     friend class Actions;
 
-    static void                set_dispatcher(std::unique_ptr<DispatcherPlugin>& d){dispatcher = std::move(d);}
+    static void                set_dispatcher(std::shared_ptr<DispatcherPlugin>& d){dispatcher = d;}
     static void                start_job_execution();
 
 
@@ -47,8 +47,7 @@ private:
     static   JobQueue                             jobs;
     static   std::unordered_map<long long, Job*>  all_jobs;
     static   std::vector<Job*>                    pending_jobs;
-    static   std::unique_ptr<DispatcherPlugin>    dispatcher;
-
+    static   std::shared_ptr<DispatcherPlugin>    dispatcher;
 
 };
 

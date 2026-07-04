@@ -85,7 +85,6 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
 
 sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode)
 {
-
     auto transfer_activity = CGSim::get_file_manager()->transfer(filename,src_site,dst_site,mode);
     const auto size = static_cast<unsigned long long>(transfer_activity->get_remaining());
 

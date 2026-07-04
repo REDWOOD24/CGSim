@@ -1,4 +1,5 @@
 #include "file_manager.h"
+#include "DispatcherPlugin.h"
 
 namespace CGSim {
 
@@ -32,6 +33,14 @@ bool FileManager::remove(const std::string& filename, const std::string& sitenam
     if(FileSites.at(filename).empty()) {FileSites.erase(filename); FileSizes.erase(filename);}
 
     return true;
+}
+
+bool FileManager::is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+    return in_flight_transfers.find(transfer_key(filename, src_site, dst_site)) != in_flight_transfers.end();
+}
+
+std::string FileManager::transfer_key(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+    return filename + "|" + src_site + "|" + dst_site;
 }
 
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
@@ -133,19 +142,51 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
 
     if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");
     if(exists(filename,dst_site))  throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
+
+    const std::string key = CGSim::get_file_manager()->transfer_key(filename, src_site, dst_site);
+    if (!in_flight_transfers.insert(key).second) throw std::runtime_error("File transfer: " + key + " is already in progress");
+
     auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
     auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication_server");
     auto size     = FileSizes.at(filename);
     auto transfer_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
     transfer_activity->set_name("Transfer_File_" + filename + "_from_" + src_site + "_to_" + dst_site);
-    transfer_activity->on_this_completion_cb([this,mode,filename,size,src_site,dst_site]
+    transfer_activity->on_this_completion_cb([this,key,mode,filename,size,src_site,dst_site]
         (simgrid::s4u::Comm const& co) 
         {
             create(filename,size,dst_site);
             if(mode == CGSim::FileTransferDecisionMode::MOVE) remove(filename, src_site);
+            in_flight_transfers.erase(key);
         });
     return transfer_activity;
   }
+
+  void FileManager::make_background_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name){
+
+    auto t = CGSim::get_file_manager()->transfer(filename, src_site, dst_site, mode);
+    const auto size = FileSizes.at(filename);
+
+    t->on_this_start_cb([this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
+        if (!started_transfers.insert(co.get_name()).second) return;
+        dispatcher->onBackGroundFileTransferStart(filename,size,co,src_site,dst_site,policy_name);
+    });
+
+    t->on_this_completion_cb([this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
+        started_transfers.erase(co.get_name());
+        dispatcher->onBackGroundFileTransferEnd(filename,size,co,src_site,dst_site,policy_name);
+        active_background_transfers[co.get_name()].second = false;
+        });
+
+    t->start();
+    active_background_transfers[t->get_name()] = {t, true};
+
+    for (auto it = active_background_transfers.begin(); it != active_background_transfers.end();) 
+    {if (!it->second.second) it = active_background_transfers.erase(it); else ++it;}
+
+    std::cout << "active_background_transfers: "
+              << active_background_transfers.size()
+              << std::endl;
+}
 
 } 
 
