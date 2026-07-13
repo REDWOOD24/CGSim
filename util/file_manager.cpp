@@ -183,9 +183,6 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
     for (auto it = active_background_transfers.begin(); it != active_background_transfers.end();) 
     {if (!it->second.second) it = active_background_transfers.erase(it); else ++it;}
 
-    std::cout << "active_background_transfers: "
-              << active_background_transfers.size()
-              << std::endl;
 }
 
 } 

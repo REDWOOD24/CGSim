@@ -107,9 +107,7 @@ void JOB_EXECUTOR::start_server()
     get_jobs();
     }
 
-    dispatch_system_pending_jobs();
-
-    if(pending_jobs.size() + DISPATCHED_JOBS == TOTAL_JOBS)
+    else
     {
       while(!pending_activities.empty())
       {
@@ -118,12 +116,7 @@ void JOB_EXECUTOR::start_server()
       }
     }
 
-    //Not sure if this is needed
-    //if(pending_activities.empty()){sg4::this_actor::yield(); continue;}
-
-    //This needs work, activity could be long so wait_any doesn't make any sense
-    //while(dispatcher->putGridIntoPending()) pending_activities.wait_any();
-    //while(dispatcher->putGridIntoPendingFor()) pending_activities.wait_any();
+    dispatch_system_pending_jobs();
   }
 
   while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
