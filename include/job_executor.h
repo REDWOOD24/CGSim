@@ -31,14 +31,13 @@ private:
     static void                onJobAssignment(Job* job);
     static void                get_jobs();
     static void                advance_to_time(double time);
+    static void                dispatch_system_pending_jobs();
     [[noreturn]] static void   receiver(const std::string& MQ_name);
     static void                attach_callbacks();
     static unsigned long       totalJobs(JobQueue jobs);
 
 
     static   sg4::ActivitySet                     pending_activities;
-    static   unsigned long                        USED_CORES;
-    static   unsigned long                        TOTAL_CORES;
     static   unsigned long                        DISPATCHED_JOBS;
     static   unsigned long                        FINISHED_JOBS;
     static   unsigned long                        ACTIVATED_JOBS;

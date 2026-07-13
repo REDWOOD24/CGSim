@@ -19,7 +19,6 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
         CGSim::get_site_manager()->moveRunningtoFinishedJob(j->comp_site);
         host->extension<HostExtensions>()->onJobFinish(j);
         JOB_EXECUTOR::FINISHED_JOBS++;
-        JOB_EXECUTOR::USED_CORES -= j->cores;
         JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
 
         //See if dependent jobs are ready to run

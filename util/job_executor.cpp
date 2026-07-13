@@ -6,8 +6,6 @@ std::unordered_map<long long, Job*>  JOB_EXECUTOR::all_jobs;
 std::vector<Job*>                    JOB_EXECUTOR::pending_jobs;
 JobQueue                             JOB_EXECUTOR::jobs;
 unsigned long                        JOB_EXECUTOR::MAX_RETRIES = 20;
-unsigned long                        JOB_EXECUTOR::USED_CORES = 0;
-unsigned long                        JOB_EXECUTOR::TOTAL_CORES;
 unsigned long                        JOB_EXECUTOR::DISPATCHED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::ACTIVATED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::FINISHED_JOBS = 0;
@@ -15,19 +13,18 @@ unsigned long                        JOB_EXECUTOR::TOTAL_JOBS;
 
 unsigned long JOB_EXECUTOR::totalJobs(JobQueue jobs)
 {
-    while (!jobs.empty()) 
-    {
-        auto* job = jobs.top();
-        all_jobs[job->jobid] = job;
-        jobs.pop();
-    }
-    return all_jobs.size();
+  while (!jobs.empty()) 
+  {
+      auto* job = jobs.top();
+      all_jobs[job->jobid] = job;
+      jobs.pop();
+  }
+  return all_jobs.size();
 }
 
 void JOB_EXECUTOR::start_job_execution()
 {
   start_receivers();
-  TOTAL_CORES = std::stoul((sg4::Engine::get_instance()->get_netzone_root())->get_property("grid_cores"));
   attach_callbacks();
   sg4::Host* job_server = sg4::Host::by_name("JOB-SERVER_cpu-0");
   if (!job_server) throw std::runtime_error("JOB-SERVER not initialized properly");
@@ -65,24 +62,32 @@ void JOB_EXECUTOR::advance_to_time(double time)
   {
     if (pending_activities.empty()) 
     {
-
-      if (ACTIVATED_JOBS < DISPATCHED_JOBS)
-        {
-          sg4::this_actor::yield();
-          continue;
-        }
-
-      sg4::this_actor::sleep_until(time);
+      if (ACTIVATED_JOBS < DISPATCHED_JOBS){sg4::this_actor::yield(); continue;}
+      sg4::this_actor::sleep_until(time); 
       return;
     }
 
     try 
     {
-      pending_activities.wait_any_for(time - sg4::Engine::get_clock());
+      auto act = pending_activities.wait_any_for(time - sg4::Engine::get_clock());
       while (pending_activities.test_any()){}
+      if(act && time > sg4::Engine::get_clock()){if(act->get_name().find("Exec") != std::string::npos){dispatch_system_pending_jobs();}}    
     }
     catch (const simgrid::TimeoutException&) {return;}
   }  
+}
+
+
+void JOB_EXECUTOR::dispatch_system_pending_jobs()
+{
+  for (auto it = pending_jobs.begin(); it != pending_jobs.end();)
+  {
+  if(dispatcher->stopJobAssignment()) break;
+  Job* job = *it;
+  dispatcher->assignJob(job);
+  if(job->comp_host != ""){job->status = "assigned"; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+  else {job->status = "pending"; job->retries++; ++it;}
+  }
 }
 
 
@@ -94,35 +99,17 @@ void JOB_EXECUTOR::start_server()
     std::cout << "Pending Jobs: " << pending_jobs.size() << std::endl;
     std::cout << "Pending Activities: " <<  pending_activities.size() << std::endl;
     std::cout << "Current Simulated Time: " << sg4::Engine::get_clock() << std::endl;
-    std::cout << "CORE USAGE: " << (1.0*USED_CORES)/(1.0*TOTAL_CORES) << std::endl;
+    std::cout << "CORE USAGE: " << CGSim::get_site_manager()->getGridCPUUtilization() << std::endl;
 
-    if(pending_jobs.size() + DISPATCHED_JOBS != TOTAL_JOBS) //PENDING_JOBS.size() + DISPATCHED JOBS = TOTAL JOBS
+    if(pending_jobs.size() + DISPATCHED_JOBS != TOTAL_JOBS) //PENDING_JOBS.size() + DISPATCHED JOBS <= TOTAL JOBS
     {
     if(sg4::Engine::get_clock() < jobs.top()->creation_time) advance_to_time(jobs.top()->creation_time);
     get_jobs();
     }
-    
-    bool nothing_assigned = true;
-    bool activities_finished = false;
-    for (auto it = pending_jobs.begin(); it != pending_jobs.end();)
-    {
-      if((1.0*USED_CORES)/(1.0*TOTAL_CORES) > 0.8) break;
-      Job* job = *it;
-      dispatcher->assignJob(job);
-      if(job->comp_host != ""){job->status = "assigned"; nothing_assigned = false; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
-      else {job->status = "pending"; job->retries++; ++it;}
-      //else ++it;
-    }
 
-    if(pending_activities.empty() && DISPATCHED_JOBS != TOTAL_JOBS)
-    {
-      sg4::this_actor::yield();
-      continue;
-    }
+    dispatch_system_pending_jobs();
 
-    while (!pending_activities.empty() && (1.0 * USED_CORES) / (1.0 * TOTAL_CORES) >= 0.6){activities_finished = true; pending_activities.wait_any();}
-
-    if(!pending_activities.empty() && nothing_assigned && !activities_finished)
+    if(pending_jobs.size() + DISPATCHED_JOBS == TOTAL_JOBS)
     {
       while(!pending_activities.empty())
       {
@@ -131,13 +118,19 @@ void JOB_EXECUTOR::start_server()
       }
     }
 
+    //Not sure if this is needed
+    //if(pending_activities.empty()){sg4::this_actor::yield(); continue;}
+
+    //This needs work, activity could be long so wait_any doesn't make any sense
+    //while(dispatcher->putGridIntoPending()) pending_activities.wait_any();
+    //while(dispatcher->putGridIntoPendingFor()) pending_activities.wait_any();
   }
 
   while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
-    {
-      if (!pending_activities.empty()) pending_activities.wait_any();
-      else sg4::this_actor::yield();
-    }
+  {
+    if (!pending_activities.empty()) pending_activities.wait_any();
+    else sg4::this_actor::yield();
+  }
 
   CGSim::PolicyManager::RUNNING = false;
 }
@@ -145,7 +138,6 @@ void JOB_EXECUTOR::start_server()
 void JOB_EXECUTOR::onJobAssignment(Job* job)
 {
   DISPATCHED_JOBS++;
-  USED_CORES += job->cores; 
   std::cout << "Job: " << job->jobid << ", Cores: " << job->cores  << ", Status: " << job->status << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
   dispatcher->onJobAssignment(job);
@@ -166,7 +158,6 @@ void JOB_EXECUTOR::execute_job(Job* j)
 
   for (const auto& [filename,fileinfo] : j->input_files_sizes_locations) 
   {
-    //Change this behavior later
     std::string filelocation = "";
     CGSim::FileTransferDecisionMode mode = CGSim::FileTransferDecisionMode::COPY;
 

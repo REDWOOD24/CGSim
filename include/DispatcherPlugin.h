@@ -88,6 +88,9 @@ public:
   /*------Policy Module Interface------*/
   virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode){}
 
+  virtual bool stopJobAssignment(){return false;}
+
+
   
 
 

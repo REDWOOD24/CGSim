@@ -50,6 +50,7 @@ public:
     long   getCoresAvailable(const std::string& site);
     long   getCoresUsed(const std::string& site);
     double getCPUUtilization(const std::string& site);
+    double getGridCPUUtilization();
 
 
     void moveSystemPendingtoPendingJob(const std::string& site);
@@ -73,6 +74,9 @@ private:
     std::unordered_map<std::string, long> SiteRunningJobs;
     std::unordered_map<std::string, long> SiteFinishedJobs;
     std::unordered_map<std::string, long> SiteFailedJobs;
+
+    inline static long TOTAL_GRID_CORES = 0;
+    inline static long AVAILABLE_GRID_CORES = 0;
 };
 
 inline SiteManager* get_site_manager() {

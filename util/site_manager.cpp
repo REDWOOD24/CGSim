@@ -22,6 +22,9 @@ void SiteManager::register_site(sg4::NetZone* site){
     SiteRunningJobs[name] = 0;
     SiteFinishedJobs[name] = 0;
     SiteFailedJobs[name] = 0;
+
+    TOTAL_GRID_CORES += std::stol(site->get_property("total_cores"));
+    AVAILABLE_GRID_CORES += std::stol(site->get_property("total_cores"));
 }
 
 bool SiteManager::exists(const std::string& site) {
@@ -31,11 +34,13 @@ bool SiteManager::exists(const std::string& site) {
 void SiteManager::occupy_cores(const std::string& site, int cores){
     if(!exists(site)) throw std::runtime_error("SiteManager error: site not registered -> " + site);
     SiteAvailableCores.at(site) -= cores;
+    AVAILABLE_GRID_CORES -= cores;
 }
 
 void SiteManager::free_cores(const std::string& site, int cores){
     if(!exists(site)) throw std::runtime_error("SiteManager error: site not registered -> " + site);
     SiteAvailableCores.at(site) += cores;
+    AVAILABLE_GRID_CORES += cores;
 }
 
 void SiteManager::occupy_cpu(const std::string& site){
@@ -138,6 +143,10 @@ long SiteManager::getActiveJobs(const std::string& site){
 double SiteManager::getCPUUtilization(const std::string& site){
     if(!exists(site)) throw std::runtime_error("SiteManager error: site not registered -> " + site);
     return 1.0 - ((1.0*SiteAvailableCores.at(site))/(1.0*SiteTotalCores.at(site)));
+}
+
+double SiteManager::getGridCPUUtilization(){
+    return 1.0 - ((1.0*AVAILABLE_GRID_CORES)/(1.0*TOTAL_GRID_CORES));
 }
 
 long SiteManager::getCPUsAvailable(const std::string& site){
