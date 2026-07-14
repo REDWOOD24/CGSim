@@ -136,7 +136,7 @@ void TRACK4_OUTPUT::onJobStatusChange(Job* job)
 long long TRACK4_OUTPUT::input_files_bytes(Job* job) 
 {
     long long total_bytes = 0;
-    for (const auto& [filename, filedata] : job->input_files) {total_bytes += filedata.first;}
+    for (const auto& [filename, filedata] : job->input_files_sizes_locations) {total_bytes += filedata.first;}
     return total_bytes;
 }
 

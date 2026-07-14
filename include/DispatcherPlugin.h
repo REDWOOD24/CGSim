@@ -86,7 +86,12 @@ public:
   virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
   /*------Policy Module Interface------*/
-  virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode){}
+  virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode)
+  {
+    //Current default behavior, choose file at the comp site or pick the first one in the location list
+    if(file_locations.find(j->comp_site) != file_locations.end()) source_site = j->comp_site;
+   else source_site = *(file_locations.begin());
+  }
 
   virtual bool stopJobAssignment(){return false;}
 

@@ -82,7 +82,7 @@ JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
 
             // Safely get each column, providing defaults if missing
             job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
-            job->creation_time         = std::stod(getColumn(row, column_map, "creationtime_sec", "0"));
+            job->creation_time         = std::stod(getColumn(row, column_map, "creationtime", "0"));
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
             job->comp_site             = getColumn(row, column_map, "computingsite", "");
             job->cores                 = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
@@ -107,7 +107,7 @@ JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
             unsigned long long size_per_inp_file = no_of_inp_files > 0 ? inp_file_bytes / no_of_inp_files : 0;
             for (int f = 1; f <= no_of_inp_files; ++f) {
                 std::string filename = "user.input." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
-                job->input_files[filename] = {0.0, {}};
+                job->input_files.insert(filename);
                 CGSim::get_file_manager()->create(filename,size_per_inp_file/10000,job->comp_site);
             }
 
