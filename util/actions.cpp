@@ -1,4 +1,5 @@
 #include "actions.h"
+#include <memory>
 
 sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
 {
@@ -22,7 +23,6 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
         JOB_EXECUTOR::USED_CORES -= j->cores;
         JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
 
-        //See if dependent jobs are ready to run
         for(const auto& [child_job_id,rel_creation_time]: j->children)
         {
             auto* child_job = JOB_EXECUTOR::all_jobs[child_job_id];
@@ -50,17 +50,35 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
 
 sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename)
 {
+    auto* fm = CGSim::get_file_manager();
+    const std::string site = j->comp_site;
 
-    auto read_activity = CGSim::get_file_manager()->read(filename, j->comp_site,j->comp_host,j->disk);
+    // One pin per scheduled local-read activity (ref-counted at file manager).
+    fm->pin_replica(filename, site);
+    auto released = std::make_shared<bool>(false);
+    auto release_pin = [fm, filename, site, released]() {
+        if (*released) {
+            return;
+        }
+        *released = true;
+        fm->unpin_replica(filename, site);
+    };
+
+    auto read_activity = fm->read(filename, j->comp_site, j->comp_host, j->disk);
     read_activity->set_name("Read_File_"+ filename + "_for_Job_" + std::to_string(j->jobid) + "_on_" + j->comp_host);
-    auto size = CGSim::get_file_manager()->request_file_size(filename);
-    read_activity->on_this_start_cb([j,filename,size](simgrid::s4u::Io const& io) {
-        JOB_EXECUTOR::dispatcher->onFileReadStart(j,filename,size,io);
+    auto size = fm->request_file_size(filename);
+    read_activity->on_this_start_cb([j, filename, size, release_pin, fm, site](simgrid::s4u::Io const& io) {
+        if (!fm->exists(filename, site)) {
+            release_pin();
+            throw std::runtime_error("File: " + filename + " does not exist on Site: " + site);
+        }
+        JOB_EXECUTOR::dispatcher->onFileReadStart(j, filename, size, io);
         });
 
-    read_activity->on_this_completion_cb([j,filename,size](simgrid::s4u::Io const& io) {
+    read_activity->on_this_completion_cb([j, filename, size, release_pin](simgrid::s4u::Io const& io) {
+            release_pin();
             j->total_io_read_time += (io.get_finish_time() - io.get_start_time());
-            JOB_EXECUTOR::dispatcher->onFileReadEnd(j,filename,size,io);
+            JOB_EXECUTOR::dispatcher->onFileReadEnd(j, filename, size, io);
             });
 
   return read_activity;
@@ -85,7 +103,7 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
 
 sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode)
 {
-    auto transfer_activity = CGSim::get_file_manager()->transfer(filename,src_site,dst_site,mode);
+    auto transfer_activity = CGSim::get_file_manager()->transfer(filename, src_site, dst_site, mode);
     const auto size = static_cast<unsigned long long>(transfer_activity->get_remaining());
 
     transfer_activity->on_this_start_cb([j,filename,size,src_site,dst_site](simgrid::s4u::Comm const& co) {

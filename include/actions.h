@@ -25,7 +25,7 @@ public:
     ~Actions() = default;
 
     static sg4::ExecPtr  exec_task_multi_thread_async(Job* j);
-    static sg4::CommPtr  transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode);
+    static sg4::CommPtr transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode);
     static sg4::IoPtr    read_file_async(Job* j, const std::string& filename);
     static sg4::IoPtr    write_file_async(Job* j, const std::string& filename, const unsigned long long& size);
 };
