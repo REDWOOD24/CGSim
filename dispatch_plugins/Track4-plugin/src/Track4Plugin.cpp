@@ -13,6 +13,7 @@ public:
 
     virtual void onJobSubmission(Job* job) final override;
     virtual void onJobAssignment(Job* job) final override;
+    virtual void onJobFailure(Job* job) final override;
     virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex) final override;
     virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
  
@@ -40,6 +41,11 @@ Job* Track4Plugin::assignJob(Job* job)
 }
 
 void Track4Plugin::onJobSubmission(Job* job)
+{
+   t4ou->onJobStatusChange(job);
+}
+
+void Track4Plugin::onJobFailure(Job* job)
 {
    t4ou->onJobStatusChange(job);
 }

@@ -49,6 +49,9 @@ public:
   // Virtual function can be implemented on job assignment to site 
   virtual void onJobAssignment(Job* job){}
 
+  // Virtual function can be implemented on job submission to grid
+  virtual void onJobFailure(Job* job){}
+
   // Virtual function can be implemented when a job execution starts
   virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex){}
 
@@ -88,12 +91,15 @@ public:
   /*------Policy Module Interface------*/
   virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode)
   {
-    //Current default behavior, choose file at the comp site or pick the first one in the location list
-    if(file_locations.find(j->comp_site) != file_locations.end()) source_site = j->comp_site;
-   else source_site = *(file_locations.begin());
+  //Current default behavior, choose file at the comp site or pick the first one in the location list
+  if(file_locations.find(j->comp_site) != file_locations.end()) source_site = j->comp_site;
+  else source_site = *(file_locations.begin());
   }
 
   virtual bool stopJobAssignment(){return false;}
+
+  //Current default behavior, MAX_RETIES = 100000
+  virtual int maxJobRetries(){return 100000;}
 
 
   

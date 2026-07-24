@@ -42,7 +42,6 @@ private:
     static   unsigned long                        FINISHED_JOBS;
     static   unsigned long                        ACTIVATED_JOBS;
     static   unsigned long                        TOTAL_JOBS;
-    static   unsigned long                        MAX_RETRIES;
     static   JobQueue                             jobs;
     static   std::unordered_map<long long, Job*>  all_jobs;
     static   std::vector<Job*>                    pending_jobs;

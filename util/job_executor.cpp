@@ -5,7 +5,6 @@ sg4::ActivitySet                     JOB_EXECUTOR::pending_activities;
 std::unordered_map<long long, Job*>  JOB_EXECUTOR::all_jobs;
 std::vector<Job*>                    JOB_EXECUTOR::pending_jobs;
 JobQueue                             JOB_EXECUTOR::jobs;
-unsigned long                        JOB_EXECUTOR::MAX_RETRIES = 20;
 unsigned long                        JOB_EXECUTOR::DISPATCHED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::ACTIVATED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::FINISHED_JOBS = 0;
@@ -69,6 +68,7 @@ void JOB_EXECUTOR::advance_to_time(double time)
 
     try 
     {
+      //@ToDo What if exec and io finish at same time then pending_activities.test_any() could remove exec
       auto act = pending_activities.wait_any_for(time - sg4::Engine::get_clock());
       while (pending_activities.test_any()){}
       if(act && time > sg4::Engine::get_clock()){if(act->get_name().find("Exec") != std::string::npos){dispatch_system_pending_jobs();}}    
@@ -86,6 +86,8 @@ void JOB_EXECUTOR::dispatch_system_pending_jobs()
   Job* job = *it;
   dispatcher->assignJob(job);
   if(job->comp_host != ""){job->status = "assigned"; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+  //@ToDo Need concrete plan to deal with job failures.
+  else if(job->retries > dispatcher->maxJobRetries()){job->status = "failed"; CGSim::get_site_manager()->removeSystemPendingJob(); dispatcher->onJobFailure(job); it = pending_jobs.erase(it); DISPATCHED_JOBS++; ACTIVATED_JOBS++;}
   else {job->status = "pending"; job->retries++; ++it;}
   }
 }
@@ -93,6 +95,7 @@ void JOB_EXECUTOR::dispatch_system_pending_jobs()
 
 void JOB_EXECUTOR::start_server()
 {
+  //@ToDo Put this while in a function, so it can be called again when failed jobs are resubmitted
   while (DISPATCHED_JOBS != TOTAL_JOBS)
   {
     std::cout << DISPATCHED_JOBS << " / " << TOTAL_JOBS << " jobs dispatched" << std::endl;

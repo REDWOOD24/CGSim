@@ -47,7 +47,7 @@ public:
 
     void make_background_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name = "");
     bool is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site);
-    std::string transfer_key(const std::string& filename,const std::string& src_site,const std::string& dst_site);
+    std::string generate_transfer_key(const std::string& filename,const std::string& src_site,const std::string& dst_site);
 
     inline static std::unordered_set<std::string> in_flight_transfers = {};
     
@@ -62,7 +62,7 @@ private:
 
     //Needed for Background transfers
     std::unordered_map<std::string, std::pair<sg4::CommPtr, bool>> active_background_transfers;
-    std::unordered_set<std::string> started_transfers;
+    std::unordered_set<std::string> started_transfers; //Hack to avoid double start comm callback
 
 
 };
