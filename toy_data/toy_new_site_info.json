@@ -2,15 +2,15 @@
   "AGLT2_site_0": {
     "SITE_PROPERTIES": {
       "GFLOPS": "28407840",
-      "storage_capacity_bytes": "6828998000",
+      "storage_capacity_bytes": "682899800000",
       "storage_utilization_ratio": "0.07677378145373596",
       "file_count": "1"
     },
     "CPUInfo": [
       {
-        "units": 888,
+        "units": 2,
         "speed": 30000000.0,
-        "cores": 24,
+        "cores": 18,
         "BW_CPU": "3725GBps",
         "LAT_CPU": "72ns",
         "properties": [
@@ -42,7 +42,7 @@
         ]
       },
       {
-        "units": 887,
+        "units": 0,
         "speed": 20000000.0,
         "cores": 26,
         "BW_CPU": "2092GBps",

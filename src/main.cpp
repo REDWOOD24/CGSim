@@ -14,6 +14,7 @@
 #include "version.h"
 #include "logger.h"
 #include "job_executor.h"
+#include "file_manager.h"
 
 int main(int argc, char** argv)
 {
@@ -51,15 +52,16 @@ int main(int argc, char** argv)
     for (auto& [key, value] : j["Custom_Parameters"].items()) {platform->set_property(key,value.get<std::string>());}
 
     PluginLoader<DispatcherPlugin> plugin_loader;
-    auto dispatcher = plugin_loader.load(dispatcherPath);
+    auto unique_dispatcher = plugin_loader.load(dispatcherPath);
+    std::shared_ptr<DispatcherPlugin> dispatcher = std::move(unique_dispatcher);
 
     // Create and set up executor
     JOB_EXECUTOR::set_dispatcher(dispatcher);
-    JOB_EXECUTOR::start_receivers();
+    CGSim::FileManager::set_dispatcher(dispatcher);
     JOB_EXECUTOR::start_job_execution();
 
     // Print version
-    CG_SIM_LOG_INFO("SimATLAS version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
+    CG_SIM_LOG_INFO("CGSim version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);
 
     return 0;
 }

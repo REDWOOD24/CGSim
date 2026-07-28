@@ -1,4 +1,13 @@
 #include "workload_manager.h"
+#include <random>
+
+
+long long random_ll(long long min, long long max) {
+    static std::random_device rd;
+    static std::mt19937_64 gen(rd());  // 64-bit generator
+    std::uniform_int_distribution<long long> dist(min, max);
+    return dist(gen);
+}
 
 
 std::vector<std::string> WORKLOAD_MANAGER::parseCSVLine(const std::string& line) {
@@ -82,7 +91,7 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
 
             // Safely get each column, providing defaults if missing
             job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
-            //job->creation_time         = getColumn(row, column_map, "creationtime", "");
+            job->creation_time         = random_ll(5,30000);
             //job->job_status            = getColumn(row, column_map, "jobstatus", "");
             //job->job_name              = getColumn(row, column_map, "jobname", "");
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
@@ -129,7 +138,7 @@ JobQueue WORKLOAD_MANAGER::getWorkload() {
             double out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
 
             // ---- Generate output files ----
-            long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
+            unsigned long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
             for (int f = 1; f <= no_of_out_files; ++f) {
                 std::string filename = "user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
                 job->output_files[filename] = size_per_out_file;

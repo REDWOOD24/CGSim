@@ -43,21 +43,23 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         const std::string  comm_host_BW_CPU = "10000000GBps";
         const std::string  comm_host_LAT_CPU = "0ns";
         const int          comm_host_cores = 1;
-        const sg4::Link*   link = site->create_split_duplex_link("link_" + site_info.name+"_communication",
+        const sg4::Link*   link = site->create_split_duplex_link("link_" + site_info.name+"_communication_server",
             comm_host_BW_CPU)->set_latency(comm_host_LAT_CPU)->seal();
 
-        sg4::Host* comm_host = site->create_host(site_info.name+"_communication",comm_host_CPU_SPEED);
+        sg4::Host* comm_host = site->create_host(site_info.name+"_communication_server",comm_host_CPU_SPEED);
         comm_host->set_core_count(comm_host_cores);
         site->add_route(comm_host, nullptr, {{link, sg4::LinkInRoute::Direction::UP}}, true);
         site->set_gateway(comm_host->get_netpoint());
         comm_host->seal();
 
-        CGSim::FileManager::register_site(site,site_info.files);
         site->set_property("total_cores",std::to_string(site_cores));
         sites[site_info.name] = site;
 
         grid_storage += std::stoll(site->get_property("storage_capacity_bytes"));
         grid_cores   += site_cores;
+
+        CGSim::get_file_manager()->register_site(site,site_info.files);
+        CGSim::get_site_manager()->register_site(site);
     }
     platform->set_property("grid_cores",  std::to_string(grid_cores));
     platform->set_property("grid_storage",std::to_string(grid_storage));
@@ -76,14 +78,12 @@ void Platform::initialize_site_connections(std::vector<SiteConnInfo>& site_conn_
 
         const sg4::Link* interzonal_link = platform->create_link(linkname, siteConn.bandwidth)->set_latency(siteConn.latency)->seal();
         platform->add_route(src, dst, { sg4::LinkInRoute(interzonal_link) });
-
-        //LOG_DEBUG("Connected {} <--> {} with latency {} and bandwidth {}", src_name, dst_name, latency, bandwidth);
     }
 }
 
 void Platform::initialize_simgrid_plugins()
 {
-    simatlas_host_extension_init();
+    host_extension_init();
 }
 
 void Platform::initialize_job_server()
@@ -103,7 +103,6 @@ void Platform::initialize_job_server()
     JOB_SERVER_site->add_route(JOB_SERVER_host, nullptr, { { JOB_SERVER_link, sg4::LinkInRoute::Direction::UP}}, true);
     JOB_SERVER_site->set_gateway(JOB_SERVER_host->get_netpoint());
     JOB_SERVER_host->seal();
-
 
     for (auto& [site_name, site] : sites) {
         const auto linkname = "link_JOB_SERVER:" + site_name;

@@ -3,6 +3,7 @@
 
 #include "job.h"
 #include <simgrid/s4u.hpp>
+#include "file_manager.h"
 
 class DispatcherPlugin {
 public:
@@ -20,19 +21,36 @@ public:
   DispatcherPlugin(DispatcherPlugin&&) = delete;
   DispatcherPlugin& operator=(DispatcherPlugin&&) = delete;
 
+
+  /*------Input Module Interface------*/
+  
   //Pure virtual function must be implemented by derived classes to get the Workload
   virtual JobQueue getWorkload() = 0;
   
+  /*------Dispatch Module Interface------*/
+
   // Pure virtual function must be implemented by derived classes to assign Jobs
   virtual Job* assignJob(Job* job) = 0;
+  
+  /*------Interaction Module Interface------*/
 
-  /*-------------------------------------------------------------------------------------------*/
+  // Virtual function can be implemented to execute code before simulation start
+  virtual void beforeSimulationStart(){}
 
   // Virtual function can be implemented to execute code on simulation start
   virtual void onSimulationStart(){}
 
   // Virtual function can be implemented to execute code on simulation end
   virtual void onSimulationEnd(){}
+
+  // Virtual function can be implemented on job submission to grid
+  virtual void onJobSubmission(Job* job){}
+
+  // Virtual function can be implemented on job assignment to site 
+  virtual void onJobAssignment(Job* job){}
+
+  // Virtual function can be implemented on job submission to grid
+  virtual void onJobFailure(Job* job){}
 
   // Virtual function can be implemented when a job execution starts
   virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex){}
@@ -52,6 +70,12 @@ public:
   // Virtual function can be implemented when a file transfer ends
   virtual void onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
+  // Virtual function can be implemented when a background file transfer starts
+  virtual void onBackGroundFileTransferStart(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site, const std::string& policy_name){}
+
+  // Virtual function can be implemented when a background file transfer ends
+  virtual void onBackGroundFileTransferEnd(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site, const std::string& policy_name){}
+
   // Virtual function can be implemented when a file read starts
   virtual void onFileReadStart(Job* job,const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
 
@@ -63,6 +87,23 @@ public:
 
   // Virtual function can be implemented when a file write ends
   virtual void onFileWriteEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}
+
+  /*------Policy Module Interface------*/
+  virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode)
+  {
+  //Current default behavior, choose file at the comp site or pick the first one in the location list
+  if(file_locations.find(j->comp_site) != file_locations.end()) source_site = j->comp_site;
+  else source_site = *(file_locations.begin());
+  }
+
+  virtual bool stopJobAssignment(){return false;}
+
+  //Current default behavior, MAX_RETIES = 100000
+  virtual int maxJobRetries(){return 100000;}
+
+
+  
+
 
 };
 

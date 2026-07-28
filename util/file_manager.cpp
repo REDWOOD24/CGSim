@@ -1,55 +1,82 @@
 #include "file_manager.h"
+#include "DispatcherPlugin.h"
 
 namespace CGSim {
 
-std::unordered_map<std::string,std::unordered_set<std::string>>  FileManager::SiteFiles;
-std::unordered_map<std::string, std::unordered_set<std::string>> FileManager::FileSites;
-std::unordered_map<std::string, unsigned long long>              FileManager::FileSizes;
-std::unordered_map<std::string,  long long>              FileManager::SiteStorages;
-
-
-FileManager* FileManager::instance() {
-    static FileManager instance; 
-    return &instance;
+FileManager& FileManager::instance()
+{
+    static FileManager fm;
+    return fm;
 }
 
 bool FileManager::exists(const std::string& filename)
 {
-return FileSizes.count(filename) > 0;
+    return FileSizes.count(filename) > 0;
 }
 
 bool FileManager::exists(const std::string& filename, const std::string& sitename)
 {
-return SiteFiles.at(sitename).count(filename) > 0;
+    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
+    return SiteFiles.at(sitename).count(filename) > 0;
 }
 
 bool FileManager::remove(const std::string& filename, const std::string& sitename)
 {
-return (FileSizes.erase(filename) > 0 && SiteFiles.at(sitename).erase(filename) > 0 && FileSites.at(filename).erase(sitename) > 0);
+    if (!exists(filename, sitename))
+        return false;
+
+    auto size = FileSizes.at(filename);
+
+    SiteFiles.at(sitename).erase(filename);
+    FileSites.at(filename).erase(sitename);
+    SiteStorages.at(sitename) += size;
+    if(FileSites.at(filename).empty()) {FileSites.erase(filename); FileSizes.erase(filename);}
+
+    return true;
+}
+
+bool FileManager::is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+    return in_flight_transfers.find(generate_transfer_key(filename, src_site, dst_site)) != in_flight_transfers.end();
+}
+
+std::string FileManager::generate_transfer_key(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+    return filename + "|" + src_site + "|" + dst_site;
 }
 
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
 
     const std::string& site_name = site->get_name();
-    SiteStorages[site_name] = std::stoll(site->get_property("storage_capacity_bytes"));
+    SiteStorages[site_name] = std::stoull(site->get_property("storage_capacity_bytes"));
+    SiteFiles[site_name];
 
     for (const auto& [file, size] : files) {
+        if (SiteStorages[site_name] < size) throw std::runtime_error("Site: "+site_name+" is out of storage");
         SiteFiles[site_name].insert(file);
         FileSizes[file] = size;
         FileSites[file].insert(site_name);
         SiteStorages[site_name] -= size;
-        if (SiteStorages[site_name] < 0) throw std::runtime_error("Site "+site_name+" is out of storage");
     }
 }
 
 Job* FileManager::request_file_location(Job* j){
-    for(auto& [file,file_info]: j->input_files)
+    for(auto& file: j->input_files)
     {
         if (!exists(file)) throw std::runtime_error("File: " +file+ " does not exist");
-        file_info.first  = FileSizes.at(file);
-        file_info.second = FileSites.at(file);
+        j->input_files_sizes_locations[file] = {FileSizes.at(file), FileSites.at(file)};
     }
     return j;
+}
+
+std::unordered_set<std::string> FileManager::request_site_files(const std::string& sitename)
+{
+    if(SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: " +sitename+ " does not exist");
+    return SiteFiles.at(sitename);
+}
+
+std::unordered_set<std::string> FileManager::request_file_sites(const std::string& filename)
+{
+    if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");
+    return FileSites.at(filename);
 }
 
 unsigned long long FileManager::request_file_size(const std::string& filename)
@@ -60,7 +87,7 @@ unsigned long long FileManager::request_file_size(const std::string& filename)
 }
 
 unsigned long long FileManager::request_remaining_grid_storage() {
-    long long total = 0;
+    unsigned long long total = 0;
     for (const auto& [key, value] : SiteStorages) {
         total += value;
     }
@@ -68,31 +95,33 @@ unsigned long long FileManager::request_remaining_grid_storage() {
 }
 
 unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) {
-    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
+    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return SiteStorages.at(sitename);
 }
 
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){
 
-    //Check if Site exists
-    if (SiteFiles.count(sitename) == 0) throw std::runtime_error("Site"+sitename+" does not exist");
+    //Check if File already exists on the site
+    if (exists(filename, sitename)) return;
+
+     //Check if Site has enough storage for the file
+    if (SiteStorages[sitename] < size) throw std::runtime_error("Site: "+sitename+" is out of storage");
+
 
     SiteFiles[sitename].insert(filename);
     FileSites[filename].insert(sitename);
     FileSizes[filename] = size;
     SiteStorages[sitename] -= size;
-
-    if (SiteStorages[sitename] < 0) throw std::runtime_error("Site "+sitename+" is out of storage");
 }
 
 sg4::IoPtr FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
 
-    if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site"+comp_sitename+" does not exist");
+    if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site: "+comp_sitename+" does not exist");
+    if (exists(filename)) throw std::runtime_error("File: "+filename+" already exists on the grid");
     auto disk = sg4::Host::by_name(comp_host)->get_disk_by_name(comp_disk);
     auto write_activity = sg4::Io::init()->set_disk(disk)->set_size(size)->set_op_type(sg4::Io::OpType::WRITE);
-    write_activity->on_this_completion_cb([filename,size,comp_sitename](simgrid::s4u::Io const& io) {
-        create(filename,size,comp_sitename);
-      });
+    write_activity->on_this_completion_cb([this,filename,size,comp_sitename](simgrid::s4u::Io const& io) 
+    {create(filename,size,comp_sitename);});
     return write_activity;
 }
 
@@ -103,10 +132,57 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
     auto size_in_bytes = FileSizes.at(filename);
     auto read_activity = sg4::Io::init()->set_disk(disk)->set_size(size_in_bytes)->set_op_type(sg4::Io::OpType::READ);
 
-    read_activity->on_this_start_cb([filename,comp_sitename](simgrid::s4u::Io const& io) {
+    read_activity->on_this_start_cb([this,filename,comp_sitename](simgrid::s4u::Io const& io) {
         if (!exists(filename,comp_sitename)) throw std::runtime_error("File: " +filename+
-            " does not exist on Site: "+comp_sitename+" does not exist");});
+            " does not exist on Site: "+comp_sitename);});
     return read_activity;
+}
+
+sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode){
+
+    if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");
+    if(exists(filename,dst_site))  throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
+
+    const std::string key = generate_transfer_key(filename, src_site, dst_site);
+    if (!in_flight_transfers.insert(key).second) throw std::runtime_error("File transfer: " + key + " is already in progress");
+
+    auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
+    auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication_server");
+    auto size     = FileSizes.at(filename);
+    auto transfer_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
+    transfer_activity->set_name("Transfer_File_" + filename + "_from_" + src_site + "_to_" + dst_site);
+    transfer_activity->on_this_completion_cb([this,key,mode,filename,size,src_site,dst_site]
+        (simgrid::s4u::Comm const& co) 
+        {
+            create(filename,size,dst_site);
+            if(mode == CGSim::FileTransferDecisionMode::MOVE) remove(filename, src_site);
+            in_flight_transfers.erase(key);
+        });
+    return transfer_activity;
+  }
+
+  void FileManager::make_background_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name){
+
+    auto t = transfer(filename, src_site, dst_site, mode);
+    const auto size = FileSizes.at(filename);
+
+    t->on_this_start_cb([t, this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
+        if (!started_transfers.insert(co.get_name()).second) return;
+        active_background_transfers[t->get_name()] = {t, true};
+        dispatcher->onBackGroundFileTransferStart(filename,size,co,src_site,dst_site,policy_name);
+    });
+
+    t->on_this_completion_cb([this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
+        started_transfers.erase(co.get_name());
+        active_background_transfers[co.get_name()].second = false;
+        dispatcher->onBackGroundFileTransferEnd(filename,size,co,src_site,dst_site,policy_name);
+    });
+    
+    t->start();
+
+    for (auto it = active_background_transfers.begin(); it != active_background_transfers.end();) 
+    {if (!it->second.second) it = active_background_transfers.erase(it); else ++it;}
+
 }
 
 } 

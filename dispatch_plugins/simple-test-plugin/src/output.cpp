@@ -123,7 +123,6 @@ void OUTPUT::onJobExecutionStart(Job* job, sg4::Exec const& ex)
         {"host", job->comp_host},
         {"cores", job->cores},
         {"speed", job->comp_host_speed},
-        {"start_time", ex.get_start_time()},
         {"site_cpu_util", calculate_site_cpu_util(job->comp_site)},
         {"grid_cpu_util", calculate_grid_cpu_util()}
     };
@@ -321,8 +320,11 @@ sg4::Link* OUTPUT::get_link(const std::string& src_site, const std::string& dst_
 double OUTPUT::calculate_grid_cpu_util()
 {
     double cores_used = 0;
-    double total_cores = std::stoul(platform->get_property("grid_storage"));
-    for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) {
+    double total_cores = std::stoul(platform->get_property("grid_cores"));
+    for (const auto& host : sg4::Engine::get_instance()->get_all_hosts()) 
+    {
+        if(host->get_name().find("JOB-SERVER_cpu") != std::string::npos) continue;
+        if(host->get_name().find("_communication") != std::string::npos) continue;
         cores_used += host->extension<HostExtensions>()->get_cores_used();
     }
     return cores_used/total_cores;
@@ -333,7 +335,9 @@ double OUTPUT::calculate_site_cpu_util(std::string& site_name)
     auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_cores = std::stoul(site->get_property("total_cores"));
     double cores_used = 0;
-    for (const auto& host : site->get_all_hosts()) {
+    for (const auto& host : site->get_all_hosts()) 
+    {
+        if(host->get_name().find("_communication") != std::string::npos) continue;
         cores_used += host->extension<HostExtensions>()->get_cores_used();
     }
     return cores_used/total_cores;
@@ -342,7 +346,7 @@ double OUTPUT::calculate_site_cpu_util(std::string& site_name)
 double OUTPUT::calculate_grid_storage_util()
 {
     double total_storage = std::stoull(platform->get_property("grid_storage"));
-    double remaining_storage = CGSim::FileManager::request_remaining_grid_storage();
+    double remaining_storage = CGSim::get_file_manager()->request_remaining_grid_storage();
     return (1.0-remaining_storage/total_storage);
 }
 
@@ -350,7 +354,7 @@ double OUTPUT::calculate_site_storage_util(std::string& site_name)
 {
     auto   site = sg4::Engine::get_instance()->netzone_by_name_or_null(site_name);
     double total_storage = std::stoull(site->get_property("storage_capacity_bytes"));
-    double remaining_storage = CGSim::FileManager::request_remaining_site_storage(site_name);
+    double remaining_storage = CGSim::get_file_manager()->request_remaining_site_storage(site_name);
     return (1.0-remaining_storage/total_storage);
 }
 
