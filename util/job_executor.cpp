@@ -9,6 +9,8 @@ unsigned long                        JOB_EXECUTOR::DISPATCHED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::ACTIVATED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::FINISHED_JOBS = 0;
 unsigned long                        JOB_EXECUTOR::TOTAL_JOBS;
+unsigned long                        JOB_EXECUTOR::JOBS_IN_SITE_PENDING = 0;
+
 
 unsigned long JOB_EXECUTOR::totalJobs(JobQueue jobs)
 {
@@ -46,8 +48,8 @@ void JOB_EXECUTOR::get_jobs()
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
       std::cout << job->jobid << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
-      job->status = "submitted";
-      CGSim::get_site_manager()->addSystemPendingJob();
+      job->status = CGSim::STATUS::GlOBAL_PENDING;
+      CGSim::get_site_manager()->GlobalPendingJobs[job->jobid] = job;
       dispatcher->onJobSubmission(job);
       jobs.pop();
     }
@@ -68,30 +70,96 @@ void JOB_EXECUTOR::advance_to_time(double time)
 
     try 
     {
-      //@ToDo What if exec and io finish at same time then pending_activities.test_any() could remove exec
       auto act = pending_activities.wait_any_for(time - sg4::Engine::get_clock());
       while (pending_activities.test_any()){}
-      if(act && time > sg4::Engine::get_clock()){if(act->get_name().find("Exec") != std::string::npos){dispatch_system_pending_jobs();}}    
     }
     catch (const simgrid::TimeoutException&) {return;}
   }  
 }
 
 
-void JOB_EXECUTOR::dispatch_system_pending_jobs()
+void JOB_EXECUTOR::dispatch_global_pending_jobs()
 {
-  for (auto it = pending_jobs.begin(); it != pending_jobs.end();)
+  auto grid_available_cores = CGSim::get_site_manager()->TOTAL_GRID_CORES - CGSim::get_site_manager()->USED_GRID_CORES;
+
+  for(auto it = pending_jobs.begin(); it != pending_jobs.end();)
   {
-  if(dispatcher->stopJobAssignment()) break;
+  if(dispatcher->stopGlobalJobDispatching()) break;
   Job* job = *it;
+  if(job->cores>grid_available_cores) break;
   dispatcher->assignJob(job);
-  if(job->comp_host != ""){job->status = "assigned"; CGSim::get_site_manager()->moveSystemPendingtoPendingJob(job->comp_site); onJobAssignment(job); it = pending_jobs.erase(it);}
+
+  if(!job->comp_site.empty() && job->comp_host.empty())
+  {
+    job->status = CGSim::STATUS::SITE_PENDING;
+    JOBS_IN_SITE_PENDING++;
+    CGSim::get_site_manager()->GlobalPendingJobs.erase(job->jobid); 
+    CGSim::get_site_manager()->get_site(job->comp_site)->pending_jobs.emplace_back(job);
+    dispatcher->onJobSitePending(job);
+    job->retries++;
+    it = pending_jobs.erase(it);
+  }
+
+  else if(!job->comp_site.empty() && !job->comp_host.empty())
+  {
+    job->status = CGSim::STATUS::ASSIGNED;
+    CGSim::get_site_manager()->GlobalPendingJobs.erase(job->jobid); 
+    CGSim::get_site_manager()->get_site(job->comp_site)->assigned_jobs[job->jobid] = job;
+    onJobAssignment(job); 
+    it = pending_jobs.erase(it);
+  }
+
   //@ToDo Need concrete plan to deal with job failures.
-  else if(job->retries > dispatcher->maxJobRetries()){job->status = "failed"; CGSim::get_site_manager()->removeSystemPendingJob(); dispatcher->onJobFailure(job); it = pending_jobs.erase(it); DISPATCHED_JOBS++; ACTIVATED_JOBS++;}
-  else {job->status = "pending"; job->retries++; ++it;}
+  else if(++job->retries > dispatcher->maxJobRetries())
+  {
+    grid_available_cores-=job->cores; 
+    job->status = CGSim::STATUS::FAILED; 
+    CGSim::get_site_manager()->GlobalPendingJobs.erase(job->jobid);
+    CGSim::get_site_manager()->GlobalFailedJobs[job->jobid] = job;
+    dispatcher->onJobFailure(job); 
+    it = pending_jobs.erase(it); 
+    DISPATCHED_JOBS++; //Internal book keeping
+    ACTIVATED_JOBS++;
+  }
+
+  else ++it;
   }
 }
 
+void JOB_EXECUTOR::dispatch_site_pending_jobs(std::string& site_name)
+{
+  auto* s=CGSim::get_site_manager()->get_site(site_name);
+  auto available_cores = s->total_cores - s->used_cores;
+
+  if(!s->job_assignment_enabled) return;
+
+  while(!s->pending_jobs.empty() && s->job_assignment_enabled)
+  {
+    auto j=s->pending_jobs.front();
+    if(j->cores>available_cores) break;
+    dispatcher->assignJob(j);
+
+    if(!j->comp_host.empty())
+    {
+      available_cores-=j->cores; 
+      j->status=CGSim::STATUS::ASSIGNED; 
+      s->assigned_jobs[j->jobid]=j; 
+      s->pending_jobs.pop_front(); 
+      JOBS_IN_SITE_PENDING--;
+      onJobAssignment(j);
+    }
+
+    else if(++j->retries>=s->MAX_RETRIES)
+    {
+      j->status=CGSim::STATUS::FAILED; 
+      s->pending_jobs.pop_front();
+      s->failed_jobs[j->jobid]=j;  
+      dispatcher->onJobFailure(j); 
+      DISPATCHED_JOBS++; 
+      ACTIVATED_JOBS++;
+    }
+  }
+}
 
 void JOB_EXECUTOR::start_server()
 {
@@ -99,12 +167,13 @@ void JOB_EXECUTOR::start_server()
   while (DISPATCHED_JOBS != TOTAL_JOBS)
   {
     std::cout << DISPATCHED_JOBS << " / " << TOTAL_JOBS << " jobs dispatched" << std::endl;
-    std::cout << "Pending Jobs: " << pending_jobs.size() << std::endl;
-    std::cout << "Pending Activities: " <<  pending_activities.size() << std::endl;
+    std::cout << "Pending Jobs in Global Queue: " << pending_jobs.size() << std::endl;
+    std::cout << "Pending Jobs in Site Queues: " << JOBS_IN_SITE_PENDING << std::endl;
+    std::cout << "Pending Activities on Grid: " <<  pending_activities.size() << std::endl;
     std::cout << "Current Simulated Time: " << sg4::Engine::get_clock() << std::endl;
-    std::cout << "CORE USAGE: " << CGSim::get_site_manager()->getGridCPUUtilization() << std::endl;
+    std::cout << "Grid CPU Usage: " << CGSim::get_site_manager()->get_grid_cpu_utilization() << std::endl;
 
-    if(pending_jobs.size() + DISPATCHED_JOBS != TOTAL_JOBS) //PENDING_JOBS.size() + DISPATCHED JOBS <= TOTAL JOBS
+    if(pending_jobs.size() + DISPATCHED_JOBS + JOBS_IN_SITE_PENDING != TOTAL_JOBS) //PENDING_JOBS.size() + DISPATCHED JOBS <= TOTAL JOBS
     {
     if(sg4::Engine::get_clock() < jobs.top()->creation_time) advance_to_time(jobs.top()->creation_time);
     get_jobs();
@@ -119,7 +188,8 @@ void JOB_EXECUTOR::start_server()
       }
     }
 
-    dispatch_system_pending_jobs();
+    //@ToDo If job cores are bigger than what any local cpu can handle, it can indefinitely block dispatch_site_pending_jobs
+    if(!pending_jobs.empty()) dispatch_global_pending_jobs();
   }
 
   while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
@@ -134,7 +204,7 @@ void JOB_EXECUTOR::start_server()
 void JOB_EXECUTOR::onJobAssignment(Job* job)
 {
   DISPATCHED_JOBS++;
-  std::cout << "Job: " << job->jobid << ", Cores: " << job->cores  << ", Status: " << job->status << " after " << job->retries << " tries" <<std::endl;
+  std::cout << "Job: " << job->jobid << ", Cores: " << job->cores  << ", Status: " << CGSim::get_site_manager()->status_string.at(job->status) << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
   dispatcher->onJobAssignment(job);
   sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
@@ -154,6 +224,7 @@ void JOB_EXECUTOR::execute_job(Job* j)
 
   for (const auto& [filename,fileinfo] : j->input_files_sizes_locations) 
   {
+    auto read_activity = Actions::read_file_async(j,filename);
     std::string filelocation = "";
     CGSim::FileTransferDecisionMode mode = CGSim::FileTransferDecisionMode::COPY;
 
@@ -162,22 +233,26 @@ void JOB_EXECUTOR::execute_job(Job* j)
 
     if (filelocation != j->comp_site) 
     { 
+      sg4::CommPtr comm_activity;
+      auto incoming_file_transfers = CGSim::get_site_manager()->get_site(j->comp_site)->incoming_file_transfers;
+      if(incoming_file_transfers.find(filename) != incoming_file_transfers.end())
+      {
+        auto src_site = incoming_file_transfers.at(filename);
+        auto transfer_key = CGSim::get_file_manager()->generate_transfer_key(filename,src_site,j->comp_site);
+        comm_activity = CGSim::get_file_manager()->ongoing_transfers.at(transfer_key);
+      }
 
-      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,mode);
-      auto read_activity = Actions::read_file_async(j,filename);
+      else 
+      {
+        comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,mode);
+        comm_activities.push_back(comm_activity);
+      }
 
       comm_activity->add_successor(read_activity);
-      read_activity->add_successor(exec_activity);
-
-      comm_activities.push_back(comm_activity);
-      read_activities.push_back(read_activity);
     }
-    else
-    {
-      auto read_activity = Actions::read_file_async(j,filename);
-      read_activity->add_successor(exec_activity);
-      read_activities.push_back(read_activity);
-    }
+   
+    read_activity->add_successor(exec_activity);
+    read_activities.push_back(read_activity);
   }
 
   for (const auto& [filename,size] : j->output_files) {

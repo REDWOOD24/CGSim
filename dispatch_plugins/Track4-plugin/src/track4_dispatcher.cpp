@@ -57,6 +57,7 @@ double TRACK4_DISPATCHER::storage_needed(std::unordered_map<std::string, long lo
 
 sg4::Host* TRACK4_DISPATCHER::findAvailableCPU(const std::vector<sg4::Host*>& cpus, Job* j)
 {
+  if(CGSim::get_site_manager()->get_site(j->comp_site)->pending_jobs.size() > 0 && j->comp_site.empty()) return nullptr;
     for(const auto& cpu: cpus)
     {
         if(cpu->get_name().find("JOB-SERVER_cpu") != std::string::npos) continue;
@@ -83,10 +84,7 @@ Job* TRACK4_DISPATCHER::assignJob(Job* job)
   auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(job->comp_site);
 
   job->flops = std::stol(site->get_property("GFLOPS"))*job->cpu_consumption_time*job->cores;
-  cpu   = findAvailableCPU(site->get_all_hosts(), job);
-
-  if(cpu) {job->status = "assigned";} //Add in Job Executor
-  else    {job->status = "pending";}
+  cpu   = findAvailableCPU(CGSim::get_site_manager()->get_site(job->comp_site)->cpus, job);
 
   return job;
 }

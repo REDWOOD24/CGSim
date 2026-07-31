@@ -9,17 +9,20 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
         ->set_name("Exec_Job_" + std::to_string(j->jobid) + "_on_" + host->get_name());
 
     exec_activity->on_this_start_cb([j](simgrid::s4u::Exec const& ex) {
-        j->status = "running";
-        CGSim::get_site_manager()->movePendingtoRunningJob(j->comp_site);
+        j->status = CGSim::STATUS::RUNNING;
+        CGSim::get_site_manager()->get_site(j->comp_site)->assigned_jobs.erase(j->jobid);
+        CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs[j->jobid] = j;
         JOB_EXECUTOR::dispatcher->onJobExecutionStart(j,ex);
     });
 
     exec_activity->on_this_completion_cb([j, host](simgrid::s4u::Exec const& ex) {
-        j->status = "finished";
-        CGSim::get_site_manager()->moveRunningtoFinishedJob(j->comp_site);
+        j->status = CGSim::STATUS::FINISHED;
+        CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->jobid);
+        CGSim::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->jobid] = j;
         host->extension<HostExtensions>()->onJobFinish(j);
         JOB_EXECUTOR::FINISHED_JOBS++;
         JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
+        JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
 
         //See if dependent jobs are ready to run
         for(const auto& [child_job_id,rel_creation_time]: j->children)
@@ -29,7 +32,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
             bool active = true;
             for(const auto& parent_job_id: child_job->parents)
             {
-                if(JOB_EXECUTOR::all_jobs[parent_job_id]->status != "finished") active = false;
+                if(JOB_EXECUTOR::all_jobs[parent_job_id]->status != CGSim::STATUS::FINISHED) active = false;
             }
 
             if(active)

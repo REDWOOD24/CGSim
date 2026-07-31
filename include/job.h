@@ -6,13 +6,26 @@
 #include <unordered_set>
 using Files = std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>;
 
+namespace CGSim
+{
+    enum struct STATUS {
+    GlOBAL_PENDING,
+    SITE_PENDING,
+    ASSIGNED,
+    RUNNING,
+    FINISHED,
+    FAILED,
+    NONE
+};
+}
+
 //Information needed to a specify a Job
 struct Job 
 {
     long long                                      jobid{};
     long long                                      creation_time{-1};
     long long                                      submission_time{};
-    std::string                                    status{};
+    CGSim::STATUS                                  status;
     long long                                      flops{};
     int                                            cores{};
     std::string                                    disk{};

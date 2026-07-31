@@ -20,6 +20,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         long site_cores = 0;
         for (const auto& [key,value] : site_info.properties){site->set_property(key,value);}
         int cpu_counter = 0;
+        std::vector<sg4::Host*> compute_hosts = {};
         for (const auto& cpu_clusters : site_info.cpu_info) {
             for (int cpu = 0; cpu < cpu_clusters.units; ++cpu) {
                 std::string cpu_name = site_info.name + "_cpu-" + std::to_string(cpu_counter);
@@ -35,6 +36,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
                 }
                 cpu_counter++;
                 host->seal();
+                compute_hosts.push_back(host);
             }
         }
 
@@ -58,8 +60,8 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         grid_storage += std::stoll(site->get_property("storage_capacity_bytes"));
         grid_cores   += site_cores;
 
+        CGSim::get_site_manager()->register_site(site,compute_hosts);
         CGSim::get_file_manager()->register_site(site,site_info.files);
-        CGSim::get_site_manager()->register_site(site);
     }
     platform->set_property("grid_cores",  std::to_string(grid_cores));
     platform->set_property("grid_storage",std::to_string(grid_storage));

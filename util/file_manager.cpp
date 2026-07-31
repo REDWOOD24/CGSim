@@ -145,15 +145,29 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
 
     const std::string key = generate_transfer_key(filename, src_site, dst_site);
     if (!in_flight_transfers.insert(key).second) throw std::runtime_error("File transfer: " + key + " is already in progress");
+    if(!(CGSim::get_site_manager()->get_site(dst_site)->incoming_file_transfers.insert({filename,src_site}).second)) 
+    throw std::runtime_error("File: " + filename + " already being transferred to site:  " + dst_site);
 
     auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
     auto dst_host = sg4::Engine::get_instance()->host_by_name_or_null(dst_site+"_communication_server");
     auto size     = FileSizes.at(filename);
     auto transfer_activity = sg4::Comm::sendto_init()->set_source(src_host)->set_destination(dst_host)->set_payload_size(size);
     transfer_activity->set_name("Transfer_File_" + filename + "_from_" + src_site + "_to_" + dst_site);
-    transfer_activity->on_this_completion_cb([this,key,mode,filename,size,src_site,dst_site]
+    ongoing_transfers[key] = transfer_activity;
+
+    //@ToDo Remove Redundant block or maybe keep?
+    transfer_activity->on_this_start_cb([this,key,mode,filename,size,src_site,dst_site]
         (simgrid::s4u::Comm const& co) 
         {
+            if (!started_transfers.insert(co.get_name()).second) return;
+        });
+
+    transfer_activity->on_this_completion_cb([this,transfer_activity,key,mode,filename,size,src_site,dst_site]
+        (simgrid::s4u::Comm const& co) 
+        {
+            started_transfers.erase(co.get_name());
+            ongoing_transfers.erase(key);
+            CGSim::get_site_manager()->get_site(dst_site)->incoming_file_transfers.erase(filename);
             create(filename,size,dst_site);
             if(mode == CGSim::FileTransferDecisionMode::MOVE) remove(filename, src_site);
             in_flight_transfers.erase(key);
@@ -167,22 +181,16 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
     const auto size = FileSizes.at(filename);
 
     t->on_this_start_cb([t, this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
-        if (!started_transfers.insert(co.get_name()).second) return;
-        active_background_transfers[t->get_name()] = {t, true};
+        if (!started_background_transfers.insert(co.get_name()).second) return;
         dispatcher->onBackGroundFileTransferStart(filename,size,co,src_site,dst_site,policy_name);
     });
 
     t->on_this_completion_cb([this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
-        started_transfers.erase(co.get_name());
-        active_background_transfers[co.get_name()].second = false;
+        started_background_transfers.erase(co.get_name());
         dispatcher->onBackGroundFileTransferEnd(filename,size,co,src_site,dst_site,policy_name);
     });
     
     t->start();
-
-    for (auto it = active_background_transfers.begin(); it != active_background_transfers.end();) 
-    {if (!it->second.second) it = active_background_transfers.erase(it); else ++it;}
-
 }
 
 } 

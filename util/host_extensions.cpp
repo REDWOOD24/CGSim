@@ -11,8 +11,9 @@ void HostExtensions::registerJob(Job* j) {
         job_ids.insert(std::to_string(j->jobid));
         cores_used      += j->cores;
         cores_available -= j->cores;
-        CGSim::get_site_manager()->occupy_cores(j->comp_site,j->cores);
-        if(cores_available == 0 && available == true) {CGSim::get_site_manager()->occupy_cpu(j->comp_site); available = false;}
+        CGSim::get_site_manager()->get_site(j->comp_site)->used_cores += j->cores;
+        CGSim::get_site_manager()->USED_GRID_CORES += j->cores;
+        if(cores_available == 0 && available == true) {CGSim::get_site_manager()->get_site(j->comp_site)->used_cpus++; available = false;}
     });
 }
 
@@ -21,8 +22,9 @@ void HostExtensions::onJobFinish(Job* j) {
         job_ids.erase(std::to_string(j->jobid));
         cores_used      -= j->cores;
         cores_available += j->cores;
-        CGSim::get_site_manager()->free_cores(j->comp_site,j->cores);
-        if(cores_available > 0 && available == false) {CGSim::get_site_manager()->free_cpu(j->comp_site); available = true;}
+        CGSim::get_site_manager()->get_site(j->comp_site)->used_cores -= j->cores;
+        CGSim::get_site_manager()->USED_GRID_CORES -= j->cores;
+        if(cores_available > 0 && available == false) {CGSim::get_site_manager()->get_site(j->comp_site)->used_cpus--; available = true;}
     });
 }
 

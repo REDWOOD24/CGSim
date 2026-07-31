@@ -31,7 +31,8 @@ private:
     static void                onJobAssignment(Job* job);
     static void                get_jobs();
     static void                advance_to_time(double time);
-    static void                dispatch_system_pending_jobs();
+    static void                dispatch_global_pending_jobs();
+    static void                dispatch_site_pending_jobs(std::string& site_name);
     [[noreturn]] static void   receiver(const std::string& MQ_name);
     static void                attach_callbacks();
     static unsigned long       totalJobs(JobQueue jobs);
@@ -42,6 +43,7 @@ private:
     static   unsigned long                        FINISHED_JOBS;
     static   unsigned long                        ACTIVATED_JOBS;
     static   unsigned long                        TOTAL_JOBS;
+    static   unsigned long                        JOBS_IN_SITE_PENDING;
     static   JobQueue                             jobs;
     static   std::unordered_map<long long, Job*>  all_jobs;
     static   std::vector<Job*>                    pending_jobs;
