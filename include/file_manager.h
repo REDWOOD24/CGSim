@@ -50,6 +50,8 @@ public:
     std::string generate_transfer_key(const std::string& filename,const std::string& src_site,const std::string& dst_site);
 
     inline static std::unordered_set<std::string> in_flight_transfers = {};
+    std::unordered_map<std::string, sg4::CommPtr> ongoing_transfers;
+
     
 
 private:
@@ -61,8 +63,8 @@ private:
     inline static std::shared_ptr<DispatcherPlugin>     dispatcher;
 
     //Needed for Background transfers
-    std::unordered_map<std::string, std::pair<sg4::CommPtr, bool>> active_background_transfers;
     std::unordered_set<std::string> started_transfers; //Hack to avoid double start comm callback
+    std::unordered_set<std::string> started_background_transfers; //Hack to avoid double start comm callback
 
 
 };

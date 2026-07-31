@@ -111,38 +111,42 @@ void TRACK4_OUTPUT::insert_event(
 
 void TRACK4_OUTPUT::onJobStatusChange(Job* job)
 {
-    insert_event
+  
+  auto* site = CGSim::get_site_manager()->get_site(job->comp_site);
+  auto  status = CGSim::get_site_manager()->status_string.at(job->status);
+
+  insert_event
     (
-        job->jobid,
-        job->comp_host,
-        job->status,
-        sg4::Engine::get_clock(),
-        job->comp_site,
-        CGSim::get_site_manager()->getCoresAvailable(job->comp_site),
-        CGSim::get_site_manager()->getCPUsAvailable(job->comp_site),
-        job->flops,
-        job->input_files.size(),
-        job->output_files.size(),
-        input_files_bytes(job),
-        output_files_bytes(job),
-        CGSim::get_site_manager()->getSystemPendingJobs(),
-        CGSim::get_site_manager()->getPendingJobs(job->comp_site),
-        CGSim::get_site_manager()->getRunningJobs(job->comp_site),
-        CGSim::get_site_manager()->getFinishedJobs(job->comp_site),
-        CGSim::get_site_manager()->getFailedJobs(job->comp_site)
-    );
+     job->jobid,
+     job->comp_host,
+     status,
+     sg4::Engine::get_clock(),
+     job->comp_site,
+     site->total_cores - site->used_cores,
+     site->total_cpus - site->used_cpus,
+     job->flops,
+     job->input_files.size(),
+     job->output_files.size(),
+     input_files_bytes(job),
+     output_files_bytes(job),
+     CGSim::get_site_manager()->GlobalPendingJobs.size(),
+     site->pending_jobs.size(),
+     site->running_jobs.size(),
+     site->finished_jobs.size(),
+     site->failed_jobs.size()
+     );
 }
 
 long long TRACK4_OUTPUT::input_files_bytes(Job* job) 
 {
-    long long total_bytes = 0;
-    for (const auto& [filename, filedata] : job->input_files_sizes_locations) {total_bytes += filedata.first;}
-    return total_bytes;
+  long long total_bytes = 0;
+  for (const auto& [filename, filedata] : job->input_files_sizes_locations) {total_bytes += filedata.first;}
+  return total_bytes;
 }
 
 long long TRACK4_OUTPUT::output_files_bytes(Job* job) 
 {
-    long long total_bytes = 0;
-    for (const auto& [filename, filesize] : job->output_files) {total_bytes += filesize;}
-    return total_bytes;
+  long long total_bytes = 0;
+  for (const auto& [filename, filesize] : job->output_files) {total_bytes += filesize;}
+  return total_bytes;
 }

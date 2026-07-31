@@ -86,7 +86,7 @@ JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
             job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
             job->comp_site             = getColumn(row, column_map, "computingsite", "");
             job->cores                 = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
-            job->status                = "created";
+            //job->status                = "created";
             job->retries               = 0;
             //job->add_child(new Job(), 0.0);
 

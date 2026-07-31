@@ -46,6 +46,9 @@ public:
   // Virtual function can be implemented on job submission to grid
   virtual void onJobSubmission(Job* job){}
 
+    // Virtual function can be implemented on job entering site pending queue
+  virtual void onJobSitePending(Job* job){}
+
   // Virtual function can be implemented on job assignment to site 
   virtual void onJobAssignment(Job* job){}
 
@@ -96,7 +99,7 @@ public:
   else source_site = *(file_locations.begin());
   }
 
-  virtual bool stopJobAssignment(){return false;}
+  virtual bool stopGlobalJobDispatching(){return false;}
 
   //Current default behavior, MAX_RETIES = 100000
   virtual int maxJobRetries(){return 100000;}

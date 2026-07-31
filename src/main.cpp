@@ -45,6 +45,7 @@ int main(int argc, char** argv)
 
     // Initialize SimGrid
     sg4::Engine e(&argc, argv);
+    //simgrid::s4u::Engine::set_config("precision/timing", 1e-3);
 
     // Create the platform
     std::unique_ptr<Platform> pf = std::make_unique<Platform>(gridName, sitesInfo, siteConnInfo);
