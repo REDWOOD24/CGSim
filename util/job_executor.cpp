@@ -188,7 +188,7 @@ void JOB_EXECUTOR::start_server()
       }
     }
 
-    //@ToDo If job cores are bigger than what a local cpu can handle, it can indefinitely block dispatch_site_pending_jobs
+    //@ToDo If job cores are bigger than what any local cpu can handle, it can indefinitely block dispatch_site_pending_jobs
     if(!pending_jobs.empty()) dispatch_global_pending_jobs();
   }
 
@@ -233,9 +233,22 @@ void JOB_EXECUTOR::execute_job(Job* j)
 
     if (filelocation != j->comp_site) 
     { 
-      auto comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,mode);
+      sg4::CommPtr comm_activity;
+      auto incoming_file_transfers = CGSim::get_site_manager()->get_site(j->comp_site)->incoming_file_transfers;
+      if(incoming_file_transfers.find(filename) != incoming_file_transfers.end())
+      {
+        auto src_site = incoming_file_transfers.at(filename);
+        auto transfer_key = CGSim::get_file_manager()->generate_transfer_key(filename,src_site,j->comp_site);
+        comm_activity = CGSim::get_file_manager()->ongoing_transfers.at(transfer_key);
+      }
+
+      else 
+      {
+        comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,mode);
+        comm_activities.push_back(comm_activity);
+      }
+
       comm_activity->add_successor(read_activity);
-      comm_activities.push_back(comm_activity);
     }
    
     read_activity->add_successor(exec_activity);
