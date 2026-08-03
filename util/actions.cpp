@@ -25,6 +25,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
         JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
 
         //See if dependent jobs are ready to run
+        bool dag_job_created = false;
         for(const auto& [child_job_id,rel_creation_time]: j->children)
         {
             auto* child_job = JOB_EXECUTOR::all_jobs[child_job_id];
@@ -41,9 +42,11 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
                 new_child_job->creation_time = sg4::Engine::get_clock() +  rel_creation_time;
                 JOB_EXECUTOR::all_jobs[child_job_id] = new_child_job;
                 JOB_EXECUTOR::jobs.push(new_child_job);
+                dag_job_created = true;
             } 
 
         }
+        if(dag_job_created) JOB_EXECUTOR::pending_activities.push(sg4::MessageQueue::by_name("JOB-SERVER-MQ")->put_async(&dag_wakeup_msg));
 
         });
 

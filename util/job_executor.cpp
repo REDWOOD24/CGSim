@@ -59,21 +59,34 @@ void JOB_EXECUTOR::get_jobs()
 
 void JOB_EXECUTOR::advance_to_time(double time)
 {
+  auto dag_job_check = sg4::MessageQueue::by_name("JOB-SERVER-MQ")->get_async();
+  pending_activities.push(dag_job_check);
+  auto finish_dag_check = [&]() {pending_activities.erase(dag_job_check); dag_job_check->cancel();};
+  while(jobs.top()->creation_time == -1) pending_activities.wait_any();
+  
   while (sg4::Engine::get_clock() < time) 
   {
-    if (pending_activities.empty()) 
+    if (pending_activities.size() == 1) //Only DAG Checking Activity Present
     {
       if (ACTIVATED_JOBS < DISPATCHED_JOBS){sg4::this_actor::yield(); continue;}
+      finish_dag_check();
       sg4::this_actor::sleep_until(time); 
       return;
     }
 
     try 
-    {
+    { 
       auto act = pending_activities.wait_any_for(time - sg4::Engine::get_clock());
-      while (pending_activities.test_any()){}
+      bool dag_received = false;
+      while (auto compl_act = pending_activities.test_any()){if(compl_act == dag_job_check) dag_received = true;}
+      if(dag_received || act == dag_job_check) return;
     }
-    catch (const simgrid::TimeoutException&) {return;}
+
+    catch (const simgrid::TimeoutException&) 
+    {
+      finish_dag_check();
+      return;
+    }
   }  
 }
 
@@ -164,7 +177,7 @@ void JOB_EXECUTOR::dispatch_site_pending_jobs(std::string& site_name)
 void JOB_EXECUTOR::start_server()
 {
   //@ToDo Put this while in a function, so it can be called again when failed jobs are resubmitted
-  while (DISPATCHED_JOBS != TOTAL_JOBS)
+  while (DISPATCHED_JOBS != TOTAL_JOBS) //All jobs have to be dispatched
   {
     std::cout << DISPATCHED_JOBS << " / " << TOTAL_JOBS << " jobs dispatched" << std::endl;
     std::cout << "Pending Jobs in Global Queue: " << pending_jobs.size() << std::endl;
@@ -173,9 +186,9 @@ void JOB_EXECUTOR::start_server()
     std::cout << "Current Simulated Time: " << sg4::Engine::get_clock() << std::endl;
     std::cout << "Grid CPU Usage: " << CGSim::get_site_manager()->get_grid_cpu_utilization() << std::endl;
 
-    if(pending_jobs.size() + DISPATCHED_JOBS + JOBS_IN_SITE_PENDING != TOTAL_JOBS) //PENDING_JOBS.size() + DISPATCHED JOBS <= TOTAL JOBS
+    if(pending_jobs.size() + DISPATCHED_JOBS + JOBS_IN_SITE_PENDING != TOTAL_JOBS) //All jobs have to be created
     {
-    if(sg4::Engine::get_clock() < jobs.top()->creation_time) advance_to_time(jobs.top()->creation_time);
+    if(sg4::Engine::get_clock() < jobs.top()->creation_time || jobs.top()->creation_time == -1) advance_to_time(jobs.top()->creation_time);
     get_jobs();
     }
 
