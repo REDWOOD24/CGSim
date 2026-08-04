@@ -47,7 +47,7 @@ void JOB_EXECUTOR::get_jobs()
       CGSim::get_file_manager()->request_file_location(job);
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
-      std::cout << job->jobid << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
+      std::cout << "Job ID: " <<job->jobid << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
       job->status = CGSim::STATUS::GlOBAL_PENDING;
       CGSim::get_site_manager()->GlobalPendingJobs[job->jobid] = job;
       dispatcher->onJobSubmission(job);
@@ -217,7 +217,7 @@ void JOB_EXECUTOR::start_server()
 void JOB_EXECUTOR::onJobAssignment(Job* job)
 {
   DISPATCHED_JOBS++;
-  std::cout << "Job: " << job->jobid << ", Cores: " << job->cores  << ", Status: " << CGSim::get_site_manager()->status_string.at(job->status) << " after " << job->retries << " tries" <<std::endl;
+  std::cout << "Job ID: " << job->jobid << ", Cores: " << job->cores  << ", Status: " << CGSim::get_site_manager()->status_string.at(job->status) << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
   dispatcher->onJobAssignment(job);
   sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");

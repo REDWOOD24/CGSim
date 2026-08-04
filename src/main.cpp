@@ -15,6 +15,7 @@
 #include "logger.h"
 #include "job_executor.h"
 #include "file_manager.h"
+#include "site_manager.h"
 
 int main(int argc, char** argv)
 {
@@ -50,7 +51,11 @@ int main(int argc, char** argv)
     // Create the platform
     std::unique_ptr<Platform> pf = std::make_unique<Platform>(gridName, sitesInfo, siteConnInfo);
     auto* platform = pf->get_simgrid_platform();
-    for (auto& [key, value] : j["Custom_Parameters"].items()) {platform->set_property(key,value.get<std::string>());}
+    for (auto& [key, value] : j["Custom_Parameters"].items()) 
+    {
+        platform->set_property(key,value.get<std::string>()); 
+        CGSim::get_site_manager()->Custom_Parameters[key] = value;
+    }
 
     PluginLoader<DispatcherPlugin> plugin_loader;
     auto unique_dispatcher = plugin_loader.load(dispatcherPath);
