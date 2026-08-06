@@ -23,8 +23,8 @@ namespace CGSim
 struct Job 
 {
     long long                                      jobid{};
-    long long                                      creation_time{-1};
-    long long                                      submission_time{};
+    double                                         creation_time{-1.0};
+    double                                         submission_time{};
     CGSim::STATUS                                  status;
     long long                                      flops{};
     int                                            cores{};

@@ -41,7 +41,7 @@ void JOB_EXECUTOR::get_jobs()
   while(DISPATCHED_JOBS != TOTAL_JOBS  && !jobs.empty())
   {
     Job* job = jobs.top();
-    if(job->creation_time < 0) break;
+    if(job->creation_time == -1.0) break;
     if (sg4::Engine::get_clock() >= job->creation_time) 
     {
       CGSim::get_file_manager()->request_file_location(job);
@@ -62,7 +62,7 @@ void JOB_EXECUTOR::advance_to_time(double time)
   auto dag_job_check = sg4::MessageQueue::by_name("JOB-SERVER-MQ")->get_async();
   pending_activities.push(dag_job_check);
   auto finish_dag_check = [&]() {pending_activities.erase(dag_job_check); dag_job_check->cancel();};
-  while(jobs.top()->creation_time == -1) pending_activities.wait_any();
+  while(jobs.top()->creation_time == -1.0) pending_activities.wait_any();
   
   while (sg4::Engine::get_clock() < time) 
   {
@@ -188,7 +188,7 @@ void JOB_EXECUTOR::start_server()
 
     if(pending_jobs.size() + DISPATCHED_JOBS + JOBS_IN_SITE_PENDING != TOTAL_JOBS) //All jobs have to be created
     {
-    if(sg4::Engine::get_clock() < jobs.top()->creation_time || jobs.top()->creation_time == -1) advance_to_time(jobs.top()->creation_time);
+    if(sg4::Engine::get_clock() < jobs.top()->creation_time || jobs.top()->creation_time == -1.0) advance_to_time(jobs.top()->creation_time);
     get_jobs();
     }
 
