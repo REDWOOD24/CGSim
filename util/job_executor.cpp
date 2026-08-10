@@ -62,7 +62,12 @@ void JOB_EXECUTOR::advance_to_time(double time)
   auto dag_job_check = sg4::MessageQueue::by_name("JOB-SERVER-MQ")->get_async();
   pending_activities.push(dag_job_check);
   auto finish_dag_check = [&]() {pending_activities.erase(dag_job_check); dag_job_check->cancel();};
-  while(jobs.top()->creation_time == -1.0) pending_activities.wait_any();
+
+  while(jobs.top()->creation_time == -1.0) 
+  {
+    if(pending_activities.size() == 1 && ACTIVATED_JOBS < DISPATCHED_JOBS){sg4::this_actor::yield(); continue;}
+    else pending_activities.wait_any();
+  }
   
   while (sg4::Engine::get_clock() < time) 
   {
@@ -180,6 +185,7 @@ void JOB_EXECUTOR::start_server()
   while (DISPATCHED_JOBS != TOTAL_JOBS) //All jobs have to be dispatched
   {
     std::cout << DISPATCHED_JOBS << " / " << TOTAL_JOBS << " jobs dispatched" << std::endl;
+    std::cout << ACTIVATED_JOBS << " jobs activated" << std::endl;
     std::cout << "Pending Jobs in Global Queue: " << pending_jobs.size() << std::endl;
     std::cout << "Pending Jobs in Site Queues: " << JOBS_IN_SITE_PENDING << std::endl;
     std::cout << "Pending Activities on Grid: " <<  pending_activities.size() << std::endl;
