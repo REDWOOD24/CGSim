@@ -23,8 +23,8 @@ namespace CGSim
 struct Job 
 {
     long long                                      jobid{};
-    long long                                      creation_time{-1};
-    long long                                      submission_time{};
+    double                                         creation_time{-1.0};
+    double                                         submission_time{};
     CGSim::STATUS                                  status;
     long long                                      flops{};
     int                                            cores{};
@@ -44,6 +44,7 @@ struct Job
     std::unordered_set<std::string>                input_files{};
     Files                                          input_files_sizes_locations{}; //Change this later
     std::unordered_map<std::string, long long>     output_files{};
+    long                                           files_written{};
     std::unordered_map<std::string,std::string>    metadata{};
     std::unordered_set<long long>                  parents{};               
     std::unordered_map<long long, double>          children{};

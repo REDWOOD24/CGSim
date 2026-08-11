@@ -16,36 +16,44 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
     });
 
     exec_activity->on_this_completion_cb([j, host](simgrid::s4u::Exec const& ex) {
-        j->status = CGSim::STATUS::FINISHED;
-        CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->jobid);
-        CGSim::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->jobid] = j;
-        host->extension<HostExtensions>()->onJobFinish(j);
-        JOB_EXECUTOR::FINISHED_JOBS++;
-        JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
-        JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
+        
+        if(j->output_files.size() == 0){
 
-        //See if dependent jobs are ready to run
-        for(const auto& [child_job_id,rel_creation_time]: j->children)
-        {
-            auto* child_job = JOB_EXECUTOR::all_jobs[child_job_id];
+            j->status = CGSim::STATUS::FINISHED;
+            CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->jobid);
+            CGSim::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->jobid] = j;
+            host->extension<HostExtensions>()->onJobFinish(j);
+            JOB_EXECUTOR::FINISHED_JOBS++;
+            JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
+            JOB_EXECUTOR::dispatcher->onJobFinish(j);
 
-            bool active = true;
-            for(const auto& parent_job_id: child_job->parents)
+            //See if dependent jobs are ready to run
+            bool dag_job_created = false;
+            for(const auto& [child_job_id,rel_creation_time]: j->children)
             {
-                if(JOB_EXECUTOR::all_jobs[parent_job_id]->status != CGSim::STATUS::FINISHED) active = false;
+                auto* child_job = JOB_EXECUTOR::all_jobs[child_job_id];
+                bool active = true;
+                for(const auto& parent_job_id: child_job->parents)
+                {
+                    if(JOB_EXECUTOR::all_jobs[parent_job_id]->status != CGSim::STATUS::FINISHED) active = false;
+                }
+
+                if(active)
+                {
+                    Job* new_child_job = new Job(*child_job);
+                    new_child_job->creation_time = sg4::Engine::get_clock() +  rel_creation_time;
+                    JOB_EXECUTOR::all_jobs[child_job_id] = new_child_job;
+                    JOB_EXECUTOR::jobs.push(new_child_job);
+                    dag_job_created = true;
+                } 
+
             }
-
-            if(active)
-            {
-                Job* new_child_job = new Job(*child_job);
-                new_child_job->creation_time = sg4::Engine::get_clock() +  rel_creation_time;
-                JOB_EXECUTOR::all_jobs[child_job_id] = new_child_job;
-                JOB_EXECUTOR::jobs.push(new_child_job);
-            } 
+            if(dag_job_created) JOB_EXECUTOR::pending_activities.push(sg4::MessageQueue::by_name("JOB-SERVER-MQ")->put_async(&dag_wakeup_msg));
 
         }
+        JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
 
-        });
+    });
 
     return exec_activity;
 }
@@ -79,8 +87,43 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
 
     write_activity->on_this_completion_cb([j,filename,size](simgrid::s4u::Io const& io) {
             j->total_io_write_time += (io.get_finish_time() - io.get_start_time());
+
+            j->files_written++;
+
+            if(j->files_written == j->output_files.size())
+            {
+                j->status = CGSim::STATUS::FINISHED;
+                CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->jobid);
+                CGSim::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->jobid] = j;
+                sg4::Host::by_name(j->comp_host)->extension<HostExtensions>()->onJobFinish(j);
+                JOB_EXECUTOR::FINISHED_JOBS++;
+                JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
+                JOB_EXECUTOR::dispatcher->onJobFinish(j);
+
+                //See if dependent jobs are ready to run
+                bool dag_job_created = false;
+                for(const auto& [child_job_id,rel_creation_time]: j->children)
+                {
+                auto* child_job = JOB_EXECUTOR::all_jobs[child_job_id];
+                bool active = true;
+                for(const auto& parent_job_id: child_job->parents)
+                {
+                    if(JOB_EXECUTOR::all_jobs[parent_job_id]->status != CGSim::STATUS::FINISHED) active = false;
+                }
+                if(active)
+                {
+                    Job* new_child_job = new Job(*child_job);
+                    new_child_job->creation_time = sg4::Engine::get_clock() +  rel_creation_time;
+                    JOB_EXECUTOR::all_jobs[child_job_id] = new_child_job;
+                    JOB_EXECUTOR::jobs.push(new_child_job);
+                    dag_job_created = true;
+                } 
+
+                }
+                if(dag_job_created) JOB_EXECUTOR::pending_activities.push(sg4::MessageQueue::by_name("JOB-SERVER-MQ")->put_async(&dag_wakeup_msg));
+            }
             JOB_EXECUTOR::dispatcher->onFileWriteEnd(j,filename,size,io);
-       });
+        });
 
     return write_activity;
 }

@@ -41,6 +41,7 @@ public:
     std::unordered_map<long long, Job*>  GlobalFailedJobs = {};
     long long TOTAL_GRID_CORES = 0;
     long long USED_GRID_CORES = 0;
+    std::unordered_map<std::string, std::string>  Custom_Parameters = {};
 
     //Site Information
     void register_site(sg4::NetZone* site, std::vector<sg4::Host*> compute_cpus);

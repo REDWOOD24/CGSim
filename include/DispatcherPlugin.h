@@ -61,6 +61,9 @@ public:
   // Virtual function can be implemented when a job execution finishes
   virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex){}
 
+  // Virtual function can be implemented when a job finishes
+  virtual void onJobFinish(Job* job){}
+
   // Virtual function can be implemented when a job transfer starts
   virtual void onJobTransferStart(Job* job, simgrid::s4u::Mess const& me){}
 
