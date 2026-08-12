@@ -1,3 +1,6 @@
+#Getting Started with CGSim
+
+
 ## Platform
 
 Basic Layout of the Computing Grid Platform instantiated by CGSim.
