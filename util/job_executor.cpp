@@ -1,6 +1,6 @@
 #include "job_executor.h"
 
-std::shared_ptr<DispatcherPlugin>    JOB_EXECUTOR::dispatcher;
+std::shared_ptr<CGSim::Plugin>       JOB_EXECUTOR::dispatcher;
 sg4::ActivitySet                     JOB_EXECUTOR::pending_activities;
 std::unordered_map<long long, Job*>  JOB_EXECUTOR::all_jobs;
 std::vector<Job*>                    JOB_EXECUTOR::pending_jobs;

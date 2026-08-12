@@ -14,9 +14,10 @@
 #include "site_manager.h"
 
 namespace sg4 = simgrid::s4u;
-class DispatcherPlugin;
 
 namespace CGSim {
+
+class Plugin;
 
 enum class FileTransferDecisionMode {
     COPY,
@@ -27,7 +28,7 @@ class FileManager {
 public:
     FileManager(const FileManager&) = delete;
     FileManager& operator=(const FileManager&) = delete;
-    static void set_dispatcher(std::shared_ptr<DispatcherPlugin>& d){dispatcher = d;}
+    static void set_dispatcher(std::shared_ptr<CGSim::Plugin>& d){dispatcher = d;}
 
     static FileManager& instance();
     bool exists(const std::string& filename);
@@ -61,7 +62,7 @@ private:
     std::unordered_map<std::string, std::unordered_set<std::string>> FileSites;
     std::unordered_map<std::string, unsigned long long> FileSizes;
     std::unordered_map<std::string, unsigned long long> SiteStorages;
-    inline static std::shared_ptr<DispatcherPlugin>     dispatcher;
+    inline static std::shared_ptr<CGSim::Plugin>        dispatcher;
 
     //Needed for Background transfers
     std::unordered_set<std::string> started_transfers; //Hack to avoid double start comm callback
