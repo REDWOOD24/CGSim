@@ -57,9 +57,9 @@ int main(int argc, char** argv)
         CGSim::get_site_manager()->Custom_Parameters[key] = value;
     }
 
-    PluginLoader<DispatcherPlugin> plugin_loader;
+    PluginLoader<CGSim::Plugin> plugin_loader;
     auto unique_dispatcher = plugin_loader.load(dispatcherPath);
-    std::shared_ptr<DispatcherPlugin> dispatcher = std::move(unique_dispatcher);
+    std::shared_ptr<CGSim::Plugin> dispatcher = std::move(unique_dispatcher);
 
     // Create and set up executor
     JOB_EXECUTOR::set_dispatcher(dispatcher);

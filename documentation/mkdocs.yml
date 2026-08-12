@@ -1,16 +1,18 @@
-site_name: ATLAS GRID SIMULATION
+site_name: CGSim
 site_description: REDWOOD Collaboration
 site_author: REDWOOD Collaboration
-repo_name: ATLAS GRID SIMULATION
-repo_url: https://github.com/REDWOOD24/ATLAS-GRID-SIMULATION
+repo_name: CGSim
+repo_url: https://github.com/REDWOOD24/CGSim
 
 
 theme:
     name: material
 
 nav:
-    - Home: 'index.md'
-    - 'Install Libraries & Tools': 'start/install.md'
+    - Home: 'home.md'
+    - 'Install Libraries & Tools': 'install.md'
+    - 'Getting Started with CGSim':
+      - Computing Grid: 'computing_grid.md'
     - ATLAS Grid:
         - PanDa:
             - 'Overview': 'components/kernel/overview/index.md'

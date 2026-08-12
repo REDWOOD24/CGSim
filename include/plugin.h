@@ -1,25 +1,27 @@
-#ifndef DISPATCHERPLUGIN_H
-#define DISPATCHERPLUGIN_H
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
 #include "job.h"
 #include <simgrid/s4u.hpp>
 #include "file_manager.h"
 
-class DispatcherPlugin {
+namespace CGSim
+{
+class Plugin {
 public:
   // Constructor
-  DispatcherPlugin() = default;
+  Plugin() = default;
 
   // Destructor
-  virtual ~DispatcherPlugin() = default;
+  virtual ~Plugin() = default;
 
   // Delete copy constructor and copy assignment operator
-  DispatcherPlugin(const DispatcherPlugin&) = delete;
-  DispatcherPlugin& operator=(const DispatcherPlugin&) = delete;
+  Plugin(const Plugin&) = delete;
+  Plugin& operator=(const Plugin&) = delete;
   
   // Delete move constructor and move assignment operator
-  DispatcherPlugin(DispatcherPlugin&&) = delete;
-  DispatcherPlugin& operator=(DispatcherPlugin&&) = delete;
+  Plugin(Plugin&&) = delete;
+  Plugin& operator=(Plugin&&) = delete;
 
 
   /*------Input Module Interface------*/
@@ -106,11 +108,7 @@ public:
 
   //Current default behavior, MAX_RETIES = 100000
   virtual int maxJobRetries(){return 100000;}
-
-
-  
-
-
 };
 
-#endif //DISPATCHERPLUGIN_H
+}
+#endif //PLUGIN_H

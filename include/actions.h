@@ -9,7 +9,7 @@
 #include "job.h"
 #include <simgrid/s4u.hpp>
 #include <simgrid/s4u/Exec.hpp>
-#include "DispatcherPlugin.h"
+#include "plugin.h"
 #include "host_extensions.h"
 #include "file_manager.h"
 #include "job_executor.h"

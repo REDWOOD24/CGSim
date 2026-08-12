@@ -1,7 +1,7 @@
 #ifndef JOB_EXECUTOR_H
 #define JOB_EXECUTOR_H
 
-#include "DispatcherPlugin.h"
+#include "plugin.h"
 #include "PluginLoader.h"
 #include "actions.h"
 #include "policy_manager.h"
@@ -20,7 +20,7 @@ public:
     ~JOB_EXECUTOR()= default;
     friend class Actions;
 
-    static void                set_dispatcher(std::shared_ptr<DispatcherPlugin>& d){dispatcher = d;}
+    static void                set_dispatcher(std::shared_ptr<CGSim::Plugin>& d){dispatcher = d;}
     static void                start_job_execution();
 
 
@@ -47,7 +47,7 @@ private:
     static   JobQueue                             jobs;
     static   std::unordered_map<long long, Job*>  all_jobs;
     static   std::vector<Job*>                    pending_jobs;
-    static   std::shared_ptr<DispatcherPlugin>    dispatcher;
+    static   std::shared_ptr<CGSim::Plugin>       dispatcher;
 
 };
 

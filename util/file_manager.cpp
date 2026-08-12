@@ -1,5 +1,5 @@
 #include "file_manager.h"
-#include "DispatcherPlugin.h"
+#include "plugin.h"
 
 namespace CGSim {
 

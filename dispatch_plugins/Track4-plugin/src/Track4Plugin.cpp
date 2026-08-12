@@ -1,10 +1,10 @@
-#include "DispatcherPlugin.h"
+#include "Plugin.h"
 #include "track4_dispatcher.h"
 #include "track4_workload_manager.h"
 #include "track4_output.h"
 #include "track4_output_calibration.h"
 
-class Track4Plugin : public DispatcherPlugin {
+class Track4Plugin : public CGSim::Plugin {
 
 public:
     Track4Plugin();
