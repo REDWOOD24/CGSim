@@ -4,3 +4,5 @@ The **C**omputing **G**rid **Sim**ulator is a simulation framework for large-sca
 The framework supports the evaluation of job scheduling, resource allocation, and data movement strategies without requiring experiments on a real production system. CGSim can simulate large numbers of sites and concurrent jobs while collecting performance information such as job completion times, resource utilization, queue lengths, and failures. Its modular design also allows researchers to test different scheduling policies and generate simulation data for performance analysis or machine-learning-based optimization, making it useful for studying and improving large-scale scientific computing systems.
 
 For complete documentation and to get started visit [https://cgsim.web.cern.ch/](https://cgsim.web.cern.ch/)
+
+🚨 **IMPORTANT** Website is currently out of date and being updated.
