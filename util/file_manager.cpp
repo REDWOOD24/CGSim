@@ -103,7 +103,7 @@ unsigned long long FileManager::request_remaining_site_storage(const std::string
 double FileManager::request_site_storage_utilization(const std::string& sitename)
 {
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
-    return (1.0*SiteStorages.at(sitename))/(1.0*TotalSiteStorages.at(sitename));
+    return 1.0 - (1.0*SiteStorages.at(sitename))/(1.0*TotalSiteStorages.at(sitename));
 }
 
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){
