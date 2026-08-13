@@ -132,8 +132,18 @@ sg4::IoPtr FileManager::internal_write(const std::string& filename, const unsign
     return write_activity;
 }
 
-void FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
-    auto write_activity = internal_write(filename, size, comp_sitename, comp_host, comp_disk);
+void FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& site, const std::string& cpu, const std::string& disk){
+
+    auto write_activity = internal_write(filename, size, site, cpu, disk);
+
+    write_activity->on_this_start_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io) {
+        dispatcher->onUserFileWriteStart(filename,size, site, cpu, disk, io);
+    });
+
+    write_activity->on_this_completion_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io){
+        dispatcher->onUserFileWriteEnd(filename,size, site, cpu, disk, io);
+    });
+
     write_activity->start();
 }
 
@@ -150,9 +160,19 @@ sg4::IoPtr FileManager::internal_read(const std::string& filename, const std::st
     return read_activity;
 }
 
-void FileManager::read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
+void FileManager::read(const std::string& filename, const std::string& site, const std::string& cpu, const std::string& disk){
 
-    auto read_activity = internal_read(filename, comp_sitename , comp_host, comp_disk);
+    auto read_activity = internal_read(filename, site , cpu, disk);
+    auto size = FileSizes.at(filename);
+
+    read_activity->on_this_start_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io) {
+        dispatcher->onUserFileReadStart(filename,size, site, cpu, disk, io);
+    });
+
+    read_activity->on_this_completion_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io){
+        dispatcher->onUserFileReadEnd(filename,size, site, cpu, disk, io);
+    });
+
     read_activity->start();
 }
 
@@ -193,19 +213,19 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
     return transfer_activity;
   }
 
-  void FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name){
+  void FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& metadata){
 
     auto t = internal_transfer(filename, src_site, dst_site, mode);
     const auto size = FileSizes.at(filename);
 
-    t->on_this_start_cb([t, this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
+    t->on_this_start_cb([t, this, metadata, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
         if (!user_initiated_transfers.insert(co.get_name()).second) return;
-        dispatcher->onUserFileTransferStart(filename,size,co,src_site,dst_site,policy_name);
+        dispatcher->onUserFileTransferStart(filename,size,co,src_site,dst_site,metadata);
     });
 
-    t->on_this_completion_cb([this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
+    t->on_this_completion_cb([this, metadata, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
         user_initiated_transfers.erase(co.get_name());
-        dispatcher->onUserFileTransferEnd(filename,size,co,src_site,dst_site,policy_name);
+        dispatcher->onUserFileTransferEnd(filename,size,co,src_site,dst_site,metadata);
     });
     
     t->start();
