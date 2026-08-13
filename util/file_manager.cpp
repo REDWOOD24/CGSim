@@ -121,7 +121,7 @@ void FileManager::create(const std::string& filename, const unsigned long long& 
     SiteStorages[sitename] -= size;
 }
 
-sg4::IoPtr FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
+sg4::IoPtr FileManager::internal_write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
 
     if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site: "+comp_sitename+" does not exist");
     if (exists(filename)) throw std::runtime_error("File: "+filename+" already exists on the grid");
@@ -132,7 +132,12 @@ sg4::IoPtr FileManager::write(const std::string& filename, const unsigned long l
     return write_activity;
 }
 
-sg4::IoPtr FileManager::read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
+void FileManager::write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
+    auto write_activity = internal_write(filename, size, comp_sitename, comp_host, comp_disk);
+    write_activity->start();
+}
+
+sg4::IoPtr FileManager::internal_read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
 
     if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");
     auto disk = sg4::Host::by_name(comp_host)->get_disk_by_name(comp_disk);
@@ -143,6 +148,12 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
         if (!exists(filename,comp_sitename)) throw std::runtime_error("File: " +filename+
             " does not exist on Site: "+comp_sitename);});
     return read_activity;
+}
+
+void FileManager::read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
+
+    auto read_activity = internal_read(filename, comp_sitename , comp_host, comp_disk);
+    read_activity->start();
 }
 
 sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode){

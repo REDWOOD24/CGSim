@@ -61,7 +61,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
 sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename)
 {
 
-    auto read_activity = CGSim::get_file_manager()->read(filename, j->comp_site,j->comp_host,j->disk);
+    auto read_activity = CGSim::get_file_manager()->internal_read(filename, j->comp_site,j->comp_host,j->disk);
     read_activity->set_name("Read_File_"+ filename + "_for_Job_" + std::to_string(j->jobid) + "_on_" + j->comp_host);
     auto size = CGSim::get_file_manager()->request_file_size(filename);
     read_activity->on_this_start_cb([j,filename,size](simgrid::s4u::Io const& io) {
@@ -78,7 +78,7 @@ sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename)
 
 sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const unsigned long long& size)
 {
-    auto write_activity = CGSim::get_file_manager()->write(filename, size, j->comp_site,j->comp_host,j->disk);
+    auto write_activity = CGSim::get_file_manager()->internal_write(filename, size, j->comp_site,j->comp_host,j->disk);
     write_activity->set_name("Write_File_"+ filename + "_for_Job_" +std::to_string(j->jobid) + "_on_" + j->comp_host);
 
     write_activity->on_this_start_cb([j,filename,size](simgrid::s4u::Io const& io) {

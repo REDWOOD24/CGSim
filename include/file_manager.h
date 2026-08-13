@@ -48,6 +48,8 @@ public:
     void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
     bool remove(const std::string& filename, const std::string& sitename);
     void transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name = "");
+    void write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
+    void read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
 
     bool is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site);
     std::string generate_transfer_key(const std::string& filename,const std::string& src_site,const std::string& dst_site);
@@ -71,8 +73,8 @@ private:
     void register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files);
     static void set_dispatcher(std::shared_ptr<CGSim::Plugin>& d){dispatcher = d;}
 
-    sg4::IoPtr write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
-    sg4::IoPtr read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
+    sg4::IoPtr   internal_write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
+    sg4::IoPtr   internal_read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
     sg4::CommPtr internal_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode = CGSim::FileTransferDecisionMode::COPY);
 
 
