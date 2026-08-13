@@ -46,6 +46,7 @@ std::string FileManager::generate_transfer_key(const std::string& filename, cons
 void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
 
     const std::string& site_name = site->get_name();
+    TotalSiteStorages[site_name] = std::stoull(site->get_property("storage_capacity_bytes"));
     SiteStorages[site_name] = std::stoull(site->get_property("storage_capacity_bytes"));
     SiteFiles[site_name];
 
@@ -99,6 +100,12 @@ unsigned long long FileManager::request_remaining_site_storage(const std::string
     return SiteStorages.at(sitename);
 }
 
+double FileManager::request_site_storage_utilization(const std::string& sitename)
+{
+    if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
+    return (1.0*SiteStorages.at(sitename))/(1.0*TotalSiteStorages.at(sitename));
+}
+
 void FileManager::create(const std::string& filename, const unsigned long long& size, const std::string& sitename){
 
     //Check if File already exists on the site
@@ -138,7 +145,7 @@ sg4::IoPtr FileManager::read(const std::string& filename, const std::string& com
     return read_activity;
 }
 
-sg4::CommPtr FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode){
+sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode){
 
     if(!exists(filename,src_site)) throw std::runtime_error("File: "+filename+" does not exist at Site: "+src_site+" so no transfer");
     if(exists(filename,dst_site))  throw std::runtime_error("File: "+filename+" already exists at Site: "+dst_site+" so no transfer");
@@ -159,13 +166,13 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
     transfer_activity->on_this_start_cb([this,key,mode,filename,size,src_site,dst_site]
         (simgrid::s4u::Comm const& co) 
         {
-            if (!started_transfers.insert(co.get_name()).second) return;
+            if (!internal_transfers.insert(co.get_name()).second) return;
         });
 
     transfer_activity->on_this_completion_cb([this,transfer_activity,key,mode,filename,size,src_site,dst_site]
         (simgrid::s4u::Comm const& co) 
         {
-            started_transfers.erase(co.get_name());
+            internal_transfers.erase(co.get_name());
             ongoing_transfers.erase(key);
             CGSim::get_site_manager()->get_site(dst_site)->incoming_file_transfers.erase(filename);
             create(filename,size,dst_site);
@@ -175,19 +182,19 @@ sg4::CommPtr FileManager::transfer(const std::string& filename, const std::strin
     return transfer_activity;
   }
 
-  void FileManager::make_background_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name){
+  void FileManager::transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& policy_name){
 
-    auto t = transfer(filename, src_site, dst_site, mode);
+    auto t = internal_transfer(filename, src_site, dst_site, mode);
     const auto size = FileSizes.at(filename);
 
     t->on_this_start_cb([t, this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
-        if (!started_background_transfers.insert(co.get_name()).second) return;
-        dispatcher->onBackGroundFileTransferStart(filename,size,co,src_site,dst_site,policy_name);
+        if (!user_initiated_transfers.insert(co.get_name()).second) return;
+        dispatcher->onUserFileTransferStart(filename,size,co,src_site,dst_site,policy_name);
     });
 
     t->on_this_completion_cb([this, policy_name, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
-        started_background_transfers.erase(co.get_name());
-        dispatcher->onBackGroundFileTransferEnd(filename,size,co,src_site,dst_site,policy_name);
+        user_initiated_transfers.erase(co.get_name());
+        dispatcher->onUserFileTransferEnd(filename,size,co,src_site,dst_site,policy_name);
     });
     
     t->start();

@@ -78,11 +78,11 @@ public:
   // Virtual function can be implemented when a file transfer ends
   virtual void onFileTransferEnd(Job* job, const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site){}
 
-  // Virtual function can be implemented when a background file transfer starts
-  virtual void onBackGroundFileTransferStart(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site, const std::string& policy_name){}
+  // Virtual function can be implemented when a user defined file transfer starts
+  virtual void onUserFileTransferStart(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site, const std::string& policy_name){}
 
-  // Virtual function can be implemented when a background file transfer ends
-  virtual void onBackGroundFileTransferEnd(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site, const std::string& policy_name){}
+  // Virtual function can be implemented when a user defined file transfer ends
+  virtual void onUserFileTransferEnd(const std::string& filename, const unsigned long long filesize, simgrid::s4u::Comm const& co, const std::string& src_site, const std::string& dst_site, const std::string& policy_name){}
 
   // Virtual function can be implemented when a file read starts
   virtual void onFileReadStart(Job* job,const std::string& filename, const unsigned long long filesize, simgrid::s4u::Io const& io){}

@@ -2,7 +2,6 @@
 #define CGSIM_CGSIM_HPP
 
 #include "job.h"
-#include "host_extensions.h"
 #include "logger.h"
 #include "file_manager.h"
 #include "site_manager.h"

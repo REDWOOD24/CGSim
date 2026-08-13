@@ -27,8 +27,6 @@ public:
     PolicyManager() = delete;
     PolicyManager(const PolicyManager&) = delete;
     PolicyManager& operator=(const PolicyManager&) = delete;
-    friend class ::JOB_EXECUTOR;
-
 
     static void addPolicy(CGSim::Policy* policy);
 
@@ -36,6 +34,7 @@ private:
     static void run_policy(CGSim::Policy* policy);
     static void deactivate_policy(CGSim::Policy* policy);
     static std::unordered_map<std::string, CGSim::Policy*> policies;
+    friend class ::JOB_EXECUTOR;
     inline static bool RUNNING = true;
 };
 
