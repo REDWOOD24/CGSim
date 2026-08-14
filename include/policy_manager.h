@@ -51,7 +51,7 @@ public:
 private:
     PolicyManager() = default;
     static void run_policy(CGSim::Policy* policy, std::size_t generation_number);
-    static std::unordered_map<std::string, std::unique_ptr<CGSim::Policy>> policies;
+    static std::unordered_map<std::string, CGSim::Policy*> policies;
     static std::unordered_map<std::string, CGSim::Policy*> active_policies;
     static std::unordered_map<std::string, CGSim::Policy*> deactivated_policies;
     friend class ::JOB_EXECUTOR;

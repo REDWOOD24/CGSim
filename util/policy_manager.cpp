@@ -1,7 +1,7 @@
 #include "policy_manager.h"
 #include <stdexcept>
 
-std::unordered_map<std::string, std::unique_ptr<CGSim::Policy>>   CGSim::PolicyManager::policies;
+std::unordered_map<std::string, CGSim::Policy*>                   CGSim::PolicyManager::policies;
 std::unordered_map<std::string, CGSim::Policy*>                   CGSim::PolicyManager::active_policies;
 std::unordered_map<std::string, CGSim::Policy*>                   CGSim::PolicyManager::deactivated_policies;
 
@@ -27,7 +27,7 @@ void PolicyManager::addPolicy(CGSim::Policy* policy)
   if (now > policy->start_time) throw std::runtime_error("Policy " + policy->name + " unable to start as start time has elapsed.");
   if (now > policy->end_time && policy->end_time > 0.0) throw std::runtime_error("Policy " + policy->name + " unable to start as end time has elapsed.");
   if (policy->end_time > 0.0 && policy->end_time <= policy->start_time) {throw std::invalid_argument("Policy end_time must be greater than start_time");}
-  policies.emplace(policy->name, std::unique_ptr<CGSim::Policy>(policy));
+  policies.emplace(policy->name, policy);
   active_policies.emplace(policy->name, policy);
   ++policy->generation_number;
   const std::size_t generation_number = policy->generation_number;
@@ -89,7 +89,7 @@ void PolicyManager::reactivate_policy(const std::string& policy_name)
 CGSim::Policy* PolicyManager::get_policy(const std::string& policy_name)
 {
   if(!exists(policy_name)) throw std::runtime_error("Policy " + policy_name + " does not exist.");
-  return policies.at(policy_name).get();
+  return policies.at(policy_name);
 }
 
 bool PolicyManager::exists(const std::string& policy_name)
