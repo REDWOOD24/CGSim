@@ -40,18 +40,18 @@ void PolicyManager::run_policy(CGSim::Policy* policy, std::size_t generation_num
   if (generation_number != policy->generation_number) return;
 
   const double now = sg4::Engine::get_clock();
-  if (!policy->active) {if (active_policies.count(policy->name) > 0) deactivate_policy(policy);return;}
-  if (now > policy->end_time && policy->end_time > 0.0) {deactivate_policy(policy); return;}
-  if (!RUNNING) {deactivate_policy(policy); return;}
+  if (!policy->active) {if (active_policies.count(policy->name) > 0) deactivate_policy(policy->name);return;}
+  if (now > policy->end_time && policy->end_time > 0.0) {deactivate_policy(policy->name); return;}
+  if (!RUNNING) {deactivate_policy(policy->name); return;}
 
   try {policy->callback();}
-  catch (const std::exception& e) {deactivate_policy(policy); throw std::runtime_error("Policy " + policy->name + " caused an error: " + e.what());}
+  catch (const std::exception& e) {deactivate_policy(policy->name); throw std::runtime_error("Policy " + policy->name + " caused an error: " + e.what());}
 
 
-  if (!policy->active) {if (active_policies.count(policy->name) > 0) deactivate_policy(policy);return;}
-  if (policy->repeat_interval == 0.0) {deactivate_policy(policy); return;}
+  if (!policy->active) {if (active_policies.count(policy->name) > 0) deactivate_policy(policy->name);return;}
+  if (policy->repeat_interval == 0.0) {deactivate_policy(policy->name); return;}
   const double next_time = sg4::Engine::get_clock() + policy->repeat_interval;
-  if (next_time > policy->end_time  && policy->end_time > 0.0) {deactivate_policy(policy); return;}
+  if (next_time > policy->end_time  && policy->end_time > 0.0) {deactivate_policy(policy->name); return;}
   simgrid::kernel::timer::Timer::set(next_time,[policy,generation_number]() {PolicyManager::run_policy(policy, generation_number);});
 }
 
