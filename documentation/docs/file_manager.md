@@ -38,7 +38,7 @@ auto* fm = CGSim::get_file_manager();
 For example:
 
 ```cpp
-##include <CGSim/file_manager.h>
+#include <CGSim/file_manager.h>
 
 void inspect_file()
 {
@@ -57,7 +57,7 @@ void inspect_file()
 
 ## File model
 
-#### File names are global identities
+### File names are global identities
 
 CGSim identifies a file by its file-name string.
 
@@ -85,7 +85,7 @@ This means that file names should be unique per logical file.
 
 ---
 
-## Placement is tracked at site level
+### Placement is tracked at site level
 
 The `FileManager` records whether a file exists at a **site**.
 
@@ -143,7 +143,7 @@ storage_capacity_bytes
 
 ---
 
-## Initial files and storage
+### Initial files and storage
 
 Sites may begin a simulation with files already present.
 
@@ -173,6 +173,7 @@ If the configured initial files exceed a site's available logical capacity, CGSi
 
 ---
 
+##API Documentation
 
 ## Querying files
 
@@ -399,7 +400,7 @@ double used_fraction =
 
 ---
 
-## Creating files immediately
+## File Creation and Deletion
 
 ### `create()`
 
@@ -492,7 +493,7 @@ Using `request_file_size()` for the new replica helps keep the file's size consi
 
 ---
 
-## Creating a file already present at the site
+### Creating a file already present at the site
 
 If the file already exists at that site, `create()` simply returns.
 
@@ -500,7 +501,7 @@ It does not create a duplicate entry or deduct storage again.
 
 ---
 
-## Capacity requirement
+### Capacity requirement
 
 The destination must have enough remaining storage.
 
@@ -516,9 +517,7 @@ If there is insufficient storage, `create()` throws `std::runtime_error`.
 
 ---
 
-## Removing files
-
-## `remove()`
+### `remove()`
 
 ```cpp
 bool remove(
@@ -547,7 +546,7 @@ If the file is not present at that site, it returns `false`.
 
 ---
 
-## Removing the final replica
+### Removing the final replica
 
 Suppose:
 
@@ -588,7 +587,7 @@ returns `false`.
 
 ---
 
-## Removal is instantaneous
+### Removal is instantaneous
 
 `remove()` changes FileManager metadata immediately.
 
@@ -964,8 +963,12 @@ will still be rejected while:
 input.root | SiteA | SiteC
 ```
 
-is active.
+is active. To check whether a file in incoming to a particular site, users can call
 
+```cpp
+CGSim::get_site_manager->get_site(site_name)->incoming_file_transfers.count(filename) > 0
+```
+which will return `true` if a file is incoming.
 ---
 
 ### `generate_transfer_key()`
@@ -1727,7 +1730,7 @@ job->total_io_read_time
 
 ---
 
-## Job output writes
+### Job output writes
 
 ```cpp
 virtual void onFileWriteStart(
@@ -1766,6 +1769,8 @@ Use the `onUser...` callbacks to observe operations your own policy starts throu
 Use the job callbacks to observe file activity created automatically as part of normal job execution.
 
 ---
+
+##Examples
 
 ### Example: measuring workload traffic and policy traffic separately
 
@@ -1974,7 +1979,7 @@ onUserFileWriteEnd(...)
 
 ---
 
-## Example: read after a user transfer finishes
+### Example: read after a user transfer finishes
 
 Because public transfer and read operations are asynchronous and return `void`, use the transfer-completion callback when one operation must wait for the other.
 
