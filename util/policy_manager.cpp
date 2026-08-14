@@ -55,10 +55,11 @@ void PolicyManager::run_policy(CGSim::Policy* policy, std::size_t generation_num
   simgrid::kernel::timer::Timer::set(next_time,[policy,generation_number]() {PolicyManager::run_policy(policy, generation_number);});
 }
 
-void PolicyManager::deactivate_policy(CGSim::Policy* policy)
+void PolicyManager::deactivate_policy(const std::string& policy_name)
 {
-  if (active_policies.count(policy->name) == 0) throw std::runtime_error("Trying to deactivate policy " + policy->name + 
+  if (active_policies.count(policy_name) == 0) throw std::runtime_error("Trying to deactivate policy " + policy_name + 
     " which is not active.");
+  auto* policy = active_policies.at(policy_name);
   policy->active = false;
   ++policy->generation_number;   // Invalidating any timers belonging to this activation.
   active_policies.erase(policy->name);

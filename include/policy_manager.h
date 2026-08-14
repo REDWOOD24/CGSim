@@ -41,6 +41,7 @@ public:
 
     static void                             addPolicy(CGSim::Policy* policy);
     static void                             reactivate_policy(const std::string& policy_name);
+    static void                             deactivate_policy(const std::string& policy_name);
     static CGSim::Policy*                   get_policy(const std::string& policy_name);
     static bool                             exists(const std::string& policy_name);
     static std::unordered_set<std::string>  get_policy_list();
@@ -50,7 +51,6 @@ public:
 private:
     PolicyManager() = default;
     static void run_policy(CGSim::Policy* policy, std::size_t generation_number);
-    static void deactivate_policy(CGSim::Policy* policy);
     static std::unordered_map<std::string, std::unique_ptr<CGSim::Policy>> policies;
     static std::unordered_map<std::string, CGSim::Policy*> active_policies;
     static std::unordered_map<std::string, CGSim::Policy*> deactivated_policies;
