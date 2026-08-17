@@ -64,6 +64,7 @@ int main(int argc, char** argv)
     // Create and set up executor
     JOB_EXECUTOR::set_dispatcher(dispatcher);
     CGSim::FileManager::set_dispatcher(dispatcher);
+    dispatcher->beforeSimulationStart();
     JOB_EXECUTOR::start_job_execution();
 
     // Print version
