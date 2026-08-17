@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     const std::string gridName                     = j["Grid_Name"];
     const std::string siteInfoFile                 = j["Sites_Information"];
     const std::string siteConnInfoFile             = j["Sites_Connection_Information"];
-    const std::string dispatcherPath               = j["Dispatcher_Plugin"];
+    const std::string pluginPath                   = j["Plugin"];
     const std::set<std::string> filteredSiteList   = j["Limited_Sites"].get<std::set<std::string>>();
 
     //Parse Input
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     }
 
     PluginLoader<CGSim::Plugin> plugin_loader;
-    auto unique_dispatcher = plugin_loader.load(dispatcherPath);
+    auto unique_dispatcher = plugin_loader.load(pluginPath);
     std::shared_ptr<CGSim::Plugin> dispatcher = std::move(unique_dispatcher);
 
     // Create and set up executor
