@@ -7,6 +7,8 @@ void HostExtensions::registerJob(Job* j) {
 
         if(host->get_name().find("JOB-SERVER_cpu") != std::string::npos) throw std::runtime_error("Can't register job on main server");
         if(host->get_name().find("_communication_server") != std::string::npos) throw std::runtime_error("Can't register job on communication server: " + host->get_name());
+        if(cores_available < j->cores) throw std::runtime_error("Job: " + std::to_string(j->jobid) + " requires " + std::to_string(j->cores) + 
+            " but was assigned to cpu " + host->get_name() + " which only has " + std::to_string(cores_available) + " cores available.");
 
         job_ids.insert(std::to_string(j->jobid));
         cores_used      += j->cores;
