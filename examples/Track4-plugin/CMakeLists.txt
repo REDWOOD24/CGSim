@@ -38,6 +38,6 @@ endif()
 if(NOT remote)
 target_link_libraries ( Track4Plugin PUBLIC ${SimGrid_LIBRARY} ${Boost_LIBRARIES} CGSim::CGSim SQLite::SQLite3)
 else()
-target_link_libraries ( Track4Plugin PUBLIC ${Boost_LIBRARIES} SQLite::SQLite3 "${CMAKE_SOURCE_DIR}../../simgrid/build/lib/libsimgrid.so" "${CMAKE_SOURCE_DIR}../../build/libCGSim.so")
+target_link_libraries ( Track4Plugin PUBLIC ${Boost_LIBRARIES} SQLite::SQLite3 "${CMAKE_SOURCE_DIR}/../../simgrid/build/lib/libsimgrid.so" "${CMAKE_SOURCE_DIR}/../../build/libCGSim.so")
 endif()
 
