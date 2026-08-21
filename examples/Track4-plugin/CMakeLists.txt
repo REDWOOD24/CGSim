@@ -23,6 +23,9 @@ add_library(Track4Plugin SHARED ${SOURCES})
 find_package(Boost     REQUIRED)
 find_package(SQLite3   REQUIRED)
 
+add_subdirectory(json)
+list(APPEND BUILT_PACKAGES "json")
+
 if(NOT remote)
 find_package(SimGrid REQUIRED)
 find_package(CGSim REQUIRED)
