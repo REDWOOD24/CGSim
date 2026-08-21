@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.12)
-#cmake_policy(SET CMP0167 NEW)
 
 message(STATUS "Cmake version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
-project(CGSim VERSION 1.1)
+project(CGSim VERSION 2.0)
+
+##Remote Build
+option(remote "Enable Remote Build" OFF)
 
 # Disable annoying warnings
 add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/CMakeModules/")
 
+if(NOT remote)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/CMakeModules/")
 # Find required packages
 find_package(SimGrid REQUIRED)
+endif()
+
 find_package(Boost REQUIRED)
 
 
@@ -18,8 +23,14 @@ find_package(Boost REQUIRED)
 add_subdirectory(json)
 list(APPEND BUILT_PACKAGES "json")
 
+if(NOT remote)
 # Include directories
 include_directories(${SimGrid_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/json/single_include)
+else()
+include_directories(${Boost_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/json/single_include)
+include_directories(simgrid/include/ simgrid/build/include/)
+endif()
+
 include_directories(include/)
 
 # Source files
@@ -31,11 +42,19 @@ add_library(CGSim SHARED ${SOURCE_FILES})
 # Generating the executable
 add_executable(cg-sim src/main.cpp)
 
+if(NOT remote)
 target_link_libraries(
 	CGSim
 	${SimGrid_LIBRARY}
 	Boost::boost
 )
+else()
+target_link_libraries(
+	CGSim
+	"${CMAKE_SOURCE_DIR}/simgrid/build/lib/libsimgrid.so"
+	Boost::boost
+)
+endif()
 
 target_link_libraries(cg-sim CGSim)
 
