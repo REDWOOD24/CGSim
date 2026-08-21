@@ -34,5 +34,9 @@ target_include_directories( Track4Plugin PUBLIC ${Boost_INCLUDE_DIR})
 endif()
 
 #Link libraries and Include Directories
+if(NOT remote)
 target_link_libraries ( Track4Plugin PUBLIC ${SimGrid_LIBRARY} ${Boost_LIBRARIES} CGSim::CGSim SQLite::SQLite3)
+else()
+target_link_libraries ( Track4Plugin PUBLIC ${Boost_LIBRARIES} SQLite::SQLite3 "../../simgrid/build/lib/libsimgrid.so" "../../build/libCGSim.so")
+endif()
 
