@@ -32,9 +32,13 @@ include_directories(simgrid/include/ simgrid/build/include/)
 endif()
 
 include_directories(include/)
+include_directories(include/core/)
+include_directories(include/global_managers/)
+include_directories(include/util/)
+include_directories(include/cgsim/)
 
 # Source files
-file(GLOB_RECURSE SOURCE_FILES "util/*.cpp")
+file(GLOB_RECURSE SOURCE_FILES "src/core/*.cpp" "src/global_managers/*.cpp")
 
 # Build the library
 add_library(CGSim SHARED ${SOURCE_FILES})
@@ -73,7 +77,7 @@ install(TARGETS CGSim
 )
 
 # Install header files
-install(FILES include/CGSim.h include/file_manager.h include/logger.h include/job.h include/plugin.h include/site_manager.h include/policy_manager.h include/units_parser.h
+install(FILES include/CGSim.h include/global_managers/file_manager.h include/util/logger.h include/cgsim/job.h include/cgsim/plugin.h include/global_managers/site_manager.h include/global_managers/policy_manager.h include/util/units_parser.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGSim)
 
 # Install the executable
