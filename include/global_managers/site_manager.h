@@ -57,6 +57,7 @@ public:
     unsigned long long  get_used_grid_memory();
     std::unordered_map<std::string, Job*> get_global_pending_jobs(); //@Todo Change job_id to string
     std::unordered_map<std::string, Job*> get_global_failed_jobs();
+    void set_custom_parameter(const std::string& key, const std::string& value){Custom_Parameters[key] = value;}
     std::string get_custom_parameter(const std::string& param_name);
     std::unordered_set<std::string> get_all_sites();
 

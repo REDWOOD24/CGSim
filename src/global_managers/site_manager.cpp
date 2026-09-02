@@ -1,6 +1,7 @@
 #include "site_manager.h"
 #include <iostream>
 #include "host_extensions.h"
+#include "print.h"
 
 namespace CGSim {
 
@@ -37,7 +38,7 @@ void SiteManager::register_site(sg4::NetZone* site, std::vector<sg4::Host*> comp
 
     Site* cgsim_site = new Site; 
     cgsim_site->name = site->get_name();
-    std::cout << "Registering site: " << cgsim_site->name << std::endl;
+    CGSim::Utilities::print_site(cgsim_site->name);
     cgsim_site->total_cores = std::stoul(site->get_property("total_cores"));
     cgsim_site->total_memory = std::stoull(site->get_property("total_memory"));
     cgsim_site->cpus = compute_cpus;

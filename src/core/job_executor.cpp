@@ -35,7 +35,6 @@ void JOB_EXECUTOR::start_job_execution()
   if (!job_server) throw std::runtime_error("JOB-SERVER not initialized properly");
   plugin->setWorkload(jobs);
   TOTAL_JOBS = totalJobs(jobs);
-  std::cout << "TOTAL_JOBS: " << TOTAL_JOBS << std::endl;
   sg4::Actor::create("JOB-EXECUTOR-actor",job_server,start_server);
   sg4::Engine::get_instance()->run();
 }
@@ -51,7 +50,6 @@ void JOB_EXECUTOR::get_jobs()
       CGSim::GlobalManagers::get_file_manager()->request_file_location(job);
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
-      std::cout << "Job ID: " <<job->id << ", submission time " << job->submission_time << ", creation time " << job->creation_time << std::endl;
       job->status = CGSim::STATUS::GLOBAL_PENDING;
       CGSim::GlobalManagers::get_site_manager()->GlobalPendingJobs[job->id] = job;
       plugin->onJobSubmission(job);
@@ -188,14 +186,6 @@ void JOB_EXECUTOR::start_server()
   //@ToDo Put this while in a function, so it can be called again when failed jobs are resubmitted
   while (DISPATCHED_JOBS != TOTAL_JOBS) //All jobs have to be dispatched
   {
-    std::cout << DISPATCHED_JOBS << " / " << TOTAL_JOBS << " jobs dispatched" << std::endl;
-    std::cout << ACTIVATED_JOBS << " jobs activated" << std::endl;
-    std::cout << "Pending Jobs in Global Queue: " << pending_jobs.size() << std::endl;
-    std::cout << "Pending Jobs in Site Queues: " << JOBS_IN_SITE_PENDING << std::endl;
-    std::cout << "Pending Activities on Grid: " <<  pending_activities.size() << std::endl;
-    std::cout << "Current Simulated Time: " << sg4::Engine::get_clock() << std::endl;
-    std::cout << "Grid CPU Usage: " << CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization() << std::endl;
-
     if(pending_jobs.size() + DISPATCHED_JOBS + JOBS_IN_SITE_PENDING != TOTAL_JOBS) //All jobs have to be created
     {
     if(sg4::Engine::get_clock() < jobs.top()->creation_time || jobs.top()->creation_time == -1.0) advance_to_time(jobs.top()->creation_time);
@@ -213,6 +203,8 @@ void JOB_EXECUTOR::start_server()
 
     //@ToDo If job cores are bigger than what any local cpu can handle, it can indefinitely block dispatch_site_pending_jobs
     if(!pending_jobs.empty()) dispatch_global_pending_jobs();
+    CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, ACTIVATED_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
+    pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
   }
 
   while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
@@ -222,6 +214,8 @@ void JOB_EXECUTOR::start_server()
   }
 
   CGSim::GlobalManagers::PolicyManager::RUNNING = false;
+  CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, ACTIVATED_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
+    pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
 }
 
 void JOB_EXECUTOR::onJobAssignment(Job* job)
@@ -230,7 +224,6 @@ void JOB_EXECUTOR::onJobAssignment(Job* job)
   auto* job_host = sg4::Host::by_name(job->comp_host);
   job->comp_host_speed = job_host->get_speed();
   if(!job->disk.empty()){auto* job_disk = job_host->get_disk_by_name(job->disk); job->disk_read_bw = job_disk->get_read_bandwidth(); job->disk_write_bw = job_disk->get_write_bandwidth();}
-  std::cout << "Job ID: " << job->id << ", Cores: " << job->cores  << ", Status: " << job->get_status() << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
   plugin->onJobAssignment(job);
   sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");

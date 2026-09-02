@@ -9,6 +9,7 @@
 #include <chrono>
 #include <simgrid/kernel/Timer.hpp>
 #include "units_parser.h"
+#include "print.h"
 
 namespace CGSim { 
 
