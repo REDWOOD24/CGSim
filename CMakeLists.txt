@@ -38,7 +38,7 @@ include_directories(include/util/)
 include_directories(include/cgsim/)
 
 # Source files
-file(GLOB_RECURSE SOURCE_FILES "src/core/*.cpp" "src/global_managers/*.cpp")
+file(GLOB_RECURSE SOURCE_FILES "src/util/*.cpp" "src/core/*.cpp" "src/global_managers/*.cpp")
 
 # Build the library
 add_library(CGSim SHARED ${SOURCE_FILES})

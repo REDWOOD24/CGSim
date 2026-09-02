@@ -7,7 +7,6 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <utility>
-#include <boost/parameter/aux_/pack/item.hpp>
 
 namespace CGSim { 
 

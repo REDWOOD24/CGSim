@@ -10,6 +10,12 @@
 #include <simgrid/kernel/Timer.hpp>
 #include "units_parser.h"
 #include "print.h"
+#include "statistics.h"
+
+namespace CGSim::Utilities
+{
+class Statistics;
+}
 
 namespace CGSim { 
 
@@ -55,6 +61,8 @@ private:
     static   std::unordered_map<std::string, Job*>  all_jobs;
     static   std::vector<Job*>                      pending_jobs;
     static   std::shared_ptr<CGSim::Plugin>         plugin;
+
+    friend class ::CGSim::Utilities::Statistics;
 
 };
 

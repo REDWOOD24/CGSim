@@ -21,6 +21,7 @@
 int main(int argc, char** argv)
 {
     //CGSim Logo
+    CGSim::Utilities::Statistics::start();
     CGSim::Utilities::print_CGSim_Logo();
   
     //Initialize Logging
