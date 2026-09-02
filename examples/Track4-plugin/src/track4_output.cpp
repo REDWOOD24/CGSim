@@ -3,7 +3,7 @@
 void TRACK4_OUTPUT::initialize()
 {
     if (initialized) return;
-    std::string file_name = platform->get_property("output_file");
+    std::string file_name = CGSim::GlobalManagers::get_site_manager()->get_custom_parameter("output_file");
     if (std::filesystem::exists(file_name)) std::filesystem::remove(file_name);
 
     if (sqlite3_open(file_name.c_str(), &db) != SQLITE_OK) {
@@ -22,7 +22,7 @@ void TRACK4_OUTPUT::createEventsTable()
     const char* create_stmt =
         "CREATE TABLE IF NOT EXISTS EVENTS ("
         "_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "JOB_ID INTEGER NOT NULL, "
+        "JOB_ID TEXT NOT NULL, "
         "CPU_NAME TEXT NOT NULL, "
         "STATE TEXT NOT NULL, "
         "TIMESTAMP REAL NOT NULL, "
@@ -51,7 +51,7 @@ void TRACK4_OUTPUT::createEventsTable()
 }
 
 void TRACK4_OUTPUT::insert_event(
-    long long job_id,
+    const std::string& id,
     const std::string& cpu_name,
     const std::string& state,
     double timestamp,
@@ -83,7 +83,7 @@ void TRACK4_OUTPUT::insert_event(
     if (rc != SQLITE_OK)
         throw std::runtime_error(std::string("SQLite prepare failed: ") + sqlite3_errmsg(db));
 
-    sqlite3_bind_int64(stmt, 1, job_id);
+    sqlite3_bind_text(stmt, 1, id.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, cpu_name.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, state.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_double(stmt, 4, timestamp);
@@ -109,27 +109,26 @@ void TRACK4_OUTPUT::insert_event(
 }
 
 
-void TRACK4_OUTPUT::onJobStatusChange(Job* job)
+void TRACK4_OUTPUT::onJobStatusChange(CGSim::Job* job)
 {
   
-  auto* site = CGSim::get_site_manager()->get_site(job->comp_site);
-  auto  status = CGSim::get_site_manager()->get_status_string(job->status);
+  auto* site = CGSim::GlobalManagers::get_site_manager()->get_site(job->get_comp_site());
 
   insert_event
     (
-     job->jobid,
-     job->comp_host,
-     status,
+     job->get_id(),
+     job->get_comp_host(),
+     job->get_status(),
      sg4::Engine::get_clock(),
-     job->comp_site,
+     job->get_comp_site(),
      site->total_cores - site->used_cores,
      site->total_cpus - site->used_cpus.size(),
-     job->flops,
-     job->input_files.size(),
-     job->output_files.size(),
+     job->get_flops(),
+     job->get_input_files().size(),
+     job->get_output_files().size(),
      input_files_bytes(job),
      output_files_bytes(job),
-     CGSim::get_site_manager()->get_global_pending_jobs().size(),
+     CGSim::GlobalManagers::get_site_manager()->get_global_pending_jobs().size(),
      site->pending_jobs.size(),
      site->running_jobs.size(),
      site->finished_jobs.size(),
@@ -137,16 +136,17 @@ void TRACK4_OUTPUT::onJobStatusChange(Job* job)
      );
 }
 
-long long TRACK4_OUTPUT::input_files_bytes(Job* job) 
+long long TRACK4_OUTPUT::input_files_bytes(CGSim::Job* job) 
 {
   long long total_bytes = 0;
-  for (const auto& [filename, filedata] : job->input_files_sizes_locations) {total_bytes += filedata.first;}
+  auto* fm = CGSim::GlobalManagers::get_file_manager();
+  for (const auto& filename: job->get_input_files()) {total_bytes += fm->request_file_size(filename);}
   return total_bytes;
 }
 
-long long TRACK4_OUTPUT::output_files_bytes(Job* job) 
+long long TRACK4_OUTPUT::output_files_bytes(CGSim::Job* job) 
 {
   long long total_bytes = 0;
-  for (const auto& [filename, filesize] : job->output_files) {total_bytes += CGSim::parse_units_size(filesize);}
+  for (const auto& [filename, filesize] : job->get_output_files()) {total_bytes += CGSim::Utilities::parse_units_size(filesize);}
   return total_bytes;
 }

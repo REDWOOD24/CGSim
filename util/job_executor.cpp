@@ -227,6 +227,9 @@ void JOB_EXECUTOR::start_server()
 void JOB_EXECUTOR::onJobAssignment(Job* job)
 {
   DISPATCHED_JOBS++;
+  auto* job_host = sg4::Host::by_name(job->comp_host);
+  job->comp_host_speed = job_host->get_speed();
+  if(!job->disk.empty()){auto* job_disk = job_host->get_disk_by_name(job->disk); job->disk_read_bw = job_disk->get_read_bandwidth(); job->disk_write_bw = job_disk->get_write_bandwidth();}
   std::cout << "Job ID: " << job->id << ", Cores: " << job->cores  << ", Status: " << job->get_status() << " after " << job->retries << " tries" <<std::endl;
   sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
   plugin->onJobAssignment(job);

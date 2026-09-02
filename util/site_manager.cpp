@@ -33,7 +33,7 @@ Site* SiteManager::get_site(const std::string& site_name)
 }
 
 
-void SiteManager::register_site(sg4::NetZone* site, std::vector<sg4::Host*> compute_cpus, std::unordered_map<std::string, std::string> custom_parameters){
+void SiteManager::register_site(sg4::NetZone* site, std::vector<sg4::Host*> compute_cpus, std::unordered_map<std::string, std::string> properties){
 
     Site* cgsim_site = new Site; 
     cgsim_site->name = site->get_name();
@@ -42,7 +42,7 @@ void SiteManager::register_site(sg4::NetZone* site, std::vector<sg4::Host*> comp
     cgsim_site->total_memory = std::stoull(site->get_property("total_memory"));
     cgsim_site->cpus = compute_cpus;
     cgsim_site->total_cpus = compute_cpus.size();
-    cgsim_site->custom_parameters = custom_parameters;
+    cgsim_site->properties = properties;
     Sites[cgsim_site->name] = cgsim_site;
     list_of_sites.insert(cgsim_site->name);
 

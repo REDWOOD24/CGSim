@@ -44,7 +44,7 @@ std::string TRACK4_WORKLOAD_MANAGER::getColumn(const std::vector<std::string>& r
     return row[it->second];
 }
 
-JobQueue TRACK4_WORKLOAD_MANAGER::setWorkload(JobQueue& jobs) {
+void TRACK4_WORKLOAD_MANAGER::setWorkload(CGSim::JobQueue& jobs) {
 
     auto platform = sg4::Engine::get_instance()->get_netzone_root();
     std::string jobFile = platform->get_property("jobs_file");
@@ -77,41 +77,26 @@ JobQueue TRACK4_WORKLOAD_MANAGER::setWorkload(JobQueue& jobs) {
         }
 
         try {
-            Job* job = new Job();
+            CGSim::Job* job = new CGSim::Job();
 
-            // Safely get each column, providing defaults if missing
-            job->jobid                 = std::stoll(getColumn(row, column_map, "pandaid", "0"));
-            job->creation_time         = std::stod(getColumn(row, column_map, "creationtime", "0"));
-            job->cpu_consumption_time  = std::stod(getColumn(row, column_map, "cpuconsumptiontime", "0"));
-            job->comp_site             = getColumn(row, column_map, "computingsite", "");
-            job->cores                 = getColumn(row, column_map, "corecount", "0").empty() ? 0 : std::stoi(getColumn(row, column_map, "corecount", "0"));
-            //job->status                = "created";
-            job->retries               = 0;
-            //job->add_child(new Job(), 0.0);
+            std::string pandaid = getColumn(row, column_map, "pandaid", "0");
+            job->set_id(pandaid);
+            job->set_creation_time(std::stod(getColumn(row,column_map,"creationtime","0")));
+            job->set_property("cpu_consumption_time",getColumn(row,column_map,"cpuconsumptiontime","0"));
+            job->set_comp_site(getColumn(row,column_map,"computingsite",""));
+            job->set_cores(std::stoi(getColumn(row,column_map,"corecount","0")));
 
+            double out_bytes = std::stod(getColumn(row,column_map,"outputfilebytes","0"));
+            std::string out = "user.output."+job->get_id()+".00001.root";
+            job->add_output_file(out,std::to_string((unsigned long long)out_bytes/10000));
 
-            int no_of_out_files       = 1;/*std::stoi(getColumn(row, column_map, "noutputdatafiles", "0"));*/
-            double out_file_bytes        = std::stod(getColumn(row, column_map, "outputfilebytes", "0"));
+            double in_bytes = std::stod(getColumn(row,column_map,"inputfilebytes","0"));
+            std::string in = "user.input."+job->get_id()+".00001.root";
+            job->add_input_file(in);
+            CGSim::GlobalManagers::get_file_manager()->create(in,(unsigned long long)in_bytes/10000,job->get_comp_site());
 
-
-            unsigned long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
-            for (int f = 1; f <= no_of_out_files; ++f) {
-                std::string filename = "user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
-                job->output_files[filename] = std::to_string(size_per_out_file/10000);
-            }
-
-            int no_of_inp_files       = 1;/*std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));*/
-            double inp_file_bytes        = std::stod(getColumn(row, column_map, "inputfilebytes", "0"));
-
-            unsigned long long size_per_inp_file = no_of_inp_files > 0 ? inp_file_bytes / no_of_inp_files : 0;
-            for (int f = 1; f <= no_of_inp_files; ++f) {
-                std::string filename = "user.input." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
-                job->input_files.insert(filename);
-                CGSim::get_file_manager()->create(filename,size_per_inp_file/10000,job->comp_site);
-            }
-
-            if(job->comp_site!="") jobs.push(job);
-
+            if(!job->get_comp_site().empty()) jobs.push(job);
+            else delete job;
 
         } catch (const std::exception& e) {
             std::cerr << "Skipping invalid row: " << line << "\n";
@@ -119,5 +104,4 @@ JobQueue TRACK4_WORKLOAD_MANAGER::setWorkload(JobQueue& jobs) {
         }
     }
     file.close();
-    return jobs;
 }

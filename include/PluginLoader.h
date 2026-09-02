@@ -6,7 +6,7 @@
 
 namespace CGSim { 
 
-namespace Core {
+namespace Utilities {
 
 template <class Plugin> class PluginLoader
 {

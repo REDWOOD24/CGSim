@@ -34,7 +34,7 @@ struct Site
     std::unordered_map<std::string, Job*>   running_jobs                   = {};
     std::unordered_map<std::string, Job*>   finished_jobs                  = {};
     std::unordered_map<std::string, Job*>   failed_jobs                    = {};
-    std::unordered_map<std::string, std::string>   custom_parameters       = {};
+    std::unordered_map<std::string, std::string>   properties       = {};
     bool job_assignment_enabled                             = true; //@ToDo Risky to turn this off as site pending jobs wont get submitted at all even if turned on if no site jobs are currently executing.
     unsigned long MAX_RETRIES                                        = 100000; //DEFAULT
     std::unordered_map<std::string, std::string> incoming_file_transfers = {};
@@ -81,7 +81,7 @@ private:
     SiteManager() = default;
     std::unordered_map<std::string, Site*> Sites;
     std::unordered_set<std::string> list_of_sites;
-    void register_site(sg4::NetZone* site, std::vector<sg4::Host*> compute_cpus, std::unordered_map<std::string, std::string> custom_parameters);
+    void register_site(sg4::NetZone* site, std::vector<sg4::Host*> compute_cpus, std::unordered_map<std::string, std::string> properties);
 
     std::unordered_map<std::string, Job*>  GlobalPendingJobs = {};
     std::unordered_map<std::string, Job*>  GlobalFailedJobs = {};

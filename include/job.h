@@ -47,6 +47,8 @@ public:
     void set_comp_host(const std::string& v) { comp_host = v; }
     void set_input_files(const std::unordered_set<std::string>& v) {input_files = v;}
     void set_output_files(const std::unordered_map<std::string, std::string>& v) {output_files = v;}
+    void add_input_file(const std::string& v) { input_files.insert(v); }
+    void add_output_file(const std::string& f, const std::string& s) { output_files[f] = s; }
     void add_parent(std::string& parent) {parents.insert(parent);}
     void add_child(std::string& child, double time) {children[child] = time;}
     void set_property(const std::string& key, const std::string& value) {metadata[key] = value;}

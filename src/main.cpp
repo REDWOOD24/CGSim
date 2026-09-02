@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         CGSim::GlobalManagers::get_site_manager()->Custom_Parameters[key] = value;
     }
 
-    CGSim::Core::PluginLoader<CGSim::Plugin> plugin_loader;
+    CGSim::Utilities::PluginLoader<CGSim::Plugin> plugin_loader;
     auto unique_plugin = plugin_loader.load(pluginPath);
     std::shared_ptr<CGSim::Plugin> plugin = std::move(unique_plugin);
 

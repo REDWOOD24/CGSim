@@ -20,7 +20,7 @@ public:
     void initialize();
     void createEventsTable();
     void insert_event(
-                    long long job_id,
+                    const std::string&  id,
                     const std::string& cpu_name,
                     const std::string& state,
                     double timestamp,
@@ -38,15 +38,14 @@ public:
                     long site_finished_jobs,
                     long site_failed_jobs);
 
-    long long input_files_bytes(Job* job);
-    long long output_files_bytes(Job* job);
-    void onJobStatusChange(Job* job);
+    long long input_files_bytes(CGSim::Job* job);
+    long long output_files_bytes(CGSim::Job* job);
+    void onJobStatusChange(CGSim::Job* job);
 
 
 private:
     bool initialized = false;
     sqlite3 *db;
-    sg4::NetZone* platform = sg4::Engine::get_instance()->get_netzone_root();
 };
 
 #endif

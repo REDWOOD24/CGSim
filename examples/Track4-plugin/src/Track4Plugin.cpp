@@ -2,21 +2,20 @@
 #include "track4_dispatcher.h"
 #include "track4_workload_manager.h"
 #include "track4_output.h"
-#include "track4_output_calibration.h"
 
 class Track4Plugin : public CGSim::Plugin {
 
 public:
     Track4Plugin();
-    virtual void setWorkload(JobQueue& jobs) final override;
-    virtual void assignJob(Job* job) final override;
+    virtual void setWorkload(CGSim::JobQueue& jobs) final override;
+    virtual void assignJob(CGSim::Job* job) final override;
 
-    virtual void onJobSubmission(Job* job) final override;
-    virtual void onJobAssignment(Job* job) final override;
-    virtual void onJobSitePending(Job* job) final override;
-    virtual void onJobFailure(Job* job) final override;
-    virtual void onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex) final override;
-    virtual void onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex) final override;
+    virtual void onJobSubmission(CGSim::Job* job) final override;
+    virtual void onJobAssignment(CGSim::Job* job) final override;
+    virtual void onJobSitePending(CGSim::Job* job) final override;
+    virtual void onJobFailure(CGSim::Job* job) final override;
+    virtual void onJobExecutionStart(CGSim::Job* job, simgrid::s4u::Exec const& ex) final override;
+    virtual void onJobExecutionEnd(CGSim::Job* job, simgrid::s4u::Exec const& ex) final override;
  
 
 private:
@@ -31,42 +30,42 @@ Track4Plugin::Track4Plugin()
 {
 }
 
-void Track4Plugin::setWorkload(JobQueue& jobs)
+void Track4Plugin::setWorkload(CGSim::JobQueue& jobs)
 {
    t4wm->setWorkload(jobs);
 }
 
-void Track4Plugin::assignJob(Job* job)
+void Track4Plugin::assignJob(CGSim::Job* job)
 {
    t4d->assignJob(job);
 }
 
-void Track4Plugin::onJobSubmission(Job* job)
+void Track4Plugin::onJobSubmission(CGSim::Job* job)
 {
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobSitePending(Job* job)
+void Track4Plugin::onJobSitePending(CGSim::Job* job)
 {
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobFailure(Job* job)
+void Track4Plugin::onJobFailure(CGSim::Job* job)
 {
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobAssignment(Job* job)
+void Track4Plugin::onJobAssignment(CGSim::Job* job)
 {
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobExecutionStart(Job* job, simgrid::s4u::Exec const& ex)
+void Track4Plugin::onJobExecutionStart(CGSim::Job* job, simgrid::s4u::Exec const& ex)
 {
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobExecutionEnd(Job* job, simgrid::s4u::Exec const& ex)
+void Track4Plugin::onJobExecutionEnd(CGSim::Job* job, simgrid::s4u::Exec const& ex)
 {
    //t4ouc->onJobExecutionEnd(job,ex);
    t4ou->onJobStatusChange(job);
