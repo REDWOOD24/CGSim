@@ -30,6 +30,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
             CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->id] = j;
             host->extension<HostExtensions>()->onJobFinish(j);
             JOB_EXECUTOR::FINISHED_JOBS++;
+            JOB_EXECUTOR::RUNNING_JOBS--;
             JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
             JOB_EXECUTOR::plugin->onJobFinish(j);
 
@@ -58,6 +59,10 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
 
         }
         JOB_EXECUTOR::plugin->onJobExecutionEnd(j,ex);
+        CGSim::Utilities::printSimulationDashBoard(JOB_EXECUTOR::DISPATCHED_JOBS, JOB_EXECUTOR::TOTAL_JOBS, JOB_EXECUTOR::RUNNING_JOBS, 
+                                                   JOB_EXECUTOR::FINISHED_JOBS, JOB_EXECUTOR::pending_jobs.size(), JOB_EXECUTOR::JOBS_IN_SITE_PENDING, 
+                                                   JOB_EXECUTOR::pending_activities.size(), sg4::Engine::get_clock(), 
+                                                   CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
 
     });
 
@@ -103,6 +108,7 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
                 CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->id] = j;
                 sg4::Host::by_name(j->comp_host)->extension<HostExtensions>()->onJobFinish(j);
                 JOB_EXECUTOR::FINISHED_JOBS++;
+                JOB_EXECUTOR::RUNNING_JOBS--;
                 JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
                 JOB_EXECUTOR::plugin->onJobFinish(j);
 
@@ -129,6 +135,10 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
                 if(dag_job_created) JOB_EXECUTOR::pending_activities.push(sg4::MessageQueue::by_name("JOB-SERVER-MQ")->put_async(&dag_wakeup_msg));
             }
             JOB_EXECUTOR::plugin->onFileWriteEnd(j,filename,size,io);
+            CGSim::Utilities::printSimulationDashBoard(JOB_EXECUTOR::DISPATCHED_JOBS, JOB_EXECUTOR::TOTAL_JOBS, JOB_EXECUTOR::RUNNING_JOBS, 
+                                                   JOB_EXECUTOR::FINISHED_JOBS, JOB_EXECUTOR::pending_jobs.size(), JOB_EXECUTOR::JOBS_IN_SITE_PENDING, 
+                                                   JOB_EXECUTOR::pending_activities.size(), sg4::Engine::get_clock(), 
+                                                   CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
         });
 
     return write_activity;

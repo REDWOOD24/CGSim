@@ -81,8 +81,9 @@ void TRACK4_WORKLOAD_MANAGER::setWorkload(CGSim::JobQueue& jobs) {
 
             std::string pandaid = getColumn(row, column_map, "pandaid", "0");
             job->set_id(pandaid);
-            job->set_creation_time(std::stod(getColumn(row,column_map,"creationtime","0")));
-            job->set_property("cpu_consumption_time",getColumn(row,column_map,"cpuconsumptiontime","0"));
+            //job->set_creation_time(std::stod(getColumn(row,column_map,"creationtime","0")));
+	    job->set_creation_time(1 + rand() % 100);
+	    job->set_property("cpu_consumption_time",getColumn(row,column_map,"cpuconsumptiontime","0"));
             job->set_comp_site(getColumn(row,column_map,"computingsite",""));
             job->set_cores(std::stoi(getColumn(row,column_map,"corecount","0")));
 

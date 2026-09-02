@@ -11,6 +11,7 @@ std::vector<Job*>                      JOB_EXECUTOR::pending_jobs;
 JobQueue                               JOB_EXECUTOR::jobs;
 unsigned long                          JOB_EXECUTOR::DISPATCHED_JOBS = 0;
 unsigned long                          JOB_EXECUTOR::ACTIVATED_JOBS = 0;
+unsigned long                          JOB_EXECUTOR::RUNNING_JOBS = 0;
 unsigned long                          JOB_EXECUTOR::FINISHED_JOBS = 0;
 unsigned long                          JOB_EXECUTOR::TOTAL_JOBS;
 unsigned long                          JOB_EXECUTOR::JOBS_IN_SITE_PENDING = 0;
@@ -203,7 +204,7 @@ void JOB_EXECUTOR::start_server()
 
     //@ToDo If job cores are bigger than what any local cpu can handle, it can indefinitely block dispatch_site_pending_jobs
     if(!pending_jobs.empty()) dispatch_global_pending_jobs();
-    CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, ACTIVATED_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
+    CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, RUNNING_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
     pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
   }
 
@@ -214,7 +215,7 @@ void JOB_EXECUTOR::start_server()
   }
 
   CGSim::GlobalManagers::PolicyManager::RUNNING = false;
-  CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, ACTIVATED_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
+  CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, RUNNING_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
     pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
 }
 
@@ -294,6 +295,7 @@ void JOB_EXECUTOR::execute_job(Job* j)
   for (const auto& write_activity : write_activities) {write_activity->start();}
 
   ACTIVATED_JOBS++;
+  RUNNING_JOBS++;
 }
 
 [[noreturn]] void JOB_EXECUTOR::receiver(const std::string& MQ_name)

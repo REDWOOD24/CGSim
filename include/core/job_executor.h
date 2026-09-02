@@ -46,6 +46,7 @@ private:
 
     static   sg4::ActivitySet                       pending_activities;
     static   unsigned long                          DISPATCHED_JOBS;
+    static   unsigned long                          RUNNING_JOBS;
     static   unsigned long                          FINISHED_JOBS;
     static   unsigned long                          ACTIVATED_JOBS;
     static   unsigned long                          TOTAL_JOBS;
