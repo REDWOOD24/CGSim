@@ -20,7 +20,7 @@
 int main(int argc, char** argv)
 {
     //Initialize Logging
-    CGSim::logger::init();
+    CGSim::Utilities::logger::init();
     const std::string usage = std::string("usage: ") + argv[0] + " -c config.json";
 
     //Read in Configuration

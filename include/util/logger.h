@@ -260,7 +260,7 @@ private:
 } // namespace minilog
 
 
-namespace CGSim::logger {
+namespace CGSim::Utilities::logger {
 
     inline std::shared_ptr<minilog::logger> logger_instance;
 
@@ -285,24 +285,24 @@ namespace CGSim::logger {
 }
 
 #define CG_SIM_LOG_TRACE(fmt, ...)    \
-    CGSim::logger::getLogger()->trace("[{}:{} {}] " fmt, \
+    CGSim::Utilities::logger::getLogger()->trace("[{}:{} {}] " fmt, \
     __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define CG_SIM_LOG_DEBUG(fmt, ...)    \
-    CGSim::logger::getLogger()->debug("[{}:{} {}] " fmt, \
+    CGSim::Utilities::logger::getLogger()->debug("[{}:{} {}] " fmt, \
     __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define CG_SIM_LOG_INFO(fmt, ...)     \
-    CGSim::logger::getLogger()->info(fmt, ##__VA_ARGS__)
+    CGSim::Utilities::logger::getLogger()->info(fmt, ##__VA_ARGS__)
 
 #define CG_SIM_LOG_WARN(fmt, ...)     \
-    CGSim::logger::getLogger()->warn("[{}:{} {}] " fmt, \
+    CGSim::Utilities::logger::getLogger()->warn("[{}:{} {}] " fmt, \
     __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define CG_SIM_LOG_ERROR(fmt, ...)    \
-    CGSim::logger::getLogger()->error("[{}:{} {}] " fmt, \
+    CGSim::Utilities::logger::getLogger()->error("[{}:{} {}] " fmt, \
     __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define CG_SIM_LOG_CRITICAL(fmt, ...) \
-    CGSim::logger::getLogger()->critical("[{}:{} {}] " fmt, \
+    CGSim::Utilities::logger::getLogger()->critical("[{}:{} {}] " fmt, \
     __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
