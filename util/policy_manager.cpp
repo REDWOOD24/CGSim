@@ -1,15 +1,17 @@
 #include "policy_manager.h"
 #include <stdexcept>
 
-std::unordered_map<std::string, CGSim::Policy*>                   CGSim::PolicyManager::policies;
-std::unordered_map<std::string, CGSim::Policy*>                   CGSim::PolicyManager::active_policies;
-std::unordered_map<std::string, CGSim::Policy*>                   CGSim::PolicyManager::deactivated_policies;
-
 //Helper
 namespace {template <typename T>std::unordered_set<std::string>getKeys(const std::unordered_map<std::string, T>& m){std::unordered_set<std::string> result;
     for (const auto& [key, value] : m) result.insert(key); return result;}}
 
 namespace CGSim {
+
+namespace GlobalManagers {
+
+std::unordered_map<std::string, CGSim::Policy*>  PolicyManager::policies;
+std::unordered_map<std::string, CGSim::Policy*>  PolicyManager::active_policies;
+std::unordered_map<std::string, CGSim::Policy*>  PolicyManager::deactivated_policies;
 
 PolicyManager& PolicyManager::instance()
 {
@@ -110,6 +112,8 @@ std::unordered_set<std::string>  PolicyManager::get_active_policy_list()
 std::unordered_set<std::string>  PolicyManager::get_deactivated_policy_list()
 {
   return getKeys(deactivated_policies);
+}
+
 }
 
 }

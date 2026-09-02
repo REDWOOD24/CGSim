@@ -12,7 +12,12 @@
 #include "host_extensions.h"
 #include "file_manager.h"
 #include "site_manager.h"
+#include "units_parser.h"
 namespace sg4 = simgrid::s4u;
+
+namespace CGSim { 
+
+namespace Core {
 
 class Platform
 {
@@ -36,5 +41,8 @@ private:
 
 };
 
+}
+
+}
 #endif
 

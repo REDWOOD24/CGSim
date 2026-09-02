@@ -6,6 +6,7 @@
 #include "file_manager.h"
 #include "site_manager.h"
 #include "policy_manager.h"
+#include "units_parser.h"
 #include "plugin.h"
 namespace sg4 = simgrid::s4u;
 

@@ -10,6 +10,13 @@
 #include <queue>
 #include <list>
 #include <sstream>
+#include "units_parser.h"
+
+namespace CGSim { 
+
+namespace Core {
+
+using namespace nlohmann;
 
 //Information needed to a specify a Disk                                                      
 struct DiskInfo {
@@ -35,7 +42,7 @@ struct SiteInfo {
   std::string                                       name{};
   std::vector<CPUInfo>                              cpu_info{};
   std::unordered_map<std::string, std::string>      properties{};
-  std::unordered_map<std::string, long long>        files{};
+  std::unordered_map<std::string, unsigned long long>        files{};
 
 };
 
@@ -46,12 +53,8 @@ struct SiteConnInfo {
   std::string                 bandwidth{};
 };
 
-using namespace nlohmann;
-
 class Parser
 {
-
-
 public:
   Parser(std::string  _siteConnInfoFile, std::string  _siteInfoFile, const std::set<std::string>& filteredSiteList);
  ~Parser()= default;
@@ -66,5 +69,8 @@ private:
   const std::set<std::string>   filteredSiteList;
 };
 
+}
+
+}
 #endif
 

@@ -1,10 +1,12 @@
 #pragma once
-
-
 #include <iostream>
 #include <dlfcn.h>
 #include <libgen.h>
 #include <string>
+
+namespace CGSim { 
+
+namespace Core {
 
 template <class Plugin> class PluginLoader
 {
@@ -63,3 +65,6 @@ std::unique_ptr<Plugin> PluginLoader<Plugin>::load(const std::string & pString) 
     return std::unique_ptr<Plugin>(factory);
 }
 
+}
+
+}

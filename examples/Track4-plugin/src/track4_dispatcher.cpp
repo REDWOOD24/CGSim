@@ -78,13 +78,11 @@ sg4::Host* TRACK4_DISPATCHER::findAvailableCPU(const std::vector<sg4::Host*>& cp
     return nullptr;
 }
 
-Job* TRACK4_DISPATCHER::assignJob(Job* job)
+void TRACK4_DISPATCHER::assignJob(Job* job)
 {
   sg4::Host* cpu = nullptr;
   auto site = sg4::Engine::get_instance()->netzone_by_name_or_null(job->comp_site);
 
   job->flops = std::stol(site->get_property("GFLOPS"))*job->cpu_consumption_time*job->cores;
   cpu   = findAvailableCPU(CGSim::get_site_manager()->get_site(job->comp_site)->cpus, job);
-
-  return job;
 }

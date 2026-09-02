@@ -9,6 +9,10 @@
 #include <utility>
 #include <boost/parameter/aux_/pack/item.hpp>
 
+namespace CGSim { 
+
+namespace Core {
+
 using json = nlohmann::json;
 
 Parser::Parser(std::string _siteConnInfoFile,
@@ -41,12 +45,13 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
 
         // --- CPU INFO ---
         for (auto& cpu_json : site_json["CPUInfo"]) {
-            CPUInfo cpu;
-            cpu.units = cpu_json.value("units", 0);
-            cpu.cores = cpu_json.value("cores", 0);
-            cpu.speed = cpu_json.value("speed", 0.0);
-            cpu.BW_CPU = cpu_json.value("BW_CPU", "");
-            cpu.LAT_CPU = cpu_json.value("LAT_CPU", "");
+            CPUInfo        cpu;
+            cpu.units    = cpu_json.value("units", 0);
+            cpu.cores    = cpu_json.value("cores", 0);
+            cpu.speed    = cpu_json.value("speed", 0.0);
+            cpu.BW_CPU   = cpu_json.value("BW_CPU", "");
+            cpu.LAT_CPU  = cpu_json.value("LAT_CPU", "");
+            cpu.ram      = cpu_json.value("ram", "");
 
             //Properties
             for (auto& prop_obj : cpu_json["properties"]) {
@@ -69,9 +74,10 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
         }
 
         // --- Files ---
-        for (auto& file : site_json["files"]) {
+        for (auto& file : site_json["files"]) 
+        {
             std::string name = file[0].get<std::string>();
-            long long size = file[1].get<long long>();
+            unsigned long long size = file[1].is_string() ? CGSim::Utilities::parse_units_size(file[1].get<std::string>()) : file[1].get<unsigned long long>();
             site.files[name] = size;
         }
 
@@ -80,10 +86,6 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
 
     return sites;
 }
-
-
-
-
 
 
 std::vector<SiteConnInfo> Parser::getSiteConnInfo()
@@ -115,4 +117,8 @@ std::vector<SiteConnInfo> Parser::getSiteConnInfo()
     }
  
     return connections;
+}
+
+}
+
 }

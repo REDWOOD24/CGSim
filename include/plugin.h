@@ -27,12 +27,12 @@ public:
   /*------Input Module Interface------*/
   
   //Pure virtual function must be implemented by derived classes to get the Workload
-  virtual JobQueue getWorkload() = 0;
+  virtual void setWorkload(JobQueue& jobs) = 0;
   
   /*------Dispatch Module Interface------*/
 
   // Pure virtual function must be implemented by derived classes to assign Jobs
-  virtual Job* assignJob(Job* job) = 0;
+  virtual void assignJob(Job* job) = 0;
   
   /*------Interaction Module Interface------*/
 
@@ -112,7 +112,7 @@ public:
   virtual void onFileRequest(Job* j, std::string filename, long long filesize, std::unordered_set<std::string> file_locations, std::string& source_site, CGSim::FileTransferDecisionMode& mode)
   {
   //Current default behavior, choose file at the comp site or pick the first one in the location list
-  if(file_locations.find(j->comp_site) != file_locations.end()) source_site = j->comp_site;
+  if(file_locations.find(j->get_comp_site()) != file_locations.end()) source_site = j->get_comp_site();
   else source_site = *(file_locations.begin());
   }
 

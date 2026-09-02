@@ -44,7 +44,7 @@ std::string TRACK4_WORKLOAD_MANAGER::getColumn(const std::vector<std::string>& r
     return row[it->second];
 }
 
-JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
+JobQueue TRACK4_WORKLOAD_MANAGER::setWorkload(JobQueue& jobs) {
 
     auto platform = sg4::Engine::get_instance()->get_netzone_root();
     std::string jobFile = platform->get_property("jobs_file");
@@ -54,7 +54,6 @@ JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
         throw std::runtime_error("Could not open file: " + jobFile);
     }
 
-    JobQueue jobs;
     std::string line;
     std::unordered_map<std::string, int> column_map;
     bool header_parsed = false;
@@ -98,7 +97,7 @@ JobQueue TRACK4_WORKLOAD_MANAGER::getWorkload() {
             unsigned long long size_per_out_file = no_of_out_files > 0 ? out_file_bytes / no_of_out_files : 0;
             for (int f = 1; f <= no_of_out_files; ++f) {
                 std::string filename = "user.output." + std::to_string(job->jobid) + ".0000" + std::to_string(f) + ".root";
-                job->output_files[filename] = size_per_out_file/10000;
+                job->output_files[filename] = std::to_string(size_per_out_file/10000);
             }
 
             int no_of_inp_files       = 1;/*std::stoi(getColumn(row, column_map, "ninputdatafiles", "0"));*/

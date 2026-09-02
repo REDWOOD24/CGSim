@@ -3,6 +3,8 @@
 
 namespace CGSim {
 
+namespace GlobalManagers {
+
 FileManager& FileManager::instance()
 {
     static FileManager fm;
@@ -43,11 +45,11 @@ std::string FileManager::generate_transfer_key(const std::string& filename, cons
     return filename + "|" + src_site + "|" + dst_site;
 }
 
-void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files){
+void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std::string, unsigned long long>& files){
 
     const std::string& site_name = site->get_name();
-    TotalSiteStorages[site_name] = std::stoull(site->get_property("storage_capacity_bytes"));
-    SiteStorages[site_name] = std::stoull(site->get_property("storage_capacity_bytes"));
+    TotalSiteStorages[site_name] = CGSim::Utilities::parse_units_size(site->get_property("storage_capacity"));
+    SiteStorages[site_name] = CGSim::Utilities::parse_units_size(site->get_property("storage_capacity"));
     SiteFiles[site_name];
 
     for (const auto& [file, size] : files) {
@@ -100,8 +102,7 @@ unsigned long long FileManager::request_remaining_site_storage(const std::string
     return SiteStorages.at(sitename);
 }
 
-double FileManager::request_site_storage_utilization(const std::string& sitename)
-{
+double FileManager::request_site_storage_utilization(const std::string& sitename){
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return 1.0 - (1.0*SiteStorages.at(sitename))/(1.0*TotalSiteStorages.at(sitename));
 }
@@ -121,6 +122,11 @@ void FileManager::create(const std::string& filename, const unsigned long long& 
     SiteStorages[sitename] -= size;
 }
 
+void FileManager::create(const std::string& filename, const std::string& size, const std::string& sitename){
+
+    create(filename,CGSim::Utilities::parse_units_size(size),sitename);
+}
+
 sg4::IoPtr FileManager::internal_write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
 
     if (SiteFiles.count(comp_sitename) == 0) throw std::runtime_error("Site: "+comp_sitename+" does not exist");
@@ -137,14 +143,19 @@ void FileManager::write(const std::string& filename, const unsigned long long& s
     auto write_activity = internal_write(filename, size, site, cpu, disk);
 
     write_activity->on_this_start_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io) {
-        dispatcher->onUserFileWriteStart(filename,size, site, cpu, disk, io);
+        plugin->onUserFileWriteStart(filename,size, site, cpu, disk, io);
     });
 
     write_activity->on_this_completion_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io){
-        dispatcher->onUserFileWriteEnd(filename,size, site, cpu, disk, io);
+        plugin->onUserFileWriteEnd(filename,size, site, cpu, disk, io);
     });
 
     write_activity->start();
+}
+
+void FileManager::write(const std::string& filename, const std::string& size, const std::string& site, const std::string& cpu, const std::string& disk){
+
+    write(filename,CGSim::Utilities::parse_units_size(size),site,cpu,disk);
 }
 
 sg4::IoPtr FileManager::internal_read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk){
@@ -166,11 +177,11 @@ void FileManager::read(const std::string& filename, const std::string& site, con
     auto size = FileSizes.at(filename);
 
     read_activity->on_this_start_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io) {
-        dispatcher->onUserFileReadStart(filename,size, site, cpu, disk, io);
+        plugin->onUserFileReadStart(filename,size, site, cpu, disk, io);
     });
 
     read_activity->on_this_completion_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io){
-        dispatcher->onUserFileReadEnd(filename,size, site, cpu, disk, io);
+        plugin->onUserFileReadEnd(filename,size, site, cpu, disk, io);
     });
 
     read_activity->start();
@@ -183,7 +194,7 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
 
     const std::string key = generate_transfer_key(filename, src_site, dst_site);
     if (!in_flight_transfers.insert(key).second) throw std::runtime_error("File transfer: " + key + " is already in progress");
-    if(!(CGSim::get_site_manager()->get_site(dst_site)->incoming_file_transfers.insert({filename,src_site}).second)) 
+    if(!(CGSim::GlobalManagers::get_site_manager()->get_site(dst_site)->incoming_file_transfers.insert({filename,src_site}).second)) 
     throw std::runtime_error("File: " + filename + " already being transferred to site:  " + dst_site);
 
     auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
@@ -205,7 +216,7 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
         {
             internal_transfers.erase(co.get_name());
             ongoing_transfers.erase(key);
-            CGSim::get_site_manager()->get_site(dst_site)->incoming_file_transfers.erase(filename);
+            CGSim::GlobalManagers::get_site_manager()->get_site(dst_site)->incoming_file_transfers.erase(filename);
             create(filename,size,dst_site);
             if(mode == CGSim::FileTransferDecisionMode::MOVE) remove(filename, src_site);
             in_flight_transfers.erase(key);
@@ -220,12 +231,12 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
 
     t->on_this_start_cb([t, this, metadata, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
         if (!user_initiated_transfers.insert(co.get_name()).second) return;
-        dispatcher->onUserFileTransferStart(filename,size,co,src_site,dst_site,metadata);
+        plugin->onUserFileTransferStart(filename,size,co,src_site,dst_site,metadata);
     });
 
     t->on_this_completion_cb([this, metadata, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
         user_initiated_transfers.erase(co.get_name());
-        dispatcher->onUserFileTransferEnd(filename,size,co,src_site,dst_site,metadata);
+        plugin->onUserFileTransferEnd(filename,size,co,src_site,dst_site,metadata);
     });
     
     t->start();
@@ -233,3 +244,4 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
 
 } 
 
+}

@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 
     std::ifstream in(configFile);
     if (!in.is_open()) { throw std::runtime_error("could not open configuration file");}
-    auto j = json::parse(in);
+    auto j = nlohmann::json::parse(in);
 
     //Configuration Elements
     const std::string gridName                     = j["Grid_Name"];
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     const std::set<std::string> filteredSiteList   = j["Limited_Sites"].get<std::set<std::string>>();
 
     //Parse Input
-    std::unique_ptr<Parser> parser = std::make_unique<Parser>(siteConnInfoFile, siteInfoFile, filteredSiteList);
+    std::unique_ptr<CGSim::Core::Parser> parser = std::make_unique<CGSim::Core::Parser>(siteConnInfoFile, siteInfoFile, filteredSiteList);
     auto sitesInfo     = parser->getSiteInfo();
     auto siteConnInfo  = parser->getSiteConnInfo();
 
@@ -49,23 +49,23 @@ int main(int argc, char** argv)
     //simgrid::s4u::Engine::set_config("precision/timing", 1e-3);
 
     // Create the platform
-    std::unique_ptr<Platform> pf = std::make_unique<Platform>(gridName, sitesInfo, siteConnInfo);
+    std::unique_ptr<CGSim::Core::Platform> pf = std::make_unique<CGSim::Core::Platform>(gridName, sitesInfo, siteConnInfo);
     auto* platform = pf->get_simgrid_platform();
     for (auto& [key, value] : j["Custom_Parameters"].items()) 
     {
         platform->set_property(key,value.get<std::string>()); 
-        CGSim::get_site_manager()->Custom_Parameters[key] = value;
+        CGSim::GlobalManagers::get_site_manager()->Custom_Parameters[key] = value;
     }
 
-    PluginLoader<CGSim::Plugin> plugin_loader;
-    auto unique_dispatcher = plugin_loader.load(pluginPath);
-    std::shared_ptr<CGSim::Plugin> dispatcher = std::move(unique_dispatcher);
+    CGSim::Core::PluginLoader<CGSim::Plugin> plugin_loader;
+    auto unique_plugin = plugin_loader.load(pluginPath);
+    std::shared_ptr<CGSim::Plugin> plugin = std::move(unique_plugin);
 
     // Create and set up executor
-    JOB_EXECUTOR::set_dispatcher(dispatcher);
-    CGSim::FileManager::set_dispatcher(dispatcher);
-    dispatcher->beforeSimulationStart();
-    JOB_EXECUTOR::start_job_execution();
+    CGSim::Core::JOB_EXECUTOR::set_plugin(plugin);
+    CGSim::GlobalManagers::FileManager::set_plugin(plugin);
+    plugin->beforeSimulationStart();
+    CGSim::Core::JOB_EXECUTOR::start_job_execution();
 
     // Print version
     CG_SIM_LOG_INFO("CGSim version: {}.{}.{}", MAJOR_VERSION, MINOR_VERSION, BUILD_NUMBER);

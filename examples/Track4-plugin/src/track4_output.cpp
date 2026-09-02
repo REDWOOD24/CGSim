@@ -123,7 +123,7 @@ void TRACK4_OUTPUT::onJobStatusChange(Job* job)
      sg4::Engine::get_clock(),
      job->comp_site,
      site->total_cores - site->used_cores,
-     site->total_cpus - site->used_cpus,
+     site->total_cpus - site->used_cpus.size(),
      job->flops,
      job->input_files.size(),
      job->output_files.size(),
@@ -147,6 +147,6 @@ long long TRACK4_OUTPUT::input_files_bytes(Job* job)
 long long TRACK4_OUTPUT::output_files_bytes(Job* job) 
 {
   long long total_bytes = 0;
-  for (const auto& [filename, filesize] : job->output_files) {total_bytes += filesize;}
+  for (const auto& [filename, filesize] : job->output_files) {total_bytes += CGSim::parse_units_size(filesize);}
   return total_bytes;
 }

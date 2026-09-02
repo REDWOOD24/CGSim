@@ -8,6 +8,11 @@
 #include "host_extensions.h"
 #include <chrono>
 #include <simgrid/kernel/Timer.hpp>
+#include "units_parser.h"
+
+namespace CGSim { 
+
+namespace Core {
 
 class Actions;
 
@@ -20,7 +25,7 @@ public:
     ~JOB_EXECUTOR()= default;
     friend class Actions;
 
-    static void                set_dispatcher(std::shared_ptr<CGSim::Plugin>& d){dispatcher = d;}
+    static void                set_plugin(std::shared_ptr<CGSim::Plugin>& p){plugin = p;}
     static void                start_job_execution();
 
 
@@ -38,17 +43,20 @@ private:
     static unsigned long       totalJobs(JobQueue jobs);
 
 
-    static   sg4::ActivitySet                     pending_activities;
-    static   unsigned long                        DISPATCHED_JOBS;
-    static   unsigned long                        FINISHED_JOBS;
-    static   unsigned long                        ACTIVATED_JOBS;
-    static   unsigned long                        TOTAL_JOBS;
-    static   unsigned long                        JOBS_IN_SITE_PENDING;
-    static   JobQueue                             jobs;
-    static   std::unordered_map<long long, Job*>  all_jobs;
-    static   std::vector<Job*>                    pending_jobs;
-    static   std::shared_ptr<CGSim::Plugin>       dispatcher;
+    static   sg4::ActivitySet                       pending_activities;
+    static   unsigned long                          DISPATCHED_JOBS;
+    static   unsigned long                          FINISHED_JOBS;
+    static   unsigned long                          ACTIVATED_JOBS;
+    static   unsigned long                          TOTAL_JOBS;
+    static   unsigned long                          JOBS_IN_SITE_PENDING;
+    static   JobQueue                               jobs;
+    static   std::unordered_map<std::string, Job*>  all_jobs;
+    static   std::vector<Job*>                      pending_jobs;
+    static   std::shared_ptr<CGSim::Plugin>         plugin;
 
 };
 
+}
+
+}
 #endif //JOB_EXECUTOR_H

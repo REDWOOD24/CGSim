@@ -1,31 +1,37 @@
 #include "actions.h"
 
+namespace CGSim {
+
+namespace Core {
+
 sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
 {
     auto host = sg4::Host::by_name(j->comp_host);
     sg4::ExecPtr exec_activity = sg4::Exec::init()
         ->set_flops_amount((1.0*j->flops)/(1.0*j->cores))
         ->set_host(host)
-        ->set_name("Exec_Job_" + std::to_string(j->jobid) + "_on_" + host->get_name());
+        ->set_name("Exec_Job_" + j->id + "_on_" + host->get_name());
 
     exec_activity->on_this_start_cb([j](simgrid::s4u::Exec const& ex) {
         j->status = CGSim::STATUS::RUNNING;
-        CGSim::get_site_manager()->get_site(j->comp_site)->assigned_jobs.erase(j->jobid);
-        CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs[j->jobid] = j;
-        JOB_EXECUTOR::dispatcher->onJobExecutionStart(j,ex);
+        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->assigned_jobs.erase(j->id);
+        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->running_jobs[j->id] = j;
+        JOB_EXECUTOR::plugin->onJobExecutionStart(j,ex);
     });
 
     exec_activity->on_this_completion_cb([j, host](simgrid::s4u::Exec const& ex) {
+
+        j->cpu_consumption_time = ex.get_finish_time() - ex.get_start_time();
         
         if(j->output_files.size() == 0){
 
             j->status = CGSim::STATUS::FINISHED;
-            CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->jobid);
-            CGSim::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->jobid] = j;
+            CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->id);
+            CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->id] = j;
             host->extension<HostExtensions>()->onJobFinish(j);
             JOB_EXECUTOR::FINISHED_JOBS++;
             JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
-            JOB_EXECUTOR::dispatcher->onJobFinish(j);
+            JOB_EXECUTOR::plugin->onJobFinish(j);
 
             //See if dependent jobs are ready to run
             bool dag_job_created = false;
@@ -51,7 +57,7 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
             if(dag_job_created) JOB_EXECUTOR::pending_activities.push(sg4::MessageQueue::by_name("JOB-SERVER-MQ")->put_async(&dag_wakeup_msg));
 
         }
-        JOB_EXECUTOR::dispatcher->onJobExecutionEnd(j,ex);
+        JOB_EXECUTOR::plugin->onJobExecutionEnd(j,ex);
 
     });
 
@@ -61,16 +67,16 @@ sg4::ExecPtr Actions::exec_task_multi_thread_async(Job* j)
 sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename)
 {
 
-    auto read_activity = CGSim::get_file_manager()->internal_read(filename, j->comp_site,j->comp_host,j->disk);
-    read_activity->set_name("Read_File_"+ filename + "_for_Job_" + std::to_string(j->jobid) + "_on_" + j->comp_host);
-    auto size = CGSim::get_file_manager()->request_file_size(filename);
+    auto read_activity = CGSim::GlobalManagers::get_file_manager()->internal_read(filename, j->comp_site,j->comp_host,j->disk);
+    read_activity->set_name("Read_File_"+ filename + "_for_Job_" + j->id + "_on_" + j->comp_host);
+    auto size = CGSim::GlobalManagers::get_file_manager()->request_file_size(filename);
     read_activity->on_this_start_cb([j,filename,size](simgrid::s4u::Io const& io) {
-        JOB_EXECUTOR::dispatcher->onFileReadStart(j,filename,size,io);
+        JOB_EXECUTOR::plugin->onFileReadStart(j,filename,size,io);
         });
 
     read_activity->on_this_completion_cb([j,filename,size](simgrid::s4u::Io const& io) {
             j->total_io_read_time += (io.get_finish_time() - io.get_start_time());
-            JOB_EXECUTOR::dispatcher->onFileReadEnd(j,filename,size,io);
+            JOB_EXECUTOR::plugin->onFileReadEnd(j,filename,size,io);
             });
 
   return read_activity;
@@ -78,11 +84,11 @@ sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename)
 
 sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const unsigned long long& size)
 {
-    auto write_activity = CGSim::get_file_manager()->internal_write(filename, size, j->comp_site,j->comp_host,j->disk);
-    write_activity->set_name("Write_File_"+ filename + "_for_Job_" +std::to_string(j->jobid) + "_on_" + j->comp_host);
+    auto write_activity = CGSim::GlobalManagers::get_file_manager()->internal_write(filename, size, j->comp_site,j->comp_host,j->disk);
+    write_activity->set_name("Write_File_"+ filename + "_for_Job_" + j->id + "_on_" + j->comp_host);
 
     write_activity->on_this_start_cb([j,filename,size](simgrid::s4u::Io const& io) {
-        JOB_EXECUTOR::dispatcher->onFileWriteStart(j,filename,size,io);
+        JOB_EXECUTOR::plugin->onFileWriteStart(j,filename,size,io);
         });
 
     write_activity->on_this_completion_cb([j,filename,size](simgrid::s4u::Io const& io) {
@@ -93,12 +99,12 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
             if(j->files_written == j->output_files.size())
             {
                 j->status = CGSim::STATUS::FINISHED;
-                CGSim::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->jobid);
-                CGSim::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->jobid] = j;
+                CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->running_jobs.erase(j->id);
+                CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->finished_jobs[j->id] = j;
                 sg4::Host::by_name(j->comp_host)->extension<HostExtensions>()->onJobFinish(j);
                 JOB_EXECUTOR::FINISHED_JOBS++;
                 JOB_EXECUTOR::dispatch_site_pending_jobs(j->comp_site);
-                JOB_EXECUTOR::dispatcher->onJobFinish(j);
+                JOB_EXECUTOR::plugin->onJobFinish(j);
 
                 //See if dependent jobs are ready to run
                 bool dag_job_created = false;
@@ -122,7 +128,7 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
                 }
                 if(dag_job_created) JOB_EXECUTOR::pending_activities.push(sg4::MessageQueue::by_name("JOB-SERVER-MQ")->put_async(&dag_wakeup_msg));
             }
-            JOB_EXECUTOR::dispatcher->onFileWriteEnd(j,filename,size,io);
+            JOB_EXECUTOR::plugin->onFileWriteEnd(j,filename,size,io);
         });
 
     return write_activity;
@@ -130,19 +136,23 @@ sg4::IoPtr Actions::write_file_async(Job* j, const std::string& filename, const 
 
 sg4::CommPtr Actions::transfer_file_async(Job* j, const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode)
 {
-    auto transfer_activity = CGSim::get_file_manager()->internal_transfer(filename,src_site,dst_site,mode);
+    auto transfer_activity = CGSim::GlobalManagers::get_file_manager()->internal_transfer(filename,src_site,dst_site,mode);
     const auto size = static_cast<unsigned long long>(transfer_activity->get_remaining());
 
     transfer_activity->on_this_start_cb([j,filename,size,src_site,dst_site](simgrid::s4u::Comm const& co) {
         if (!started_transfers.insert(co.get_name()).second) return;
-        JOB_EXECUTOR::dispatcher->onFileTransferStart(j,filename,size,co,src_site,dst_site);
+        JOB_EXECUTOR::plugin->onFileTransferStart(j,filename,size,co,src_site,dst_site);
         });
 
     transfer_activity->on_this_completion_cb([filename,size,src_site,dst_site,j](simgrid::s4u::Comm const& co) {
         started_transfers.erase(co.get_name());
         j->file_transfer_queue_time = std::max(j->file_transfer_queue_time , co.get_finish_time() - co.get_start_time());
-        JOB_EXECUTOR::dispatcher->onFileTransferEnd(j,filename,size,co,src_site,dst_site);
+        JOB_EXECUTOR::plugin->onFileTransferEnd(j,filename,size,co,src_site,dst_site);
         });
 
     return transfer_activity;
+}
+
+}
+
 }

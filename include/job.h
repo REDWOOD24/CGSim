@@ -1,15 +1,31 @@
 #ifndef JOB_H
 #define JOB_H
+
+#include <queue>
 #include <string>
 #include <unordered_map>
-#include <queue>
 #include <unordered_set>
-using Files = std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>>;
+#include <utility>
+#include <vector>
 
-namespace CGSim
+
+namespace CGSim::Core
 {
-    enum struct STATUS {
-    GlOBAL_PENDING,
+class Actions;
+class JOB_EXECUTOR;
+class HostExtensions;
+}
+
+namespace CGSim::GlobalManagers
+{
+class FileManager;
+}
+
+
+namespace CGSim {
+    
+enum struct STATUS {
+    GLOBAL_PENDING,
     SITE_PENDING,
     ASSIGNED,
     RUNNING,
@@ -17,52 +33,131 @@ namespace CGSim
     FAILED,
     NONE
 };
-}
 
-//Information needed to a specify a Job
-struct Job 
-{
-    long long                                      jobid{};
-    double                                         creation_time{-1.0};
-    double                                         submission_time{};
-    CGSim::STATUS                                  status;
-    long long                                      flops{};
-    int                                            cores{};
-    std::string                                    disk{};
-    std::string                                    comp_site{};
-    std::string                                    comp_host{};
-    double                                         memory_usage{};
-    int                                            retries{};
-    double                                         disk_read_bw{};
-    double                                         disk_write_bw{};
-    double                                         comp_host_speed{};
-    double                                         cpu_consumption_time{};
-    double                                         total_io_read_time{};
-    double                                         total_io_write_time{};
-    double                                         file_transfer_queue_time{};
-    double                                         resource_waiting_queue_time{};
-    std::unordered_set<std::string>                input_files{};
-    Files                                          input_files_sizes_locations{}; //Change this later
-    std::unordered_map<std::string, long long>     output_files{};
-    long                                           files_written{};
-    std::unordered_map<std::string,std::string>    metadata{};
-    std::unordered_set<long long>                  parents{};               
-    std::unordered_map<long long, double>          children{};
-    void add_parent(long long parent)              {this->parents.insert(parent);}               
-    void add_child (long long child, double time)  {this->children[child] = time;}               
-    bool operator< (const Job& other) const        {return creation_time > other.creation_time;}
+
+class Job {
+public:
+    void set_id(std::string& v) { id = v; }
+    void set_creation_time(double v) { creation_time = v; }
+    void set_flops(long long v) { flops = v; }
+    void set_cores(int v) { cores = v; }
+    void set_disk(const std::string& v) { disk = v; }
+    void set_memory_usage(const std::string& v) { memory = v; }
+    void set_comp_site(const std::string& v) { comp_site = v; }
+    void set_comp_host(const std::string& v) { comp_host = v; }
+    void set_input_files(const std::unordered_set<std::string>& v) {input_files = v;}
+    void set_output_files(const std::unordered_map<std::string, std::string>& v) {output_files = v;}
+    void add_parent(std::string& parent) {parents.insert(parent);}
+    void add_child(std::string& child, double time) {children[child] = time;}
+    void set_property(const std::string& key, const std::string& value) {metadata[key] = value;}
+
+    std::string get_id() const {return id;}
+    double get_creation_time() const { return creation_time; }
+    double get_submission_time() const { return submission_time; }
+    std::string get_status() const { return status_string.at(status); }
+
+    long long get_flops() const { return flops; }
+    int get_cores() const { return cores; }
+    int get_retries() const { return retries; }
+
+    const std::string& get_disk() const { return disk; }
+    const std::string& get_memory_usage() const { return memory; }
+    const std::string& get_comp_site() const { return comp_site; }
+    const std::string& get_comp_host() const { return comp_host; }
+
+    double get_disk_read_bw() const { return disk_read_bw; }
+    double get_disk_write_bw() const { return disk_write_bw; }
+    double get_comp_host_speed() const { return comp_host_speed; }
+    double get_cpu_consumption_time() const { return cpu_consumption_time; }
+    double get_total_io_read_time() const { return total_io_read_time; }
+    double get_total_io_write_time() const { return total_io_write_time; }
+    double get_file_transfer_queue_time() const { return file_transfer_queue_time; }
+    double get_resource_waiting_queue_time() const { return resource_waiting_queue_time; }
+
+    const std::unordered_set<std::string>& get_input_files() const {return input_files;}
+    const std::unordered_map<std::string, std::string>& get_output_files() const {return output_files;}
+    long get_number_of_files_written() const {return files_written;}
+    const std::unordered_set<std::string>& get_parents() const {return parents;}
+    const std::unordered_map<std::string, double>& get_children() const {return children;}
+    std::string get_property(const std::string& key) const {return metadata.at(key);}
+
+    bool operator<(const Job& other) const {return creation_time > other.creation_time;}
+
+private:
+    // Basic job info
+    std::string id{};
+    double creation_time{-1.0};
+    double submission_time{};
+    CGSim::STATUS status{CGSim::STATUS::NONE};
+
+    // Resources
+    long long flops{};
+    int cores{};
+    int retries{};
+    std::string disk{};
+    std::string memory{"0B"};
+    std::string comp_site{};
+    std::string comp_host{};
+
+    // Performance
+    double disk_read_bw{};
+    double disk_write_bw{};
+    double comp_host_speed{};
+    double cpu_consumption_time{};
+    double total_io_read_time{};
+    double total_io_write_time{};
+    double file_transfer_queue_time{};
+    double resource_waiting_queue_time{};
+
+    // Files
+    std::unordered_set<std::string> input_files{};
+    std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>> input_files_sizes_locations{};
+    std::unordered_map<std::string, std::string> output_files{};
+    long files_written{};
+
+    // Metadata / dependencies
+    std::unordered_map<std::string, std::string> metadata{};
+    std::unordered_set<std::string> parents{};
+    std::unordered_map<std::string, double> children{};
+
+    std::unordered_map<STATUS,std::string> status_string = {
+    {CGSim::STATUS::GLOBAL_PENDING,"global_pending"},
+    {CGSim::STATUS::SITE_PENDING,"site_pending"},
+    {CGSim::STATUS::ASSIGNED,"assigned"},
+    {CGSim::STATUS::RUNNING,"running"},
+    {CGSim::STATUS::FINISHED,"finished"},
+    {CGSim::STATUS::FAILED,"failed"},
+    {CGSim::STATUS::NONE,"none"}};
+
+    friend class ::CGSim::Core::Actions;
+    friend class ::CGSim::Core::JOB_EXECUTOR;
+    friend class ::CGSim::Core::HostExtensions;
+    friend class ::CGSim::GlobalManagers::FileManager;
 };
-struct JobPtrCompare 
-{
-    bool operator()(const Job* a, const Job* b) const 
-    {
-        const bool a_negative = a->creation_time < 0;
-        const bool b_negative = b->creation_time < 0;
+
+struct JobPtrCompare {
+    bool operator()(const Job* a, const Job* b) const {
+        const bool a_negative = a->get_creation_time() < 0;
+        const bool b_negative = b->get_creation_time() < 0;
         if (a_negative != b_negative) return a_negative;
-        return a->creation_time > b->creation_time;
+        return a->get_creation_time() > b->get_creation_time();
     }
 };
-using JobQueue = std::priority_queue<Job*, std::vector<Job*>, JobPtrCompare>;
 
+class JobQueue {
+public:
+    void push(Job* job) {if(!((ids.insert(job->get_id())).second)) throw std::runtime_error("Job IDs must be unique"); queue.push(job); }
+    void pop() {if (queue.empty())return; ids.erase(queue.top()->get_id()); queue.pop();}
+    Job* top() { return queue.empty() ? nullptr : queue.top();}
+    bool empty() const { return queue.empty();}
+    std::size_t size() const { return queue.size();}
+    bool contains(std::string id) const {return ids.find(id) != ids.end();}
 
-#endif //JOB_H
+private:
+    std::priority_queue<Job*, std::vector<Job*>, JobPtrCompare> queue;
+    std::unordered_set<std::string> ids;
+};
+
+}
+
+#endif

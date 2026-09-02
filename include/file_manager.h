@@ -12,22 +12,25 @@
 #include <stdexcept>
 #include "job.h"
 #include "site_manager.h"
+#include "units_parser.h"
 
 namespace sg4 = simgrid::s4u;
-
 int main(int argc, char** argv);
+
+namespace CGSim::Core
+{
 class Actions;
 class JOB_EXECUTOR;
 class Platform;
+}
+
 
 namespace CGSim {
 
 class Plugin;
+enum class FileTransferDecisionMode {COPY,MOVE};
 
-enum class FileTransferDecisionMode {
-    COPY,
-    MOVE
-};
+namespace GlobalManagers {
 
 class FileManager {
 public:
@@ -39,16 +42,18 @@ public:
     bool exists(const std::string& filename, const std::string& sitename);
 
     std::unordered_set<std::string> request_site_files(const std::string& sitename);
-    std::unordered_set<std::string> request_file_sites(const std::string& filename);
+    std::unordered_set<std::string> request_file_sites(const std::string& filename); //File Locations
     unsigned long long request_file_size(const std::string& filename);
     unsigned long long request_remaining_site_storage(const std::string& sitename);
     unsigned long long request_remaining_grid_storage();
     double request_site_storage_utilization(const std::string& sitename);
 
     void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
+    void create(const std::string& filename, const std::string& size, const std::string& sitename);
     bool remove(const std::string& filename, const std::string& sitename);
     void transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, CGSim::FileTransferDecisionMode mode, const std::string& metadata = "");
     void write(const std::string& filename, const unsigned long long& size, const std::string& site, const std::string& cpu, const std::string& disk);
+    void write(const std::string& filename, const std::string& size, const std::string& site, const std::string& cpu, const std::string& disk);
     void read(const std::string& filename, const std::string& site, const std::string& cpu, const std::string& disk);
 
     bool is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site);
@@ -65,13 +70,13 @@ private:
     std::unordered_map<std::string, unsigned long long> FileSizes;
     std::unordered_map<std::string, unsigned long long> TotalSiteStorages;
     std::unordered_map<std::string, unsigned long long> SiteStorages;
-    inline static std::shared_ptr<CGSim::Plugin>        dispatcher;
+    inline static std::shared_ptr<CGSim::Plugin>        plugin;
 
     std::unordered_set<std::string> internal_transfers; //Hack to avoid double start comm callback
     std::unordered_set<std::string> user_initiated_transfers; //Hack to avoid double start comm callback
 
-    void register_site(sg4::NetZone* site, const std::unordered_map<std::string, long long>& files);
-    static void set_dispatcher(std::shared_ptr<CGSim::Plugin>& d){dispatcher = d;}
+    void register_site(sg4::NetZone* site, const std::unordered_map<std::string, unsigned long long>& files);
+    static void set_plugin(std::shared_ptr<CGSim::Plugin>& p){plugin = p;}
 
     sg4::IoPtr   internal_write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
     sg4::IoPtr   internal_read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
@@ -82,14 +87,15 @@ private:
     Job* request_file_location(Job* j);
 
     friend int   ::main(int argc, char** argv);
-    friend class ::Actions;
-    friend class ::JOB_EXECUTOR;
-    friend class ::Platform;
-
+    friend class ::CGSim::Core::Actions;
+    friend class ::CGSim::Core::JOB_EXECUTOR;
+    friend class ::CGSim::Core::Platform;
 };
 
 inline FileManager* get_file_manager() {
     return &FileManager::instance();
 } 
+
+}
 
 }

@@ -9,11 +9,11 @@
 
 namespace sg4 = simgrid::s4u;
 
-class JOB_EXECUTOR;
+namespace CGSim::Core {class JOB_EXECUTOR;}
 
 namespace CGSim {
 
-class PolicyManager;
+namespace GlobalManagers {class PolicyManager;}
 
 class Policy
 {
@@ -28,8 +28,10 @@ public:
 private:
     std::size_t generation_number = 0;
     bool active = true;
-    friend class PolicyManager;
+    friend class GlobalManagers::PolicyManager;
 };
+
+namespace GlobalManagers {
 
 class PolicyManager
 {
@@ -54,12 +56,14 @@ private:
     static std::unordered_map<std::string, CGSim::Policy*> policies;
     static std::unordered_map<std::string, CGSim::Policy*> active_policies;
     static std::unordered_map<std::string, CGSim::Policy*> deactivated_policies;
-    friend class ::JOB_EXECUTOR;
+    friend class CGSim::Core::JOB_EXECUTOR;
     inline static bool RUNNING = true;
 };
 
 inline PolicyManager* get_policy_manager() {
     return &PolicyManager::instance();
 } 
+
+}
 
 }

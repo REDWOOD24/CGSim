@@ -10,7 +10,7 @@ class TRACK4_WORKLOAD_MANAGER {
 public:
     TRACK4_WORKLOAD_MANAGER(){};
    ~TRACK4_WORKLOAD_MANAGER(){};
-    JobQueue getWorkload();
+    JobQueue setWorkload(JobQueue& jobs);
 
 private:
 

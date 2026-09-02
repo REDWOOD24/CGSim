@@ -16,7 +16,10 @@
 #include "site_manager.h"
 
 namespace sg4 = simgrid::s4u;
-static std::unordered_set<std::string> started_transfers; //Hack to avoid double start of comms in callback
+
+namespace CGSim {
+
+namespace Core {
 
 class Actions
 {
@@ -31,7 +34,15 @@ public:
 
     inline static std::string dag_wakeup_msg = "Dependent job created";
 
+private:
+    inline static std::unordered_set<std::string> started_transfers; //Hack to avoid double start of comms in callback
+
+
 };
+
+}
+
+}
 
 #endif
 

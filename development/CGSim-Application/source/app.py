@@ -58,7 +58,7 @@ class main_app(QMainWindow):
         # Connect buttons
         self.ui.AskPanDAEnter.clicked.connect(self.AskPanDAEnter)
         self.ui.pushButton.clicked.connect(self.add_button)
-        icon = QIcon("/Users/raekhan/PycharmProjects/CGSim-Application/source/run_button.png")
+        icon = QIcon("run_button.png")
         self.ui.pushButton_4.setIcon(icon)
         self.ui.pushButton_4.setIconSize(QSize(40, 40))
         self.ui.pushButton_4.setStyleSheet("text-align: left; padding-left: 8px;")

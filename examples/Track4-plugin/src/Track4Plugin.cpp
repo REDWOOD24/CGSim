@@ -8,8 +8,8 @@ class Track4Plugin : public CGSim::Plugin {
 
 public:
     Track4Plugin();
-    virtual JobQueue getWorkload() final override;
-    virtual Job* assignJob(Job* job) final override;
+    virtual void setWorkload(JobQueue& jobs) final override;
+    virtual void assignJob(Job* job) final override;
 
     virtual void onJobSubmission(Job* job) final override;
     virtual void onJobAssignment(Job* job) final override;
@@ -31,14 +31,14 @@ Track4Plugin::Track4Plugin()
 {
 }
 
-JobQueue Track4Plugin::getWorkload()
+void Track4Plugin::setWorkload(JobQueue& jobs)
 {
-   return t4wm->getWorkload();
+   t4wm->setWorkload(jobs);
 }
 
-Job* Track4Plugin::assignJob(Job* job)
+void Track4Plugin::assignJob(Job* job)
 {
-   return t4d->assignJob(job);
+   t4d->assignJob(job);
 }
 
 void Track4Plugin::onJobSubmission(Job* job)
