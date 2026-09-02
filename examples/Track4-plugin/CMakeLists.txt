@@ -30,7 +30,7 @@ target_include_directories( Track4Plugin PUBLIC ${SimGrid_INCLUDE_DIR} ${CGSim_I
 else()
 include_directories(json/include/)
 include_directories(../../simgrid/include/ ../../simgrid/build/include/)
-include_directories(../../include/)
+include_directories(../../include/ ../../include/util/ ../../include/cgsim/ ../../include/global_managers/ ../../include/core/)
 target_include_directories( Track4Plugin PUBLIC ${Boost_INCLUDE_DIR})
 endif()
 
