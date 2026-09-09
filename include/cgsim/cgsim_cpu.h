@@ -13,52 +13,41 @@ namespace CGSim {
 
 class Site;
 
-class CPU
-{
+class CPU {
 public:
+    const std::string& get_name() const noexcept;
+    unsigned int get_cores_available() const;
+    unsigned int get_cores_used() const;
+    unsigned int get_total_cores() const;
 
-    std::string  get_name();
-    unsigned int get_cores_available();
-    unsigned int get_cores_used();
-    unsigned int get_total_cores();
+    double get_cpu_utilization() const;
+    double get_speed() const;
 
-    double get_cpu_utilization();
-    double get_speed();
+    unsigned long long get_memory_available() const;
+    unsigned long long get_memory_used() const;
+    double get_memory_utilization() const;
 
+    const std::unordered_map<std::string,Job*>& get_assigned_jobs() const noexcept;
+    const std::unordered_map<std::string,Job*>& get_running_jobs() const noexcept;
+    const std::unordered_map<std::string,Job*>& get_finished_jobs() const noexcept;
+    const std::unordered_map<std::string,Job*>& get_failed_jobs() const noexcept;
 
-    unsigned long long get_memory_available();
-    unsigned long long get_memory_used();
-    double             get_memory_utilization();
+    void set_property(const std::string& k,const std::string& v){properties[k]=v;}
+    const std::string& get_property(const std::string& k) const{return properties.at(k);}
 
-    std::unordered_map<std::string,Job*> get_assigned_jobs();
-    std::unordered_map<std::string,Job*> get_running_jobs();
-    std::unordered_map<std::string,Job*> get_finished_jobs();
-    std::unordered_map<std::string,Job*> get_failed_jobs();
-
-    inline void        set_property(const std::string& key, const std::string& value) {properties[key] = value;}
-    inline std::string get_property(std::string& key) {return properties.at(key);}
-
-    std::vector<CGSim::Disk*> get_disks();
-
-
+    const std::vector<Disk*>& get_disks() const noexcept;
 
 private:
     std::string name{};
-    sg4::Host* simgrid_host = nullptr;
-    std::unordered_map<std::string,Job*> assigned_jobs{}, running_jobs{}, finished_jobs{}, failed_jobs{};
+    sg4::Host* simgrid_host=nullptr;
+    std::unordered_map<std::string,Job*> assigned_jobs{},running_jobs{},finished_jobs{},failed_jobs{};
     std::unordered_map<std::string,std::string> properties{};
-    std::vector<CGSim::Disk*> disks{};
+    std::vector<Disk*> disks{};
 
-    void add_assigned_job(CGSim::Job* j);
-    void remove_assigned_job(CGSim::Job* j);
-
-    void add_running_job(CGSim::Job* j);
-    void remove_running_job(CGSim::Job* j);
-
-    void add_finished_job(CGSim::Job* j);
-    void add_failed_job(CGSim::Job* j);
-
-    void add_disk(CGSim::Disk* disk);
+    void add_assigned_job(Job*),remove_assigned_job(Job*);
+    void add_running_job(Job*),remove_running_job(Job*);
+    void add_finished_job(Job*),add_failed_job(Job*);
+    void add_disk(Disk*);
 
     friend class ::CGSim::Core::Platform;
     friend class ::CGSim::GlobalManagers::ResourceManager;

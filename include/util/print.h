@@ -83,104 +83,187 @@ inline void print_site(const std::string& siteName)
         << std::right;
 }
 
-
-inline void printSimulationDashBoard(std::size_t dispatchedJobs, std::size_t totalJobs,
-                                     std::size_t activatedJobs, std::size_t finishedJobs,
-                                     std::size_t pendingGlobalJobs, std::size_t pendingSiteJobs,
-                                     std::size_t pendingActivities, double simulatedTime,
+inline void printSimulationDashBoard(std::size_t dispatchedJobs,
+                                     std::size_t totalJobs,
+                                     std::size_t activatedJobs,
+                                     std::size_t finishedJobs,
+                                     std::size_t pendingGlobalJobs,
+                                     std::size_t pendingSiteJobs,
+                                     std::size_t pendingActivities,
+                                     double simulatedTime,
                                      double gridCpuUsage)
 {
     static bool first = true;
-    constexpr int BAR = 27, LINES = 16, LABEL_WIDTH = 16, BAR_LABEL_WIDTH = 16;
+    static bool cursorSetup = [] {
+        std::cout << "\033[?25l" << std::flush; // hide cursor
+        std::atexit([] {
+            std::cout << "\033[?25h" << std::flush; // restore cursor
+        });
+        return true;
+    }();
+    (void)cursorSetup;
+
+    constexpr int BAR = 27;
+    constexpr int LINES = 16;
+    constexpr int LABEL_WIDTH = 16;
+    constexpr int BAR_LABEL_WIDTH = 16;
 
     auto s = static_cast<unsigned long long>(simulatedTime);
     auto d = s / 86400; s %= 86400;
     auto h = s / 3600;  s %= 3600;
-    auto m = s / 60;    auto sec = s % 60;
+    auto m = s / 60;
+    auto sec = s % 60;
 
-    std::ostringstream t;
-    if (d) t << d << "d ";
-    t << std::setfill('0')
-    << std::setw(2) << h << "h "
-    << std::setw(2) << m << "m "
-    << std::setw(2) << sec << "s";
+    std::ostringstream time;
+    if(d) time << d << "d ";
 
-    double p = totalJobs ? static_cast<double>(dispatchedJobs) / totalJobs : 0.0;
-    p = std::clamp(p, 0.0, 1.0);
+    time << std::setfill('0')
+         << std::setw(2) << h << "h "
+         << std::setw(2) << m << "m "
+         << std::setw(2) << sec << "s";
+
+    double progress = totalJobs
+        ? static_cast<double>(dispatchedJobs) / totalJobs
+        : 0.0;
+
+    progress = std::clamp(progress, 0.0, 1.0);
 
     const double cpu = std::clamp(gridCpuUsage * 100.0, 0.0, 100.0);
-    const int jobFilled = static_cast<int>(p * BAR);
+
+    const int jobFilled = static_cast<int>(progress * BAR);
     const int cpuFilled = static_cast<int>((cpu / 100.0) * BAR);
 
-    if (!first) std::cout << "\033[" << LINES << "A";
+    std::ostringstream out;
+
+    if(!first)
+        out << "\033[" << LINES << "A\r";
+
     first = false;
 
-    auto clear = [] { std::cout << "\033[2K\r"; };
-    auto border = [] { std::cout << "\033[62G\033[1;36m│\033[0m\n"; };
+    auto clear = [&] {
+        out << "\033[2K\r";
+    };
 
-    clear(); std::cout << "\033[1;36m╭────────────────────────────────────────────────────────────╮\033[0m\n";
-    clear(); std::cout << "\033[1;36m│                                                            │\033[0m\n";
+    auto border = [&] {
+        out << "\033[62G\033[1;36m│\033[0m\n";
+    };
 
     clear();
-    std::cout << "\033[1;36m│\033[0m  \033[90m"
-            << std::left << std::setw(BAR_LABEL_WIDTH) << "JOB PROGRESS"
-            << "\033[0m[";
+    out << "\033[1;36m"
+        << "╭────────────────────────────────────────────────────────────╮"
+        << "\033[0m\n";
 
-    for (int i = 0; i < BAR; ++i)
-        std::cout << (i < jobFilled ? "\033[1;32m█\033[0m" : "\033[90m░\033[0m");
+    clear();
+    out << "\033[1;36m│                                                            │\033[0m\n";
 
-    std::cout << "] \033[1;37m"
-            << std::right << std::fixed << std::setprecision(1)
-            << std::setw(5) << p * 100.0
-            << "%\033[0m";
+    clear();
+    out << "\033[1;36m│\033[0m  \033[90m"
+        << std::left << std::setw(BAR_LABEL_WIDTH) << "JOB PROGRESS"
+        << "\033[0m[";
+
+    for(int i = 0; i < BAR; ++i)
+        out << (i < jobFilled
+            ? "\033[1;32m█\033[0m"
+            : "\033[90m░\033[0m");
+
+    out << "] \033[1;37m"
+        << std::right
+        << std::fixed
+        << std::setprecision(1)
+        << std::setw(5)
+        << progress * 100.0
+        << "%\033[0m";
+
     border();
 
     clear();
-    std::cout << "\033[1;36m│\033[0m  "
-            << std::left << std::setw(BAR_LABEL_WIDTH) << ""
-            << "\033[1;37m"
-            << dispatchedJobs
-            << "\033[90m / \033[1;37m"
-            << totalJobs
-            << "\033[0m dispatched";
+    out << "\033[1;36m│\033[0m  "
+        << std::left << std::setw(BAR_LABEL_WIDTH) << ""
+        << "\033[1;37m"
+        << dispatchedJobs
+        << "\033[90m / \033[1;37m"
+        << totalJobs
+        << "\033[0m dispatched";
+
     border();
-
-    clear(); std::cout << "\033[1;36m│                                                            │\033[0m\n";
-
-    clear(); std::cout << "\033[1;36m│\033[0m  \033[1;32m●\033[0m  " << std::left << std::setw(LABEL_WIDTH) << "Running"       << "\033[1;37m" << activatedJobs     << "\033[0m"; border();
-    clear(); std::cout << "\033[1;36m│\033[0m  \033[1;32m✓\033[0m  " << std::left << std::setw(LABEL_WIDTH) << "Finished"      << "\033[1;37m" << finishedJobs      << "\033[0m"; border();
-    clear(); std::cout << "\033[1;36m│\033[0m  \033[1;33m◇\033[0m  " << std::left << std::setw(LABEL_WIDTH) << "Global Queue"  << "\033[1;37m" << pendingGlobalJobs << "\033[0m"; border();
-    clear(); std::cout << "\033[1;36m│\033[0m  \033[1;33m◇\033[0m  " << std::left << std::setw(LABEL_WIDTH) << "Site Queues"    << "\033[1;37m" << pendingSiteJobs   << "\033[0m"; border();
-    clear(); std::cout << "\033[1;36m│\033[0m  \033[1;36m◆\033[0m  " << std::left << std::setw(LABEL_WIDTH) << "Activities"    << "\033[1;37m" << pendingActivities << "\033[0m"; border();
-
-    clear(); std::cout << "\033[1;36m│                                                            │\033[0m\n";
 
     clear();
-    std::cout << "\033[1;36m│\033[0m  \033[1;36m◆\033[0m  "
-            << std::left << std::setw(LABEL_WIDTH) << "Simulated Time"
-            << "\033[1;37m" << t.str()
-            << "\033[0m";
-    border();
-
-    clear(); std::cout << "\033[1;36m│                                                            │\033[0m\n";
+    out << "\033[1;36m│                                                            │\033[0m\n";
 
     clear();
-    std::cout << "\033[1;36m│\033[0m  \033[90m"
-            << std::left << std::setw(BAR_LABEL_WIDTH) << "GRID CPU UTIL"
-            << "\033[0m[";
-
-    for (int i = 0; i < BAR; ++i)
-        std::cout << (i < cpuFilled ? "\033[1;35m█\033[0m" : "\033[90m░\033[0m");
-
-    std::cout << "] \033[1;35m"
-            << std::right << std::fixed << std::setprecision(1)
-            << std::setw(5) << cpu
-            << "%\033[0m";
+    out << "\033[1;36m│\033[0m  \033[1;32m●\033[0m  "
+        << std::left << std::setw(LABEL_WIDTH) << "Running"
+        << "\033[1;37m" << activatedJobs << "\033[0m";
     border();
 
-    clear(); std::cout << "\033[1;36m│                                                            │\033[0m\n";
-    clear(); std::cout << "\033[1;36m╰────────────────────────────────────────────────────────────╯\033[0m\n"
-                    << std::right << std::flush;
+    clear();
+    out << "\033[1;36m│\033[0m  \033[1;32m✓\033[0m  "
+        << std::left << std::setw(LABEL_WIDTH) << "Finished"
+        << "\033[1;37m" << finishedJobs << "\033[0m";
+    border();
+
+    clear();
+    out << "\033[1;36m│\033[0m  \033[1;33m◇\033[0m  "
+        << std::left << std::setw(LABEL_WIDTH) << "Global Queue"
+        << "\033[1;37m" << pendingGlobalJobs << "\033[0m";
+    border();
+
+    clear();
+    out << "\033[1;36m│\033[0m  \033[1;33m◇\033[0m  "
+        << std::left << std::setw(LABEL_WIDTH) << "Site Queues"
+        << "\033[1;37m" << pendingSiteJobs << "\033[0m";
+    border();
+
+    clear();
+    out << "\033[1;36m│\033[0m  \033[1;36m◆\033[0m  "
+        << std::left << std::setw(LABEL_WIDTH) << "Activities"
+        << "\033[1;37m" << pendingActivities << "\033[0m";
+    border();
+
+    clear();
+    out << "\033[1;36m│                                                            │\033[0m\n";
+
+    clear();
+    out << "\033[1;36m│\033[0m  \033[1;36m◆\033[0m  "
+        << std::left << std::setw(LABEL_WIDTH) << "Simulated Time"
+        << "\033[1;37m"
+        << time.str()
+        << "\033[0m";
+
+    border();
+
+    clear();
+    out << "\033[1;36m│                                                            │\033[0m\n";
+
+    clear();
+    out << "\033[1;36m│\033[0m  \033[90m"
+        << std::left << std::setw(BAR_LABEL_WIDTH) << "GRID CPU UTIL"
+        << "\033[0m[";
+
+    for(int i = 0; i < BAR; ++i)
+        out << (i < cpuFilled
+            ? "\033[1;35m█\033[0m"
+            : "\033[90m░\033[0m");
+
+    out << "] \033[1;35m"
+        << std::right
+        << std::fixed
+        << std::setprecision(1)
+        << std::setw(5)
+        << cpu
+        << "%\033[0m";
+
+    border();
+
+    clear();
+    out << "\033[1;36m│                                                            │\033[0m\n";
+
+    clear();
+    out << "\033[1;36m"
+        << "╰────────────────────────────────────────────────────────────╯"
+        << "\033[0m\n";
+
+    std::cout << out.str() << std::flush;
 }
 
 }

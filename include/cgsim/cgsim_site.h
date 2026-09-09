@@ -21,75 +21,65 @@ class FileManager;
 
 class CPU;
 
-class Site 
-{
+class Site {
 public:
-    Site() = default;
-    Site(const Site&) = delete;
-    Site& operator=(const Site&) = delete;
+    Site()=default;
+    Site(const Site&)=delete;
+    Site& operator=(const Site&)=delete;
 
-    bool cpu_exists_at_site(const std::string& cpu_name);
-    inline std::vector<CGSim::CPU*> get_cpus() {return cpus;}
-    inline std::unordered_set<std::string> get_used_cpus_list() {return used_cpus_list;}
+    bool cpu_exists_at_site(const std::string& cpu_name) const;
 
-    inline double get_cpu_utilization(){return ((1.0)*used_cpus_list.size())/((1.0)*total_cpus);}
-    inline double get_memory_utilization(){return ((1.0)*used_memory)/((1.0)*total_memory);}
+    const std::vector<CPU*>& get_cpus() const noexcept{return cpus;}
+    const std::unordered_set<std::string>& get_used_cpus_list() const noexcept{return used_cpus_list;}
+    const std::deque<Job*>& get_pending_jobs() const noexcept{return pending_jobs;}
+    const std::unordered_map<std::string,Job*>& get_assigned_jobs() const noexcept{return assigned_jobs;}
+    const std::unordered_map<std::string,Job*>& get_running_jobs() const noexcept{return running_jobs;}
+    const std::unordered_map<std::string,Job*>& get_finished_jobs() const noexcept{return finished_jobs;}
+    const std::unordered_map<std::string,Job*>& get_failed_jobs() const noexcept{return failed_jobs;}
 
-    inline std::deque<Job*> get_pending_jobs() {return pending_jobs;}
-    inline std::unordered_map<std::string,Job*> get_assigned_jobs(){return assigned_jobs;}
-    inline std::unordered_map<std::string,Job*> get_running_jobs(){return running_jobs;}
-    inline std::unordered_map<std::string,Job*> get_finished_jobs(){return finished_jobs;}
-    inline std::unordered_map<std::string,Job*> get_failed_jobs(){return failed_jobs;}
+    double get_cpu_utilization() const noexcept{return total_cpus?double(used_cpus_list.size())/total_cpus:0;}
+    double get_memory_utilization() const noexcept{return total_memory?double(used_memory)/total_memory:0;}
 
-    inline unsigned long get_number_of_total_cores(){return total_cores;}
-    inline unsigned long get_number_of_used_cores(){return used_cores;}
-    inline unsigned long get_number_of_total_cpus(){return total_cpus;}
-    inline unsigned long get_number_of_used_cpus(){return used_cpus_list.size();}
+    unsigned long get_number_of_total_cores() const noexcept{return total_cores;}
+    unsigned long get_number_of_used_cores() const noexcept{return used_cores;}
+    unsigned long get_number_of_total_cpus() const noexcept{return total_cpus;}
+    unsigned long get_number_of_used_cpus() const noexcept{return used_cpus_list.size();}
+    unsigned long long get_memory_capacity() const noexcept{return total_memory;}
+    unsigned long long get_used_memory() const noexcept{return used_memory;}
 
-    inline unsigned long long get_memory_capacity() {return total_memory;};
-    inline unsigned long long get_used_memory() {return used_memory;}
+    void enable_job_assignment() noexcept{job_assignment_enabled=true;}
+    void disable_job_assignment() noexcept{job_assignment_enabled=false;}
+    bool is_job_assignment_enabled() const noexcept{return job_assignment_enabled;}
 
-    inline void enable_job_assignment() {job_assignment_enabled = true;}
-    inline void disable_job_assignment() {job_assignment_enabled = false;}
-    inline bool is_job_assignment_enabled() {return job_assignment_enabled;}
+    void set_property(const std::string& k,const std::string& v){properties[k]=v;}
+    const std::string& get_property(const std::string& k) const{return properties.at(k);}
 
-    inline void        set_property(const std::string& key, const std::string& value) {properties[key] = value;}
-    inline std::string get_property(const std::string& key) {return properties.at(key);}
+    void set_max_retries(unsigned long n) noexcept{MAX_RETRIES=n;}
+    unsigned long get_max_retries() const noexcept{return MAX_RETRIES;}
 
-    inline void          set_max_retries(unsigned long _MAX_RETRIES) {MAX_RETRIES = _MAX_RETRIES;}
-    inline unsigned long get_max_retries(){return MAX_RETRIES;}
+    std::unordered_map<std::string,std::string>& get_incoming_file_transfers() noexcept{return incoming_file_transfers;}
+    const std::unordered_map<std::string,std::string>& get_incoming_file_transfers() const noexcept{return incoming_file_transfers;}
 
-    inline std::unordered_map<std::string,std::string>& get_incoming_file_transfers() {return incoming_file_transfers;}
-
-    std::unordered_set<std::string> get_files();
-    unsigned long long get_remaining_storage();
+    std::unordered_set<std::string> get_files() const;
+    unsigned long long get_remaining_storage() const;
 
 private:
     std::string name{};
-    unsigned long total_cores=0, used_cores=0, total_cpus=0, MAX_RETRIES=100000;
-    unsigned long long total_memory=0, used_memory=0;
-    
-    std::vector<CGSim::CPU*> cpus{};
-    std::unordered_map<std::string, sg4::Host*> simgrid_hosts{};
+    unsigned long total_cores=0,used_cores=0,total_cpus=0,MAX_RETRIES=100000;
+    unsigned long long total_memory=0,used_memory=0;
+    std::vector<CPU*> cpus{};
+    std::unordered_map<std::string,sg4::Host*> simgrid_hosts{};
     std::unordered_set<std::string> used_cpus_list{};
-
     std::deque<Job*> pending_jobs{};
-    std::unordered_map<std::string,Job*> assigned_jobs{}, running_jobs{}, finished_jobs{}, failed_jobs{};
-    std::unordered_map<std::string,std::string> properties{}, incoming_file_transfers{};
+    std::unordered_map<std::string,Job*> assigned_jobs{},running_jobs{},finished_jobs{},failed_jobs{};
+    std::unordered_map<std::string,std::string> properties{},incoming_file_transfers{};
     bool job_assignment_enabled=true;
+    sg4::NetZone* simgrid_site=nullptr;
 
-    sg4::NetZone* simgrid_site = nullptr;
-    
-    void add_assigned_job(CGSim::Job* j);
-    void remove_assigned_job(CGSim::Job* j);
-
-    void add_running_job(CGSim::Job* j);
-    void remove_running_job(CGSim::Job* j);
-
-    void add_finished_job(CGSim::Job* j);
-    void add_failed_job(CGSim::Job* j);
-
-    void add_cpu(CGSim::CPU* cpu);
+    void add_assigned_job(Job*),remove_assigned_job(Job*);
+    void add_running_job(Job*),remove_running_job(Job*);
+    void add_finished_job(Job*),add_failed_job(Job*);
+    void add_cpu(CPU*);
 
     friend class CPU;
     friend class ::CGSim::Core::Platform;
@@ -98,7 +88,5 @@ private:
     friend class ::CGSim::Core::JOB_EXECUTOR;
     friend class GlobalManagers::ResourceManager;
     friend class GlobalManagers::FileManager;
-
 };
-
 }

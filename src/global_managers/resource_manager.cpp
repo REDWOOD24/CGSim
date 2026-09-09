@@ -1,50 +1,41 @@
 #include "resource_manager.h"
 #include "print.h"
 
-namespace CGSim {
-
-namespace GlobalManagers {
+namespace CGSim::GlobalManagers {
 
 ResourceManager& ResourceManager::instance(){static ResourceManager rm; return rm;}
 
-Site* ResourceManager::get_site(const std::string& site_name) 
+Site* ResourceManager::get_site(const std::string& n)
 {
-    if(!site_exists(site_name)) throw std::runtime_error("Site does not Exist"); 
-    return global_site_map.at(site_name);
+    auto it=global_site_map.find(n);
+    if(it==global_site_map.end()) throw std::runtime_error("Site does not Exist");
+    return it->second;
 }
 
-void ResourceManager::print_site_info(const std::string& site_name)
+void ResourceManager::print_site_info(const std::string& n){CGSim::Utilities::print_site(n);}
+
+Site* ResourceManager::create_site(const std::string& n,sg4::NetZone* z)
 {
-    CGSim::Utilities::print_site(site_name);
+    auto* s=new Site;
+    s->name=n; s->simgrid_site=z;
+    list_of_sites.insert(n);
+    global_site_map[n]=s;
+    return s;
 }
 
-CGSim::Site* ResourceManager::create_site(const std::string& site_name, sg4::NetZone* _simgrid_site)
+CPU* ResourceManager::create_cpu(const std::string& n,sg4::Host* h)
 {
-    auto* site = new CGSim::Site; 
-    site->name = site_name; 
-    site->simgrid_site = _simgrid_site;
-    list_of_sites.insert(site_name); 
-    global_site_map[site_name] = site; 
-    return site;
+    auto* c=new CPU;
+    c->name=n; c->simgrid_host=h;
+    global_cpu_map[n]=c;
+    return c;
 }
 
-CGSim::CPU*  ResourceManager::create_cpu(const std::string& cpu_name, sg4::Host* _simgrid_host)
+Disk* ResourceManager::create_disk(const std::string& n,sg4::Disk* d)
 {
-    auto* cpu = new CGSim::CPU; 
-    cpu->name = cpu_name;
-    cpu->simgrid_host =  _simgrid_host;
-    global_cpu_map[cpu_name] = cpu; 
-    return cpu;
-}
-
-CGSim::Disk* ResourceManager::create_disk(const std::string& disk_name, sg4::Disk* _simgrid_disk)
-{
-    auto* disk = new CGSim::Disk;
-    disk->name = disk_name;
-    disk->simgrid_disk = _simgrid_disk;
-    return disk;
-}
-
+    auto* x=new Disk;
+    x->name=n; x->simgrid_disk=d;
+    return x;
 }
 
 }
