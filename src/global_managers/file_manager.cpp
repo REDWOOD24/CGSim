@@ -11,12 +11,12 @@ FileManager& FileManager::instance()
     return fm;
 }
 
-bool FileManager::exists(const std::string& filename)
+const bool FileManager::exists(const std::string& filename) const
 {
     return FileSizes.count(filename) > 0;
 }
 
-bool FileManager::exists(const std::string& filename, const std::string& sitename)
+const bool FileManager::exists(const std::string& filename, const std::string& sitename) const
 {
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return SiteFiles.at(sitename).count(filename) > 0;
@@ -37,11 +37,11 @@ bool FileManager::remove(const std::string& filename, const std::string& sitenam
     return true;
 }
 
-bool FileManager::is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+const bool FileManager::is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site) const{
     return in_flight_transfers.find(generate_transfer_key(filename, src_site, dst_site)) != in_flight_transfers.end();
 }
 
-std::string FileManager::generate_transfer_key(const std::string& filename, const std::string& src_site, const std::string& dst_site){
+const std::string FileManager::generate_transfer_key(const std::string& filename, const std::string& src_site, const std::string& dst_site) const {
     return filename + "|" + src_site + "|" + dst_site;
 }
 
@@ -70,26 +70,26 @@ Job* FileManager::request_file_location(Job* j){
     return j;
 }
 
-std::unordered_set<std::string> FileManager::request_site_files(const std::string& sitename)
+const std::unordered_set<std::string>& FileManager::request_site_files(const std::string& sitename) const
 {
     if(SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: " +sitename+ " does not exist");
     return SiteFiles.at(sitename);
 }
 
-std::unordered_set<std::string> FileManager::request_file_sites(const std::string& filename)
+const std::unordered_set<std::string>& FileManager::request_file_sites(const std::string& filename) const
 {
     if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");
     return FileSites.at(filename);
 }
 
-unsigned long long FileManager::request_file_size(const std::string& filename)
+unsigned long long FileManager::request_file_size(const std::string& filename) const
 {
     if (!exists(filename)) throw std::runtime_error("File: " +filename+ " does not exist");
     return FileSizes.at(filename);
 
 }
 
-unsigned long long FileManager::request_remaining_grid_storage() {
+unsigned long long FileManager::request_remaining_grid_storage() const {
     unsigned long long total = 0;
     for (const auto& [key, value] : SiteStorages) {
         total += value;
@@ -97,12 +97,12 @@ unsigned long long FileManager::request_remaining_grid_storage() {
     return total;
 }
 
-unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) {
+unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) const {
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return SiteStorages.at(sitename);
 }
 
-double FileManager::request_site_storage_utilization(const std::string& sitename){
+double FileManager::request_site_storage_utilization(const std::string& sitename) const{
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return 1.0 - (1.0*SiteStorages.at(sitename))/(1.0*TotalSiteStorages.at(sitename));
 }

@@ -38,15 +38,15 @@ public:
     FileManager& operator=(const FileManager&) = delete;
 
     static FileManager& instance();
-    bool exists(const std::string& filename);
-    bool exists(const std::string& filename, const std::string& sitename);
+    const bool exists(const std::string& filename) const;
+    const bool exists(const std::string& filename, const std::string& sitename) const;
 
-    std::unordered_set<std::string> request_site_files(const std::string& sitename);
-    std::unordered_set<std::string> request_file_sites(const std::string& filename); //File Locations
-    unsigned long long request_file_size(const std::string& filename);
-    unsigned long long request_remaining_site_storage(const std::string& sitename);
-    unsigned long long request_remaining_grid_storage();
-    double request_site_storage_utilization(const std::string& sitename);
+    const std::unordered_set<std::string>& request_site_files (const std::string& sitename) const;
+    const std::unordered_set<std::string>& request_file_sites(const std::string& filename) const; //File Locations
+    unsigned long long request_file_size(const std::string& filename) const;
+    unsigned long long request_remaining_site_storage(const std::string& sitename) const;
+    unsigned long long request_remaining_grid_storage() const;
+    double request_site_storage_utilization(const std::string& sitename) const;
 
     void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
     void create(const std::string& filename, const std::string& size, const std::string& sitename);
@@ -56,8 +56,8 @@ public:
     void write(const std::string& filename, const std::string& size, const std::string& site, const std::string& cpu, const std::string& disk);
     void read(const std::string& filename, const std::string& site, const std::string& cpu, const std::string& disk);
 
-    bool is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site);
-    std::string generate_transfer_key(const std::string& filename,const std::string& src_site,const std::string& dst_site);
+    const bool is_in_flight(const std::string& filename, const std::string& src_site, const std::string& dst_site) const;
+    const std::string generate_transfer_key(const std::string& filename,const std::string& src_site,const std::string& dst_site) const;
 
     inline static std::unordered_set<std::string> in_flight_transfers = {};
 
