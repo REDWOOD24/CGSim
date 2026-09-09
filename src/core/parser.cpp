@@ -45,6 +45,7 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
         // --- CPU INFO ---
         for (auto& cpu_json : site_json["CPUInfo"]) {
             CPUInfo        cpu;
+            cpu.name     = cpu_json.value("name", "");
             cpu.units    = cpu_json.value("units", 0);
             cpu.cores    = cpu_json.value("cores", 0);
             cpu.speed    = cpu_json.value("speed", 0.0);

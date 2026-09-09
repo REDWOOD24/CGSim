@@ -15,7 +15,7 @@ public:
 
   double storage_needed(const std::unordered_map<std::string, std::string>& files);
   void   findAvailableCPU(CGSim::Job* j);
-  void   assignJob(CGSim::Job* job);
+  void   assignJob(CGSim::Job* j);
 };
 
 #endif

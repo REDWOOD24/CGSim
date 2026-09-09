@@ -3,7 +3,7 @@
 void TRACK4_OUTPUT::initialize()
 {
     if (initialized) return;
-    std::string file_name = CGSim::GlobalManagers::get_site_manager()->get_custom_parameter("output_file");
+    std::string file_name = CGSim::GlobalManagers::get_resource_manager()->get_custom_parameter("output_file");
     if (std::filesystem::exists(file_name)) std::filesystem::remove(file_name);
 
     if (sqlite3_open(file_name.c_str(), &db) != SQLITE_OK) {
@@ -112,27 +112,27 @@ void TRACK4_OUTPUT::insert_event(
 void TRACK4_OUTPUT::onJobStatusChange(CGSim::Job* job)
 {
   
-  auto* site = CGSim::GlobalManagers::get_site_manager()->get_site(job->get_comp_site());
+  auto* site = CGSim::GlobalManagers::get_resource_manager()->get_site(job->get_site());
 
   insert_event
     (
      job->get_id(),
-     job->get_comp_host(),
+     job->get_cpu(),
      job->get_status(),
      sg4::Engine::get_clock(),
-     job->get_comp_site(),
-     site->total_cores - site->used_cores,
-     site->total_cpus - site->used_cpus.size(),
+     job->get_site(),
+     site->get_number_of_total_cores() - site->get_number_of_used_cores(),
+     site->get_number_of_total_cpus() - site->get_number_of_used_cpus(),
      job->get_flops(),
      job->get_input_files().size(),
      job->get_output_files().size(),
      input_files_bytes(job),
      output_files_bytes(job),
-     CGSim::GlobalManagers::get_site_manager()->get_global_pending_jobs().size(),
-     site->pending_jobs.size(),
-     site->running_jobs.size(),
-     site->finished_jobs.size(),
-     site->failed_jobs.size()
+     CGSim::GlobalManagers::get_resource_manager()->get_global_pending_jobs().size(),
+     site->get_pending_jobs().size(),
+     site->get_running_jobs().size(),
+     site->get_finished_jobs().size(),
+     site->get_failed_jobs().size()
      );
 }
 

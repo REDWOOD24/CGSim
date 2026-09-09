@@ -38,7 +38,7 @@ include_directories(include/util/)
 include_directories(include/cgsim/)
 
 # Source files
-file(GLOB_RECURSE SOURCE_FILES "src/util/*.cpp" "src/core/*.cpp" "src/global_managers/*.cpp")
+file(GLOB_RECURSE SOURCE_FILES "src/cgsim/*.cpp" "src/util/*.cpp" "src/core/*.cpp" "src/global_managers/*.cpp")
 
 # Build the library
 add_library(CGSim SHARED ${SOURCE_FILES})
@@ -77,7 +77,7 @@ install(TARGETS CGSim
 )
 
 # Install header files
-install(FILES include/CGSim.h include/global_managers/file_manager.h include/util/logger.h include/cgsim/job.h include/cgsim/plugin.h include/global_managers/site_manager.h include/global_managers/policy_manager.h include/util/units_parser.h
+install(FILES include/CGSim.h include/global_managers/file_manager.h include/util/logger.h include/cgsim/job.h include/cgsim/plugin.h include/cgsim/cgsim_site.h include/cgsim/cgsim_cpu.h include/cgsim/cgsim_disk.h include/global_managers/resource_manager.h include/global_managers/policy_manager.h include/util/units_parser.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGSim)
 
 # Install the executable

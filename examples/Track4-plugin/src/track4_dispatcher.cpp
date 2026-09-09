@@ -11,26 +11,27 @@ double TRACK4_DISPATCHER::storage_needed(const std::unordered_map<std::string, s
 
 void TRACK4_DISPATCHER::findAvailableCPU(CGSim::Job* j)
 {
-  auto* sm = CGSim::GlobalManagers::get_site_manager();
-  auto* fm = CGSim::GlobalManagers::get_file_manager();
-  auto cpus = sm->get_site(j->get_comp_site())->cpus;
-  if(sm->get_site(j->get_comp_site())->pending_jobs.size() > 0 && j->get_comp_site().empty()) return;
+  if(j->get_site().empty()) return;
+  auto* site = CGSim::GlobalManagers::get_resource_manager()->get_site(j->get_site());
+  if(site->get_pending_jobs().size() > 0) return;
+  auto cpus = site->get_cpus();
 
+  
   for(const auto& cpu: cpus)
   {
-    if(sm->get_cores_available(cpu) < j->get_cores()) continue;
-    if(fm->request_remaining_site_storage(j->get_comp_site()) < storage_needed(j->get_output_files())) continue;
+    if(cpu->get_cores_available() < j->get_cores()) continue;
+    if(site->get_remaining_storage() < storage_needed(j->get_output_files())) continue;
 
     auto d = cpu->get_disks()[0]; //Change later
     j->set_disk(d->get_name());
-    j->set_comp_host(cpu->get_name());
+    j->set_cpu(cpu->get_name());
     return;
   }
 }
 
-void TRACK4_DISPATCHER::assignJob(CGSim::Job* job)
+void TRACK4_DISPATCHER::assignJob(CGSim::Job* j)
 {
-  auto* sm = CGSim::GlobalManagers::get_site_manager();
-  job->set_flops(std::stol(sm->get_site(job->get_comp_site())->properties.at("GFLOPS"))*std::stod(job->get_property("cpu_consumption_time"))*job->get_cores());
-  findAvailableCPU(job);
+  auto* site = CGSim::GlobalManagers::get_resource_manager()->get_site(j->get_site());
+  j->set_flops(std::stol(site->get_property("GFLOPS"))*std::stod(j->get_property("cpu_consumption_time"))*j->get_cores());
+  findAvailableCPU(j);
 }

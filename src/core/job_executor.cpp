@@ -52,7 +52,7 @@ void JOB_EXECUTOR::get_jobs()
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
       job->status = CGSim::STATUS::GLOBAL_PENDING;
-      CGSim::GlobalManagers::get_site_manager()->GlobalPendingJobs[job->id] = job;
+      CGSim::GlobalManagers::get_resource_manager()->global_pending_jobs[job->id] = job;
       plugin->onJobSubmission(job);
       jobs.pop();
     }
@@ -101,7 +101,7 @@ void JOB_EXECUTOR::advance_to_time(double time)
 
 void JOB_EXECUTOR::dispatch_global_pending_jobs()
 {
-  auto grid_available_cores = CGSim::GlobalManagers::get_site_manager()->TOTAL_GRID_CORES - CGSim::GlobalManagers::get_site_manager()->USED_GRID_CORES;
+  auto grid_available_cores = CGSim::GlobalManagers::get_resource_manager()->TOTAL_GRID_CORES - CGSim::GlobalManagers::get_resource_manager()->USED_GRID_CORES;
 
   for(auto it = pending_jobs.begin(); it != pending_jobs.end();)
   {
@@ -110,22 +110,22 @@ void JOB_EXECUTOR::dispatch_global_pending_jobs()
   if(job->cores>grid_available_cores) break;
   plugin->assignJob(job);
 
-  if(!job->comp_site.empty() && job->comp_host.empty())
+  if(!job->site.empty() && job->cpu.empty())
   {
     job->status = CGSim::STATUS::SITE_PENDING;
     JOBS_IN_SITE_PENDING++;
-    CGSim::GlobalManagers::get_site_manager()->GlobalPendingJobs.erase(job->id); 
-    CGSim::GlobalManagers::get_site_manager()->get_site(job->comp_site)->pending_jobs.emplace_back(job);
+    CGSim::GlobalManagers::get_resource_manager()->global_pending_jobs.erase(job->id); 
+    CGSim::GlobalManagers::get_resource_manager()->get_site(job->site)->pending_jobs.emplace_back(job);
     plugin->onJobSitePending(job);
     job->retries++;
     it = pending_jobs.erase(it);
   }
 
-  else if(!job->comp_site.empty() && !job->comp_host.empty())
+  else if(!job->site.empty() && !job->cpu.empty())
   {
     job->status = CGSim::STATUS::ASSIGNED;
-    CGSim::GlobalManagers::get_site_manager()->GlobalPendingJobs.erase(job->id); 
-    CGSim::GlobalManagers::get_site_manager()->get_site(job->comp_site)->assigned_jobs[job->id] = job;
+    CGSim::GlobalManagers::get_resource_manager()->global_pending_jobs.erase(job->id); 
+    CGSim::GlobalManagers::get_resource_manager()->get_site(job->site)->add_assigned_job(job);
     onJobAssignment(job); 
     it = pending_jobs.erase(it);
   }
@@ -135,8 +135,8 @@ void JOB_EXECUTOR::dispatch_global_pending_jobs()
   {
     grid_available_cores-=job->cores; 
     job->status = CGSim::STATUS::FAILED; 
-    CGSim::GlobalManagers::get_site_manager()->GlobalPendingJobs.erase(job->id);
-    CGSim::GlobalManagers::get_site_manager()->GlobalFailedJobs[job->id] = job;
+    CGSim::GlobalManagers::get_resource_manager()->global_pending_jobs.erase(job->id);
+    CGSim::GlobalManagers::get_resource_manager()->global_failed_jobs[job->id] = job;
     plugin->onJobFailure(job); 
     it = pending_jobs.erase(it); 
     DISPATCHED_JOBS++; //Internal book keeping
@@ -149,7 +149,7 @@ void JOB_EXECUTOR::dispatch_global_pending_jobs()
 
 void JOB_EXECUTOR::dispatch_site_pending_jobs(std::string& site_name)
 {
-  auto* s=CGSim::GlobalManagers::get_site_manager()->get_site(site_name);
+  auto* s=CGSim::GlobalManagers::get_resource_manager()->get_site(site_name);
   auto available_cores = s->total_cores - s->used_cores;
 
   if(!s->job_assignment_enabled) return;
@@ -160,11 +160,11 @@ void JOB_EXECUTOR::dispatch_site_pending_jobs(std::string& site_name)
     if(j->cores>available_cores) break;
     plugin->assignJob(j);
 
-    if(!j->comp_host.empty())
+    if(!j->cpu.empty())
     {
       available_cores-=j->cores; 
       j->status=CGSim::STATUS::ASSIGNED; 
-      s->assigned_jobs[j->id]=j; 
+      s->add_assigned_job(j); 
       s->pending_jobs.pop_front(); 
       JOBS_IN_SITE_PENDING--;
       onJobAssignment(j);
@@ -174,7 +174,7 @@ void JOB_EXECUTOR::dispatch_site_pending_jobs(std::string& site_name)
     {
       j->status=CGSim::STATUS::FAILED; 
       s->pending_jobs.pop_front();
-      s->failed_jobs[j->id]=j;  
+      s->add_failed_job(j);  
       plugin->onJobFailure(j); 
       DISPATCHED_JOBS++; 
       ACTIVATED_JOBS++;
@@ -205,7 +205,7 @@ void JOB_EXECUTOR::start_server()
     //@ToDo If job cores are bigger than what any local cpu can handle, it can indefinitely block dispatch_site_pending_jobs
     if(!pending_jobs.empty()) dispatch_global_pending_jobs();
     CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, RUNNING_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
-    pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
+    pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_resource_manager()->get_grid_cpu_utilization());
   }
 
   while (ACTIVATED_JOBS != TOTAL_JOBS || !pending_activities.empty())
@@ -216,22 +216,22 @@ void JOB_EXECUTOR::start_server()
 
   CGSim::GlobalManagers::PolicyManager::RUNNING = false;
   CGSim::Utilities::printSimulationDashBoard(DISPATCHED_JOBS, TOTAL_JOBS, RUNNING_JOBS, FINISHED_JOBS, pending_jobs.size(), JOBS_IN_SITE_PENDING, 
-    pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_site_manager()->get_grid_cpu_utilization());
+    pending_activities.size(), sg4::Engine::get_clock(), CGSim::GlobalManagers::get_resource_manager()->get_grid_cpu_utilization());
 }
 
 void JOB_EXECUTOR::onJobAssignment(Job* job)
 {
   DISPATCHED_JOBS++;
-  auto* job_host = sg4::Host::by_name(job->comp_host);
-  job->comp_host_speed = job_host->get_speed();
+  auto* job_host = sg4::Host::by_name(job->cpu);
+  job->cpu_speed = job_host->get_speed();
   if(!job->disk.empty()){auto* job_disk = job_host->get_disk_by_name(job->disk); job->disk_read_bw = job_disk->get_read_bandwidth(); job->disk_write_bw = job_disk->get_write_bandwidth();}
-  sg4::Host::by_name(job->comp_host)->extension<HostExtensions>()->registerJob(job);
+  sg4::Host::by_name(job->cpu)->extension<HostExtensions>()->registerJob(job);
   plugin->onJobAssignment(job);
-  sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->comp_host + "-MQ");
-  sg4::MessPtr job_transfer = mqueue->put_async(job)->set_name("Transfer_Job_" + job->id + "_to_" + job->comp_host+"_from_JOB-SERVER");
-  job_transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {plugin->onJobTransferStart(job, me);});
+  sg4::MessageQueue* mqueue = sg4::MessageQueue::by_name(job->cpu + "-MQ");
+  sg4::MessPtr job_transfer = mqueue->put_async(job)->set_name("Transfer_Job_" + job->id + "_to_" + job->cpu+"_from_JOB-SERVER");
+  job_transfer->on_this_start_cb([job](simgrid::s4u::Mess const& me) {plugin->onJobTransferStart(job);});
   job_transfer->on_this_completion_cb([job](simgrid::s4u::Mess const& me)
-    {job->resource_waiting_queue_time = sg4::Engine::get_clock() - job->creation_time; plugin->onJobTransferEnd(job, me);});
+    {job->resource_waiting_queue_time = sg4::Engine::get_clock() - job->creation_time; plugin->onJobTransferEnd(job);});
   pending_activities.push(job_transfer);
 }
 
@@ -252,20 +252,20 @@ void JOB_EXECUTOR::execute_job(Job* j)
     plugin->onFileRequest(j, filename, fileinfo.first, fileinfo.second, filelocation, mode);
     if(filelocation.empty()) throw std::runtime_error("File location not specified for file: "+filename);
 
-    if (filelocation != j->comp_site) 
+    if (filelocation != j->site) 
     { 
       sg4::CommPtr comm_activity;
-      auto incoming_file_transfers = CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->incoming_file_transfers;
+      auto incoming_file_transfers = CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->incoming_file_transfers;
       if(incoming_file_transfers.find(filename) != incoming_file_transfers.end())
       {
         auto src_site = incoming_file_transfers.at(filename);
-        auto transfer_key = CGSim::GlobalManagers::get_file_manager()->generate_transfer_key(filename,src_site,j->comp_site);
+        auto transfer_key = CGSim::GlobalManagers::get_file_manager()->generate_transfer_key(filename,src_site,j->site);
         comm_activity = CGSim::GlobalManagers::get_file_manager()->ongoing_transfers.at(transfer_key);
       }
 
       else 
       {
-        comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->comp_site,mode);
+        comm_activity = Actions::transfer_file_async(j,filename,filelocation,j->site,mode);
         comm_activities.push_back(comm_activity);
       }
 

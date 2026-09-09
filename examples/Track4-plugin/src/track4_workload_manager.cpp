@@ -81,10 +81,10 @@ void TRACK4_WORKLOAD_MANAGER::setWorkload(CGSim::JobQueue& jobs) {
 
             std::string pandaid = getColumn(row, column_map, "pandaid", "0");
             job->set_id(pandaid);
-            //job->set_creation_time(std::stod(getColumn(row,column_map,"creationtime","0")));
-	    job->set_creation_time(1 + rand() % 100);
+            job->set_creation_time(std::stod(getColumn(row,column_map,"creationtime","0")));
+	    //job->set_creation_time(1 + rand() % 100);
 	    job->set_property("cpu_consumption_time",getColumn(row,column_map,"cpuconsumptiontime","0"));
-            job->set_comp_site(getColumn(row,column_map,"computingsite",""));
+            job->set_site(getColumn(row,column_map,"computingsite",""));
             job->set_cores(std::stoi(getColumn(row,column_map,"corecount","0")));
 
             double out_bytes = std::stod(getColumn(row,column_map,"outputfilebytes","0"));
@@ -94,9 +94,9 @@ void TRACK4_WORKLOAD_MANAGER::setWorkload(CGSim::JobQueue& jobs) {
             double in_bytes = std::stod(getColumn(row,column_map,"inputfilebytes","0"));
             std::string in = "user.input."+job->get_id()+".00001.root";
             job->add_input_file(in);
-            CGSim::GlobalManagers::get_file_manager()->create(in,(unsigned long long)in_bytes/10000,job->get_comp_site());
+            CGSim::GlobalManagers::get_file_manager()->create(in,(unsigned long long)in_bytes/10000,job->get_site());
 
-            if(!job->get_comp_site().empty()) jobs.push(job);
+            if(!job->get_site().empty()) jobs.push(job);
             else delete job;
 
         } catch (const std::exception& e) {

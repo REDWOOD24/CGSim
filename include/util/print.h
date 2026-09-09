@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include "site_manager.h"
+#include "resource_manager.h"
 #include "version.h"
 #include <sstream>
 #include <algorithm>
@@ -13,7 +13,7 @@ namespace Utilities {
 
 inline std::string get_grid_name()
 {
-    return CGSim::GlobalManagers::get_site_manager()->get_custom_parameter("Grid Name");
+    return CGSim::GlobalManagers::get_resource_manager()->get_custom_parameter("Grid Name");
 }
 
 inline void print_CGSim_Logo()

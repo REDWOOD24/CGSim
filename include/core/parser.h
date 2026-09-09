@@ -27,22 +27,23 @@ struct DiskInfo {
 
 //Information needed to a specify a host (CPU)
 struct CPUInfo {
-  int                                               units{};
-  int                                               cores{};
-  double                                            speed{};
-  std::string                                       BW_CPU{};
-  std::string                                       LAT_CPU{};
-  std::string                                       ram{};
-  std::vector<DiskInfo>                             disk_info{};
-  std::unordered_map<std::string, std::string>      properties{};
+  std::string                                              name{};
+  int                                                      units{};
+  int                                                      cores{};
+  double                                                   speed{};
+  std::string                                              BW_CPU{};
+  std::string                                              LAT_CPU{};
+  std::string                                              ram{};
+  std::vector<DiskInfo>                                    disk_info{};
+  std::unordered_map<std::string, std::string>             properties{};
 
 };
 
 struct SiteInfo {
-  std::string                                       name{};
-  std::vector<CPUInfo>                              cpu_info{};
-  std::unordered_map<std::string, std::string>      properties{};
-  std::unordered_map<std::string, unsigned long long>        files{};
+  std::string                                              name{};
+  std::vector<CPUInfo>                                     cpu_info{};
+  std::unordered_map<std::string, std::string>             properties{};
+  std::unordered_map<std::string, unsigned long long>      files{};
 
 };
 

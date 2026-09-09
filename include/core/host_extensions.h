@@ -6,7 +6,7 @@
 #include <set>
 #include <string>
 #include "job.h"
-#include "site_manager.h"
+#include "resource_manager.h"
 #include <simgrid/simcall.hpp>
 
 namespace CGSim { 
@@ -20,7 +20,11 @@ class HostExtensions {
 public:
   static simgrid::xbt::Extension<simgrid::s4u::Host, HostExtensions> EXTENSION_ID;
   explicit HostExtensions(const simgrid::s4u::Host* h)
-      : host(h), cores_used(0), cores_available(h->get_core_count()), memory_available(CGSim::Utilities::parse_units_size(h->get_property("ram"))), memory_used(0) ,name(h->get_name()) {}
+      : host(h), cores_used(0), cores_available(h->get_core_count()), 
+      memory_available(CGSim::Utilities::parse_units_size(h->get_property("ram"))), memory_used(0) ,name(h->get_name()) 
+      {
+
+      }
 
   HostExtensions(const HostExtensions&) = delete;
   HostExtensions& operator=(const HostExtensions&) = delete;

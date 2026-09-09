@@ -14,8 +14,8 @@ public:
     virtual void onJobAssignment(CGSim::Job* job) final override;
     virtual void onJobSitePending(CGSim::Job* job) final override;
     virtual void onJobFailure(CGSim::Job* job) final override;
-    virtual void onJobExecutionStart(CGSim::Job* job, simgrid::s4u::Exec const& ex) final override;
-    virtual void onJobExecutionEnd(CGSim::Job* job, simgrid::s4u::Exec const& ex) final override;
+    virtual void onJobExecutionStart(CGSim::Job* job) final override;
+    virtual void onJobExecutionEnd(CGSim::Job* job) final override;
  
 
 private:
@@ -60,14 +60,13 @@ void Track4Plugin::onJobAssignment(CGSim::Job* job)
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobExecutionStart(CGSim::Job* job, simgrid::s4u::Exec const& ex)
+void Track4Plugin::onJobExecutionStart(CGSim::Job* job)
 {
    t4ou->onJobStatusChange(job);
 }
 
-void Track4Plugin::onJobExecutionEnd(CGSim::Job* job, simgrid::s4u::Exec const& ex)
+void Track4Plugin::onJobExecutionEnd(CGSim::Job* job)
 {
-   //t4ouc->onJobExecutionEnd(job,ex);
    t4ou->onJobStatusChange(job);
 }
 

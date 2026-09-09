@@ -25,11 +25,11 @@ void HostExtensions::registerJob(Job* j) {
         cores_available  -= j->cores;
         memory_used      += job_memory;
         memory_available -= job_memory;
-        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->used_cores += j->cores;
-        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->used_memory += job_memory;
-        CGSim::GlobalManagers::get_site_manager()->USED_GRID_CORES += j->cores; 
-        CGSim::GlobalManagers::get_site_manager()->USED_GRID_MEMORY += job_memory; 
-        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->used_cpus.insert(host->get_name());
+        CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->used_cores += j->cores;
+        CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->used_memory += job_memory;
+        CGSim::GlobalManagers::get_resource_manager()->USED_GRID_CORES += j->cores; 
+        CGSim::GlobalManagers::get_resource_manager()->USED_GRID_MEMORY += job_memory; 
+        CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->used_cpus_list.insert(host->get_name());
         if(cores_available == 0 && available == true) {available = false;}
     });
 }
@@ -42,11 +42,11 @@ void HostExtensions::onJobFinish(Job* j) {
         auto job_memory = CGSim::Utilities::parse_units_size(j->memory);
         memory_used      -= job_memory;
         memory_available += job_memory;
-        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->used_cores -= j->cores;
-        CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->used_memory -= job_memory;
-        CGSim::GlobalManagers::get_site_manager()->USED_GRID_CORES -= j->cores;
-        CGSim::GlobalManagers::get_site_manager()->USED_GRID_MEMORY -= job_memory;   
-        if(job_ids.size() == 0) CGSim::GlobalManagers::get_site_manager()->get_site(j->comp_site)->used_cpus.erase(host->get_name());
+        CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->used_cores -= j->cores;
+        CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->used_memory -= job_memory;
+        CGSim::GlobalManagers::get_resource_manager()->USED_GRID_CORES -= j->cores;
+        CGSim::GlobalManagers::get_resource_manager()->USED_GRID_MEMORY -= job_memory;   
+        if(job_ids.size() == 0) CGSim::GlobalManagers::get_resource_manager()->get_site(j->site)->used_cpus_list.erase(host->get_name());
         if(cores_available > 0 && available == false) {available = true;}
     });
 }

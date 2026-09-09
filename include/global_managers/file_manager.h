@@ -11,7 +11,7 @@
 #include <simgrid/s4u/Mess.hpp>
 #include <stdexcept>
 #include "job.h"
-#include "site_manager.h"
+#include "resource_manager.h"
 #include "units_parser.h"
 
 namespace sg4 = simgrid::s4u;

@@ -24,6 +24,10 @@ class FileManager;
 
 namespace CGSim {
     
+class Site;
+class CPU;
+class Disk;
+
 enum struct STATUS {
     GLOBAL_PENDING,
     SITE_PENDING,
@@ -43,8 +47,8 @@ public:
     void set_cores(int v) { cores = v; }
     void set_disk(const std::string& v) { disk = v; }
     void set_memory_usage(const std::string& v) { memory = v; }
-    void set_comp_site(const std::string& v) { comp_site = v; }
-    void set_comp_host(const std::string& v) { comp_host = v; }
+    void set_site(const std::string& v) { site = v; }
+    void set_cpu(const std::string& v) { cpu = v; }
     void set_input_files(const std::unordered_set<std::string>& v) {input_files = v;}
     void set_output_files(const std::unordered_map<std::string, std::string>& v) {output_files = v;}
     void add_input_file(const std::string& v) { input_files.insert(v); }
@@ -64,12 +68,12 @@ public:
 
     const std::string& get_disk() const { return disk; }
     const std::string& get_memory_usage() const { return memory; }
-    const std::string& get_comp_site() const { return comp_site; }
-    const std::string& get_comp_host() const { return comp_host; }
+    const std::string& get_site() const { return site; }
+    const std::string& get_cpu() const { return cpu; }
 
     double get_disk_read_bw() const { return disk_read_bw; }
     double get_disk_write_bw() const { return disk_write_bw; }
-    double get_comp_host_speed() const { return comp_host_speed; }
+    double get_cpu_speed() const { return cpu_speed; }
     double get_cpu_consumption_time() const { return cpu_consumption_time; }
     double get_total_io_read_time() const { return total_io_read_time; }
     double get_total_io_write_time() const { return total_io_write_time; }
@@ -98,13 +102,13 @@ private:
     int retries{};
     std::string disk{};
     std::string memory{"0B"};
-    std::string comp_site{};
-    std::string comp_host{};
+    std::string site{};
+    std::string cpu{};
 
     // Performance
     double disk_read_bw{};
     double disk_write_bw{};
-    double comp_host_speed{};
+    double cpu_speed{};
     double cpu_consumption_time{};
     double total_io_read_time{};
     double total_io_write_time{};
@@ -135,6 +139,10 @@ private:
     friend class ::CGSim::Core::JOB_EXECUTOR;
     friend class ::CGSim::Core::HostExtensions;
     friend class ::CGSim::GlobalManagers::FileManager;
+    friend class Site;
+    friend class CPU;
+    friend class Disk;
+
 };
 
 struct JobPtrCompare {

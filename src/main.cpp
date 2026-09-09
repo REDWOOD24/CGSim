@@ -15,7 +15,7 @@
 #include "logger.h"
 #include "job_executor.h"
 #include "file_manager.h"
-#include "site_manager.h"
+#include "resource_manager.h"
 #include "print.h"
 
 int main(int argc, char** argv)
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     const std::set<std::string> filteredSiteList   = j["Limited_Sites"].get<std::set<std::string>>();
 
     //Make Grid Name Accesible Globally
-    CGSim::GlobalManagers::get_site_manager()->set_custom_parameter("Grid Name", gridName);
+    CGSim::GlobalManagers::get_resource_manager()->set_custom_parameter("Grid Name", gridName);
 
     //Parse Input
     std::unique_ptr<CGSim::Core::Parser> parser = std::make_unique<CGSim::Core::Parser>(siteConnInfoFile, siteInfoFile, filteredSiteList);
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     for (auto& [key, value] : j["Custom_Parameters"].items()) 
     {
         platform->set_property(key,value.get<std::string>()); 
-        CGSim::GlobalManagers::get_site_manager()->set_custom_parameter(key,value);
+        CGSim::GlobalManagers::get_resource_manager()->set_custom_parameter(key,value);
     }
 
     CGSim::Utilities::PluginLoader<CGSim::Plugin> plugin_loader;

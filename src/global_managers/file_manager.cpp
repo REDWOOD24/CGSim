@@ -143,11 +143,11 @@ void FileManager::write(const std::string& filename, const unsigned long long& s
     auto write_activity = internal_write(filename, size, site, cpu, disk);
 
     write_activity->on_this_start_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io) {
-        plugin->onUserFileWriteStart(filename,size, site, cpu, disk, io);
+        plugin->onUserFileWriteStart(filename,size, site, cpu, disk);
     });
 
     write_activity->on_this_completion_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io){
-        plugin->onUserFileWriteEnd(filename,size, site, cpu, disk, io);
+        plugin->onUserFileWriteEnd(filename,size, site, cpu, disk);
     });
 
     write_activity->start();
@@ -177,11 +177,11 @@ void FileManager::read(const std::string& filename, const std::string& site, con
     auto size = FileSizes.at(filename);
 
     read_activity->on_this_start_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io) {
-        plugin->onUserFileReadStart(filename,size, site, cpu, disk, io);
+        plugin->onUserFileReadStart(filename,size, site, cpu, disk);
     });
 
     read_activity->on_this_completion_cb([this, filename, size, site, cpu, disk](simgrid::s4u::Io const& io){
-        plugin->onUserFileReadEnd(filename,size, site, cpu, disk, io);
+        plugin->onUserFileReadEnd(filename,size, site, cpu, disk);
     });
 
     read_activity->start();
@@ -194,7 +194,7 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
 
     const std::string key = generate_transfer_key(filename, src_site, dst_site);
     if (!in_flight_transfers.insert(key).second) throw std::runtime_error("File transfer: " + key + " is already in progress");
-    if(!(CGSim::GlobalManagers::get_site_manager()->get_site(dst_site)->incoming_file_transfers.insert({filename,src_site}).second)) 
+    if(!(CGSim::GlobalManagers::get_resource_manager()->get_site(dst_site)->incoming_file_transfers.insert({filename,src_site}).second)) 
     throw std::runtime_error("File: " + filename + " already being transferred to site:  " + dst_site);
 
     auto src_host = sg4::Engine::get_instance()->host_by_name_or_null(src_site+"_communication_server");
@@ -216,7 +216,7 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
         {
             internal_transfers.erase(co.get_name());
             ongoing_transfers.erase(key);
-            CGSim::GlobalManagers::get_site_manager()->get_site(dst_site)->incoming_file_transfers.erase(filename);
+            CGSim::GlobalManagers::get_resource_manager()->get_site(dst_site)->incoming_file_transfers.erase(filename);
             create(filename,size,dst_site);
             if(mode == CGSim::FileTransferDecisionMode::MOVE) remove(filename, src_site);
             in_flight_transfers.erase(key);
@@ -231,12 +231,12 @@ sg4::CommPtr FileManager::internal_transfer(const std::string& filename, const s
 
     t->on_this_start_cb([t, this, metadata, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co) {
         if (!user_initiated_transfers.insert(co.get_name()).second) return;
-        plugin->onUserFileTransferStart(filename,size,co,src_site,dst_site,metadata);
+        plugin->onUserFileTransferStart(filename,size,src_site,dst_site,metadata);
     });
 
     t->on_this_completion_cb([this, metadata, filename, size, src_site, dst_site](simgrid::s4u::Comm const& co){
         user_initiated_transfers.erase(co.get_name());
-        plugin->onUserFileTransferEnd(filename,size,co,src_site,dst_site,metadata);
+        plugin->onUserFileTransferEnd(filename,size,src_site,dst_site,metadata);
     });
     
     t->start();
