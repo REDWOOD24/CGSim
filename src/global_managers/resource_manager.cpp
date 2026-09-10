@@ -38,4 +38,28 @@ Disk* ResourceManager::create_disk(const std::string& n,sg4::Disk* d)
     return x;
 }
 
+double get_connection_bandwidth(const std::string& site1_name, const std::string& site2_name)
+{
+    sg4::Link* link = sg4::Link::by_name_or_null("link_" + site1_name + ":" + site2_name);
+    if (!link) link = sg4::Link::by_name_or_null("link_" + site2_name + ":" + site1_name);
+    if (!link) throw std::runtime_error("Link not found");
+    return link->get_bandwidth(); 
+}
+  
+double get_connection_latency(const std::string& site1_name, const std::string& site2_name)
+{
+    sg4::Link* link = sg4::Link::by_name_or_null("link_" + site1_name + ":" + site2_name);
+    if (!link) link = sg4::Link::by_name_or_null("link_" + site2_name + ":" + site1_name);
+    if (!link) throw std::runtime_error("Link not found");
+    return link->get_latency();
+}
+  
+double get_connection_load(const std::string& site1_name, const std::string& site2_name)
+{
+    sg4::Link* link = sg4::Link::by_name_or_null("link_" + site1_name + ":" + site2_name);
+    if (!link) link = sg4::Link::by_name_or_null("link_" + site2_name + ":" + site1_name);
+    if (!link) throw std::runtime_error("Link not found");
+    return link->get_load();
+}
+
 }

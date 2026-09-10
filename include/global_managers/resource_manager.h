@@ -60,6 +60,10 @@ public:
     bool site_exists(const std::string& n) const noexcept{return global_site_map.count(n);}
     bool cpu_exists(const std::string& n) const noexcept{return global_cpu_map.count(n);}
 
+    double get_connection_bandwidth(const std::string& site1_name, const std::string& site2_name);
+    double get_connection_latency(const std::string& site1_name, const std::string& site2_name);
+    double get_connection_load(const std::string& site1_name, const std::string& site2_name);
+  
 private:
     ResourceManager()=default;
 
@@ -75,7 +79,6 @@ private:
 
     unsigned long TOTAL_GRID_CORES=0,USED_GRID_CORES=0;
     unsigned long long TOTAL_GRID_MEMORY=0,USED_GRID_MEMORY=0;
-
     std::unordered_map<std::string,std::string> Custom_Parameters{};
 
     friend int ::main(int,char**);

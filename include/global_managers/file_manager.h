@@ -46,6 +46,7 @@ public:
     unsigned long long request_file_size(const std::string& filename) const;
     unsigned long long request_remaining_site_storage(const std::string& sitename) const;
     unsigned long long request_remaining_grid_storage() const;
+    double  request_grid_storage_utilization() const;
     double request_site_storage_utilization(const std::string& sitename) const;
 
     void create(const std::string& filename, const unsigned long long& size, const std::string& sitename);
@@ -86,6 +87,9 @@ private:
     std::unordered_map<std::string, sg4::CommPtr> ongoing_transfers;
     Job* request_file_location(Job* j);
 
+    unsigned long long TOTAL_GRID_STORAGE = 0;
+    unsigned long long USED_GRID_STORAGE = 0;
+  
     friend int   ::main(int argc, char** argv);
     friend class ::CGSim::Core::Actions;
     friend class ::CGSim::Core::JOB_EXECUTOR;

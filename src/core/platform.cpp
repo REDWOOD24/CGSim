@@ -87,6 +87,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
 
     CGSim::GlobalManagers::get_resource_manager()->TOTAL_GRID_CORES = grid_cores;
     CGSim::GlobalManagers::get_resource_manager()->TOTAL_GRID_MEMORY = grid_memory;
+    CGSim::GlobalManagers::get_file_manager()->TOTAL_GRID_STORAGE = grid_storage;
 }
 
 void Platform::initialize_site_connections(std::vector<SiteConnInfo>& site_conn_info)

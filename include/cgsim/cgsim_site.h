@@ -39,7 +39,8 @@ public:
 
     double get_cpu_utilization() const noexcept{return total_cpus?double(used_cpus_list.size())/total_cpus:0;}
     double get_memory_utilization() const noexcept{return total_memory?double(used_memory)/total_memory:0;}
-
+    double get_storage_utilization() const noexcept;
+  
     unsigned long get_number_of_total_cores() const noexcept{return total_cores;}
     unsigned long get_number_of_used_cores() const noexcept{return used_cores;}
     unsigned long get_number_of_total_cpus() const noexcept{return total_cpus;}

@@ -32,6 +32,7 @@ bool FileManager::remove(const std::string& filename, const std::string& sitenam
     SiteFiles.at(sitename).erase(filename);
     FileSites.at(filename).erase(sitename);
     SiteStorages.at(sitename) += size;
+    USED_GRID_STORAGE -= size;
     if(FileSites.at(filename).empty()) {FileSites.erase(filename); FileSizes.erase(filename);}
 
     return true;
@@ -50,15 +51,8 @@ void FileManager::register_site(sg4::NetZone* site, const std::unordered_map<std
     const std::string& site_name = site->get_name();
     TotalSiteStorages[site_name] = CGSim::Utilities::parse_units_size(site->get_property("storage_capacity"));
     SiteStorages[site_name] = CGSim::Utilities::parse_units_size(site->get_property("storage_capacity"));
-    SiteFiles[site_name];
-
-    for (const auto& [file, size] : files) {
-        if (SiteStorages[site_name] < size) throw std::runtime_error("Site: "+site_name+" is out of storage");
-        SiteFiles[site_name].insert(file);
-        FileSizes[file] = size;
-        FileSites[file].insert(site_name);
-        SiteStorages[site_name] -= size;
-    }
+    SiteFiles[site_name] = {};
+    for (const auto& [file, size] : files) {create(file,size,site_name);}
 }
 
 Job* FileManager::request_file_location(Job* j){
@@ -90,11 +84,7 @@ unsigned long long FileManager::request_file_size(const std::string& filename) c
 }
 
 unsigned long long FileManager::request_remaining_grid_storage() const {
-    unsigned long long total = 0;
-    for (const auto& [key, value] : SiteStorages) {
-        total += value;
-    }
-    return total;
+    return TOTAL_GRID_STORAGE - USED_GRID_STORAGE;
 }
 
 unsigned long long FileManager::request_remaining_site_storage(const std::string& sitename) const {
@@ -102,6 +92,9 @@ unsigned long long FileManager::request_remaining_site_storage(const std::string
     return SiteStorages.at(sitename);
 }
 
+double FileManager::request_grid_storage_utilization() const{
+    return (1.0*USED_GRID_STORAGE)/(1.0*TOTAL_GRID_STORAGE);
+  }
 double FileManager::request_site_storage_utilization(const std::string& sitename) const{
     if (SiteStorages.count(sitename) == 0) throw std::runtime_error("Site: "+sitename+" does not exist");
     return 1.0 - (1.0*SiteStorages.at(sitename))/(1.0*TotalSiteStorages.at(sitename));
@@ -120,6 +113,7 @@ void FileManager::create(const std::string& filename, const unsigned long long& 
     FileSites[filename].insert(sitename);
     FileSizes[filename] = size;
     SiteStorages[sitename] -= size;
+    USED_GRID_STORAGE += size;
 }
 
 void FileManager::create(const std::string& filename, const std::string& size, const std::string& sitename){

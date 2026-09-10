@@ -58,4 +58,9 @@ void Site::add_failed_job(Job* j)
 
 void Site::add_cpu(CPU* cpu){cpus.push_back(cpu);}
 
+double Site::get_storage_utilization() const noexcept
+{
+  return CGSim::GlobalManagers::get_file_manager()->request_site_storage_utilization(name);
+}
+  
 }
