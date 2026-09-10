@@ -11,6 +11,7 @@
 #include "cgsim_site.h"
 #include "cgsim_cpu.h"
 #include "cgsim_disk.h"
+#include "statistics.h"
 namespace sg4 = simgrid::s4u;
 
 #endif //CGSIM_CGSIM_HPP
