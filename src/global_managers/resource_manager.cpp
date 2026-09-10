@@ -38,7 +38,7 @@ Disk* ResourceManager::create_disk(const std::string& n,sg4::Disk* d)
     return x;
 }
 
-double get_connection_bandwidth(const std::string& site1_name, const std::string& site2_name)
+double ResourceManager::get_connection_bandwidth(const std::string& site1_name, const std::string& site2_name)
 {
     sg4::Link* link = sg4::Link::by_name_or_null("link_" + site1_name + ":" + site2_name);
     if (!link) link = sg4::Link::by_name_or_null("link_" + site2_name + ":" + site1_name);
@@ -46,7 +46,7 @@ double get_connection_bandwidth(const std::string& site1_name, const std::string
     return link->get_bandwidth(); 
 }
   
-double get_connection_latency(const std::string& site1_name, const std::string& site2_name)
+double ResourceManager::get_connection_latency(const std::string& site1_name, const std::string& site2_name)
 {
     sg4::Link* link = sg4::Link::by_name_or_null("link_" + site1_name + ":" + site2_name);
     if (!link) link = sg4::Link::by_name_or_null("link_" + site2_name + ":" + site1_name);

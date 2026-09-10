@@ -32,7 +32,7 @@ void Actions::on_job_completion(Job* j)
                     Job* new_child_job = new Job(*child_job);
                     new_child_job->creation_time = sg4::Engine::get_clock() +  rel_creation_time;
                     JOB_EXECUTOR::all_jobs[child_job_id] = new_child_job;
-                    JOB_EXECUTOR::jobs.push(new_child_job);
+                    JOB_EXECUTOR::jobs.dag_push(new_child_job);
                     dag_job_created = true;
                 } 
 

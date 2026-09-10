@@ -178,6 +178,7 @@ void JOB_EXECUTOR::dispatch_site_pending_jobs(std::string& site_name)
       plugin->onJobFailure(j); 
       DISPATCHED_JOBS++; 
       ACTIVATED_JOBS++;
+      JOBS_IN_SITE_PENDING--;
     }
   }
 }

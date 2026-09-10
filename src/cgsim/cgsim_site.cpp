@@ -47,13 +47,13 @@ void Site::remove_running_job(Job* j)
 void Site::add_finished_job(Job* j)
 {
     finished_jobs[j->id]=j;
-    GlobalManagers::get_resource_manager()->get_cpu(j->cpu)->remove_running_job(j);
+    GlobalManagers::get_resource_manager()->get_cpu(j->cpu)->add_finished_job(j);
 }
 
 void Site::add_failed_job(Job* j)
 {
     failed_jobs[j->id]=j;
-    GlobalManagers::get_resource_manager()->get_cpu(j->cpu)->add_failed_job(j);
+    if(!j->get_cpu().empty()) GlobalManagers::get_resource_manager()->get_cpu(j->cpu)->add_failed_job(j);
 }
 
 void Site::add_cpu(CPU* cpu){cpus.push_back(cpu);}

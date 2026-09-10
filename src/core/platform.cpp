@@ -75,7 +75,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         cgsim_site->total_cpus = cgsim_site->cpus.size();
         sites[site_info.name] = site;
 
-        grid_storage += std::stoll(site->get_property("storage_capacity"));
+        grid_storage += CGSim::Utilities::parse_units_size(site->get_property("storage_capacity"));
         grid_cores   += site_cores;
         grid_memory  += site_memory;
 

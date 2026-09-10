@@ -160,7 +160,7 @@ struct JobPtrCompare {
 
 class JobQueue {
 public:
-    void push(Job* job) {if(!((ids.insert(job->get_id())).second)) throw std::runtime_error("Job IDs must be unique"); queue.push(job); }
+    void push(Job* job) {if(!((ids.insert(job->get_id())).second)) throw std::runtime_error("Job IDs must be unique"); queue.push(job);} 
     void pop() {if (queue.empty())return; ids.erase(queue.top()->get_id()); queue.pop();}
     Job* top() { return queue.empty() ? nullptr : queue.top();}
     bool empty() const { return queue.empty();}
@@ -168,8 +168,12 @@ public:
     bool contains(std::string id) const {return ids.find(id) != ids.end();}
 
 private:
+    void dag_push(Job* job) {queue.push(job);}
     std::priority_queue<Job*, std::vector<Job*>, JobPtrCompare> queue;
     std::unordered_set<std::string> ids;
+
+    friend class ::CGSim::Core::Actions;
+    friend class ::CGSim::Core::JOB_EXECUTOR;
 };
 
 }
