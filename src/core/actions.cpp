@@ -78,7 +78,7 @@ sg4::IoPtr Actions::read_file_async(Job* j, const std::string& filename)
 
     auto read_activity = CGSim::GlobalManagers::get_file_manager()->internal_read(filename, j->site,j->cpu,j->disk);
     read_activity->set_name("Read_File_"+ filename + "_for_Job_" + j->id + "_on_" + j->cpu);
-    auto size = CGSim::GlobalManagers::get_file_manager()->request_file_size(filename);
+    auto size = CGSim::GlobalManagers::get_file_manager()->request_file(filename)->size;
     read_activity->on_this_start_cb([j,filename,size](simgrid::s4u::Io const& io) {
         JOB_EXECUTOR::plugin->onFileReadStart(j,filename,size);
         });

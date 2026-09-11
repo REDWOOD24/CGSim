@@ -25,6 +25,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
         site->set_parent(platform);
         unsigned long site_cores = 0;
         unsigned long long site_memory = 0;
+        unsigned long long site_storage = CGSim::Utilities::parse_units_size(site_info.storage);
         for (const auto& [key,value] : site_info.properties){cgsim_site->set_property(key,value); site->set_property(key,value);}
         for (const auto& cpu_cluster : site_info.cpu_info) 
         {
@@ -70,12 +71,13 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
 
         site->set_property("total_cores",std::to_string(site_cores));
         site->set_property("total_memory",std::to_string(site_memory));
+        cgsim_site->total_storage = site_storage;
         cgsim_site->total_cores = site_cores;
         cgsim_site->total_memory = site_memory;
         cgsim_site->total_cpus = cgsim_site->cpus.size();
         sites[site_info.name] = site;
 
-        grid_storage += CGSim::Utilities::parse_units_size(site->get_property("storage_capacity"));
+        grid_storage += site_storage;
         grid_cores   += site_cores;
         grid_memory  += site_memory;
 
@@ -87,7 +89,7 @@ void Platform::create_platform(const std::string& platform_name, const std::vect
 
     CGSim::GlobalManagers::get_resource_manager()->TOTAL_GRID_CORES = grid_cores;
     CGSim::GlobalManagers::get_resource_manager()->TOTAL_GRID_MEMORY = grid_memory;
-    CGSim::GlobalManagers::get_file_manager()->TOTAL_GRID_STORAGE = grid_storage;
+    CGSim::GlobalManagers::get_resource_manager()->TOTAL_GRID_STORAGE = grid_storage;
 }
 
 void Platform::initialize_site_connections(std::vector<SiteConnInfo>& site_conn_info)

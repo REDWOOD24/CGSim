@@ -14,6 +14,7 @@
 #include "file_manager.h"
 #include "job_executor.h"
 #include "resource_manager.h"
+#include "file.h"
 
 namespace sg4 = simgrid::s4u;
 

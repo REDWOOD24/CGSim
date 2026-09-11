@@ -20,7 +20,7 @@ void TRACK4_DISPATCHER::findAvailableCPU(CGSim::Job* j)
   for(const auto& cpu: cpus)
   {
     if(cpu->get_cores_available() < j->get_cores()) continue;
-    if(site->get_remaining_storage() < storage_needed(j->get_output_files())) continue;
+    if(site->get_available_storage() < storage_needed(j->get_output_files())) continue;
 
     auto d = cpu->get_disks()[0]; //Change later
     j->set_disk(d->get_name());

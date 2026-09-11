@@ -87,10 +87,6 @@ public:
     const std::unordered_map<std::string, double>& get_children() const {return children;}
     std::string get_property(const std::string& key) const {return metadata.at(key);}
 
-    //Availble only after job is created
-    std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>> 
-    get_input_files_sizes_locations(){return input_files_sizes_locations;}
-
     bool operator<(const Job& other) const {return creation_time > other.creation_time;}
 
 private:
@@ -121,7 +117,6 @@ private:
 
     // Files
     std::unordered_set<std::string> input_files{};
-    std::unordered_map<std::string, std::pair<long long, std::unordered_set<std::string>>> input_files_sizes_locations{};
     std::unordered_map<std::string, std::string> output_files{};
     long files_written{};
 

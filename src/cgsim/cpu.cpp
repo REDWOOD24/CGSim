@@ -1,4 +1,4 @@
-#include "cgsim_cpu.h"
+#include "cpu.h"
 #include "resource_manager.h"
 #include "host_extensions.h"
 

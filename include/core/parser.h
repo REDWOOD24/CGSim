@@ -36,7 +36,6 @@ struct CPUInfo {
   std::string                                              ram{};
   std::vector<DiskInfo>                                    disk_info{};
   std::unordered_map<std::string, std::string>             properties{};
-
 };
 
 struct SiteInfo {
@@ -44,7 +43,7 @@ struct SiteInfo {
   std::vector<CPUInfo>                                     cpu_info{};
   std::unordered_map<std::string, std::string>             properties{};
   std::unordered_map<std::string, unsigned long long>      files{};
-
+  std::string                                              storage{};
 };
 
 struct SiteConnInfo {

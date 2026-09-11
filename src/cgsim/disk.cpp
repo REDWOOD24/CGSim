@@ -1,4 +1,4 @@
-#include "cgsim_disk.h"
+#include "disk.h"
 #include "resource_manager.h"
 
 namespace CGSim {

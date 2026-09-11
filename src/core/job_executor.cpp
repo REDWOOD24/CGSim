@@ -48,7 +48,6 @@ void JOB_EXECUTOR::get_jobs()
     if(job->creation_time == -1.0) break;
     if (sg4::Engine::get_clock() >= job->creation_time) 
     {
-      CGSim::GlobalManagers::get_file_manager()->request_file_location(job);
       pending_jobs.push_back(job);
       job->submission_time = sg4::Engine::get_clock();
       job->status = CGSim::STATUS::GLOBAL_PENDING;
@@ -243,14 +242,15 @@ void JOB_EXECUTOR::execute_job(Job* j)
   std::vector<sg4::CommPtr> comm_activities;
   std::vector<sg4::IoPtr>   write_activities;
 
-  for (const auto& [filename,fileinfo] : j->input_files_sizes_locations) 
+  for (const auto& filename : j->input_files) 
   {
+    auto* file = CGSim::GlobalManagers::get_file_manager()->request_file(filename);
     if(j->disk.empty()) throw std::runtime_error("Disk not selected for Job " + j->id);
     auto read_activity = Actions::read_file_async(j,filename);
     std::string filelocation = "";
     CGSim::FileTransferDecisionMode mode = CGSim::FileTransferDecisionMode::COPY;
 
-    plugin->onFileRequest(j, filename, fileinfo.first, fileinfo.second, filelocation, mode);
+    plugin->onFileRequest(j, filename, file->size, file->locations, filelocation, mode);
     if(filelocation.empty()) throw std::runtime_error("File location not specified for file: "+filename);
 
     if (filelocation != j->site) 

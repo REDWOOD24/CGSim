@@ -11,6 +11,7 @@
 #include "units_parser.h"
 #include "print.h"
 #include "statistics.h"
+#include "file.h"
 
 namespace CGSim::Utilities
 {

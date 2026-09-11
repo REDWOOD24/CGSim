@@ -54,7 +54,7 @@ double ResourceManager::get_connection_latency(const std::string& site1_name, co
     return link->get_latency();
 }
   
-double get_connection_load(const std::string& site1_name, const std::string& site2_name)
+double ResourceManager::get_connection_load(const std::string& site1_name, const std::string& site2_name)
 {
     sg4::Link* link = sg4::Link::by_name_or_null("link_" + site1_name + ":" + site2_name);
     if (!link) link = sg4::Link::by_name_or_null("link_" + site2_name + ":" + site1_name);

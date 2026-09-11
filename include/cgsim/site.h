@@ -1,6 +1,7 @@
 #pragma once
 #include <simgrid/s4u.hpp>
 #include "job.h"
+#include "file.h"
 namespace sg4 = simgrid::s4u;
 
 namespace CGSim {
@@ -39,7 +40,6 @@ public:
 
     double get_cpu_utilization() const noexcept{return total_cpus?double(used_cpus_list.size())/total_cpus:0;}
     double get_memory_utilization() const noexcept{return total_memory?double(used_memory)/total_memory:0;}
-    double get_storage_utilization() const noexcept;
   
     unsigned long get_number_of_total_cores() const noexcept{return total_cores;}
     unsigned long get_number_of_used_cores() const noexcept{return used_cores;}
@@ -47,6 +47,10 @@ public:
     unsigned long get_number_of_used_cpus() const noexcept{return used_cpus_list.size();}
     unsigned long long get_memory_capacity() const noexcept{return total_memory;}
     unsigned long long get_used_memory() const noexcept{return used_memory;}
+
+    unsigned long long get_site_storage_capacity() const noexcept{return total_storage;}
+    unsigned long long get_available_storage() const noexcept{return total_storage - used_storage;}
+    double             get_storage_utilization() const noexcept{return (1.0*used_storage)/(1.0*total_storage);}
 
     void enable_job_assignment() noexcept{job_assignment_enabled=true;}
     void disable_job_assignment() noexcept{job_assignment_enabled=false;}
@@ -61,14 +65,14 @@ public:
     std::unordered_map<std::string,std::string>& get_incoming_file_transfers() noexcept{return incoming_file_transfers;}
     const std::unordered_map<std::string,std::string>& get_incoming_file_transfers() const noexcept{return incoming_file_transfers;}
 
-    std::unordered_set<std::string> get_files() const;
-    unsigned long long get_remaining_storage() const;
+    const std::unordered_map<std::string, File*>& get_files() const noexcept {return files;}
 
 private:
     std::string name{};
     unsigned long total_cores=0,used_cores=0,total_cpus=0,MAX_RETRIES=100000;
-    unsigned long long total_memory=0,used_memory=0;
+    unsigned long long total_memory=0,used_memory=0,total_storage=0,used_storage=0;
     std::vector<CPU*> cpus{};
+    std::unordered_map<std::string, File*> files;
     std::unordered_map<std::string,sg4::Host*> simgrid_hosts{};
     std::unordered_set<std::string> used_cpus_list{};
     std::deque<Job*> pending_jobs{};
@@ -81,6 +85,8 @@ private:
     void add_running_job(Job*),remove_running_job(Job*);
     void add_finished_job(Job*),add_failed_job(Job*);
     void add_cpu(CPU*);
+    void add_file(File* file){files[file->name] = file; used_storage += file->size;}
+    void remove_file(File* file){used_storage -= file->size; files.erase(file->name);}
 
     friend class CPU;
     friend class ::CGSim::Core::Platform;

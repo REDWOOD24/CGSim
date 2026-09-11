@@ -1,6 +1,6 @@
 #pragma once
 #include <simgrid/s4u.hpp>
-#include "cgsim_disk.h"
+#include "disk.h"
 #include "job.h"
 namespace sg4 = simgrid::s4u;
 

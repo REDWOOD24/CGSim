@@ -140,7 +140,7 @@ long long TRACK4_OUTPUT::input_files_bytes(CGSim::Job* job)
 {
   long long total_bytes = 0;
   auto* fm = CGSim::GlobalManagers::get_file_manager();
-  for (const auto& filename: job->get_input_files()) {total_bytes += fm->request_file_size(filename);}
+  for (const auto& filename: job->get_input_files()) {total_bytes += fm->request_file(filename)->get_size();}
   return total_bytes;
 }
 

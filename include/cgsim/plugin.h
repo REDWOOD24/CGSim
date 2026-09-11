@@ -121,8 +121,8 @@ public:
   /*------Policy Module Interface------*/
 
     // Virtual function can be implemented to define how to handle job file requests
-  virtual void onFileRequest(Job* j, std::string file_name, long long filesize, 
-    std::unordered_set<std::string> file_locations, std::string& source_site, 
+  virtual void onFileRequest(Job* j, const std::string& file_name, const long long& filesize, 
+    const std::unordered_set<std::string>& file_locations, std::string& source_site, 
     CGSim::FileTransferDecisionMode& mode)
   {
   //Current default behavior, choose file at the comp site or pick the first one in the location list

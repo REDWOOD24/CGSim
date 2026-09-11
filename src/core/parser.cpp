@@ -36,6 +36,7 @@ std::vector<SiteInfo> Parser::getSiteInfo() {
         if (!filteredSiteList.empty() && filteredSiteList.count(site_name) == 0) continue;
         SiteInfo site;
         site.name = site_name;
+        site.storage = site_json.value("storage", "");
 
         // --- PROPERTIES ---
         for (auto& [key, value] : site_json["SITE_PROPERTIES"].items()) {

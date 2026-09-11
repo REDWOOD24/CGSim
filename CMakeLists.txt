@@ -77,7 +77,7 @@ install(TARGETS CGSim
 )
 
 # Install header files
-install(FILES include/CGSim.h include/global_managers/file_manager.h include/util/logger.h include/cgsim/job.h include/cgsim/plugin.h include/cgsim/cgsim_site.h include/cgsim/cgsim_cpu.h include/cgsim/cgsim_disk.h include/global_managers/resource_manager.h include/global_managers/policy_manager.h include/util/units_parser.h include/util/statistics.h
+install(FILES include/CGSim.h include/global_managers/file_manager.h include/util/logger.h include/cgsim/job.h include/cgsim/plugin.h include/cgsim/site.h include/cgsim/cpu.h include/cgsim/disk.h "include/cgsim/file.h" include/global_managers/resource_manager.h include/global_managers/policy_manager.h include/util/units_parser.h include/util/statistics.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGSim)
 
 # Install the executable

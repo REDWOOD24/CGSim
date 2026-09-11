@@ -8,8 +8,8 @@
 #include <simgrid/s4u.hpp>
 #include "job.h"
 #include "units_parser.h"
-#include "cgsim_site.h"
-#include "cgsim_cpu.h"
+#include "site.h"
+#include "cpu.h"
 
 namespace sg4 = simgrid::s4u;
 int main(int argc, char** argv);
@@ -23,7 +23,7 @@ class HostExtensions;
 
 namespace CGSim::GlobalManagers 
 {
-class ResourceManager;
+class FileManager;
 }
 
 namespace CGSim {
@@ -40,9 +40,13 @@ public:
     unsigned long get_used_grid_cores() const noexcept{return USED_GRID_CORES;}
     unsigned long long get_total_grid_memory_capacity() const noexcept{return TOTAL_GRID_MEMORY;}
     unsigned long long get_used_grid_memory() const noexcept{return USED_GRID_MEMORY;}
+    unsigned long long get_total_grid_storage_capacity() const noexcept{return TOTAL_GRID_STORAGE;}
+    unsigned long long get_used_grid_storage() const noexcept{return USED_GRID_STORAGE;}
 
     double get_grid_cpu_utilization() const noexcept{return TOTAL_GRID_CORES?double(USED_GRID_CORES)/TOTAL_GRID_CORES:0.0;}
     double get_grid_memory_utilization() const noexcept{return TOTAL_GRID_MEMORY?double(USED_GRID_MEMORY)/TOTAL_GRID_MEMORY:0.0;}
+    double get_grid_storage_utilization() const noexcept{return TOTAL_GRID_STORAGE?double(USED_GRID_STORAGE)/TOTAL_GRID_STORAGE:0.0;}
+
 
     const std::unordered_map<std::string,Job*>& get_global_pending_jobs() const noexcept{return global_pending_jobs;}
     const std::unordered_map<std::string,Job*>& get_global_failed_jobs() const noexcept{return global_failed_jobs;}
@@ -79,12 +83,14 @@ private:
 
     unsigned long TOTAL_GRID_CORES=0,USED_GRID_CORES=0;
     unsigned long long TOTAL_GRID_MEMORY=0,USED_GRID_MEMORY=0;
+    unsigned long long TOTAL_GRID_STORAGE=0,USED_GRID_STORAGE=0;
     std::unordered_map<std::string,std::string> Custom_Parameters{};
 
     friend int ::main(int,char**);
     friend class ::CGSim::Core::Platform;
     friend class ::CGSim::Core::JOB_EXECUTOR;
     friend class ::CGSim::Core::HostExtensions;
+    friend class ::CGSim::GlobalManagers::FileManager;
 };
 
 inline ResourceManager* get_resource_manager(){return &ResourceManager::instance();}

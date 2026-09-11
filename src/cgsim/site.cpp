@@ -1,4 +1,4 @@
-#include "cgsim_site.h"
+#include "site.h"
 #include "resource_manager.h"
 #include "file_manager.h"
 
@@ -8,16 +8,6 @@ bool Site::cpu_exists_at_site(const std::string& cpu_name) const
 {
     auto* cpu=GlobalManagers::get_resource_manager()->get_cpu(cpu_name);
     return name==cpu->simgrid_host->get_englobing_zone()->get_name();
-}
-
-std::unordered_set<std::string> Site::get_files() const
-{
-    return GlobalManagers::get_file_manager()->request_site_files(name);
-}
-
-unsigned long long Site::get_remaining_storage() const
-{
-    return GlobalManagers::get_file_manager()->request_remaining_site_storage(name);
 }
 
 void Site::add_assigned_job(Job* j)
@@ -57,10 +47,5 @@ void Site::add_failed_job(Job* j)
 }
 
 void Site::add_cpu(CPU* cpu){cpus.push_back(cpu);}
-
-double Site::get_storage_utilization() const noexcept
-{
-  return CGSim::GlobalManagers::get_file_manager()->request_site_storage_utilization(name);
-}
   
 }
