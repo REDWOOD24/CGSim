@@ -65,23 +65,18 @@ public:
 
 private:
     FileManager() = default; 
-    void register_site(sg4::NetZone* site, const std::unordered_map<std::string, unsigned long long>& files);
-    static void set_plugin(std::shared_ptr<CGSim::Plugin>& p){plugin = p;}
+    void         register_site(sg4::NetZone* site, const std::unordered_map<std::string, unsigned long long>& files);
+    static void  set_plugin(std::shared_ptr<CGSim::Plugin>& p){plugin = p;}
     sg4::IoPtr   internal_write(const std::string& filename, const unsigned long long& size, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
     sg4::IoPtr   internal_read(const std::string& filename, const std::string& comp_sitename, const std::string& comp_host, const std::string& comp_disk);
     sg4::CommPtr internal_transfer(const std::string& filename, const std::string& src_site, const std::string& dst_site, FileTransferDecisionMode mode = CGSim::FileTransferDecisionMode::COPY);
 
     std::unordered_map<std::string, CGSim::File*> global_file_map{};
-    std::unordered_set<std::string> internal_transfers; //Hack to avoid double start comm callback
-    std::unordered_set<std::string> user_initiated_transfers; //Hack to avoid double start comm callback
-
+    std::unordered_set<std::string>               internal_transfers; //Hack to avoid double start comm callback
+    std::unordered_set<std::string>               user_initiated_transfers; //Hack to avoid double start comm callback
     std::unordered_map<std::string, sg4::CommPtr> ongoing_transfers;
-    unsigned long long TOTAL_GRID_STORAGE = 0;
-    unsigned long long USED_GRID_STORAGE = 0;
-
     inline static std::shared_ptr<CGSim::Plugin>  plugin;
-
-    CGSim::GlobalManagers::ResourceManager* rm = CGSim::GlobalManagers::get_resource_manager();
+    CGSim::GlobalManagers::ResourceManager*       rm = CGSim::GlobalManagers::get_resource_manager();
   
     friend int   ::main(int argc, char** argv);
     friend class ::CGSim::Core::Actions;
