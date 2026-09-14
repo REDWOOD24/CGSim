@@ -106,7 +106,7 @@ void JOB_EXECUTOR::dispatch_global_pending_jobs()
   {
   if(plugin->stopGlobalJobDispatching()) break;
   Job* job = *it;
-  if(job->cores>grid_available_cores) break;
+  if(job->cores>grid_available_cores) break; //One big job can stall the simulation. In Reality this is unlikely.
   plugin->assignJob(job);
 
   if(!job->site.empty() && job->cpu.empty())
@@ -132,7 +132,7 @@ void JOB_EXECUTOR::dispatch_global_pending_jobs()
   //@ToDo Need concrete plan to deal with job failures.
   else if(++job->retries > plugin->maxJobRetries())
   {
-    grid_available_cores-=job->cores; 
+    //grid_available_cores-=job->cores; @ToDo This job never occupied any cores.
     job->status = CGSim::STATUS::FAILED; 
     CGSim::GlobalManagers::get_resource_manager()->global_pending_jobs.erase(job->id);
     CGSim::GlobalManagers::get_resource_manager()->global_failed_jobs[job->id] = job;
