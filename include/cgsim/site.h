@@ -38,7 +38,7 @@ public:
     const std::unordered_map<std::string,Job*>& get_finished_jobs() const noexcept{return finished_jobs;}
     const std::unordered_map<std::string,Job*>& get_failed_jobs() const noexcept{return failed_jobs;}
 
-    double get_cpu_utilization() const noexcept{return total_cpus?double(used_cpus_list.size())/total_cpus:0;}
+    double get_cpu_utilization() const noexcept{return total_cpus?double(used_cores)/total_cores:0;}
     double get_memory_utilization() const noexcept{return total_memory?double(used_memory)/total_memory:0;}
   
     unsigned long get_number_of_total_cores() const noexcept{return total_cores;}
