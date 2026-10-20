@@ -1,0 +1,9 @@
+{
+  "policy_name": "mct_pure",
+  "dispatch_mode": "score",
+  "feasibility": { "storage_margin_bytes": 0 },
+  "features": [
+    { "name": "estimated_completion_time", "weight": -1.0 }
+  ],
+  "normalization": "minmax_across_candidates"
+}

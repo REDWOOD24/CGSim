@@ -1,0 +1,10 @@
+{
+  "policy_name": "locality_first",
+  "dispatch_mode": "score",
+  "feasibility": { "storage_margin_bytes": 0 },
+  "features": [
+    { "name": "input_locality_bytes_fraction", "weight": 5.0 },
+    { "name": "pending_queue_depth", "weight": -0.5 }
+  ],
+  "normalization": "minmax_across_candidates"
+}

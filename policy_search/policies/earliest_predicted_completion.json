@@ -1,0 +1,10 @@
+{
+  "policy_name": "earliest_predicted_completion",
+  "dispatch_mode": "score",
+  "feasibility": { "storage_margin_bytes": 0 },
+  "features": [
+    { "name": "estimated_completion_time", "weight": -1.0 },
+    { "name": "bandwidth_from_nearest_input_site", "weight": 0.2 }
+  ],
+  "normalization": "minmax_across_candidates"
+}

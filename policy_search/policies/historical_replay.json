@@ -1,0 +1,5 @@
+{
+  "policy_name": "historical_replay",
+  "dispatch_mode": "replay",
+  "features": []
+}

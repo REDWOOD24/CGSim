@@ -1,0 +1,11 @@
+plugin/build/
+runs/*
+!runs/.gitkeep
+experiments/*.db
+experiments/*.db-*
+data/splits/*.csv
+data/splits_large/*.csv
+agent/transcripts/*.json
+policies/_agent_runs/
+__pycache__/
+*.pyc

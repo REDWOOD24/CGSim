@@ -1,0 +1,10 @@
+{
+  "policy_name": "least_loaded",
+  "dispatch_mode": "score",
+  "feasibility": { "storage_margin_bytes": 0 },
+  "features": [
+    { "name": "available_cores_fraction", "weight": 1.0 },
+    { "name": "pending_queue_depth", "weight": -1.0 }
+  ],
+  "normalization": "minmax_across_candidates"
+}

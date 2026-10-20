@@ -1,0 +1,42 @@
+{
+  "calib_end_index": 9000,
+  "dev_end_index": 12000,
+  "git_commit": "663b7f6230e3cae2af25e181c9709a779a738790",
+  "source_csv": "config/job_data.csv",
+  "source_sha256": "4dacb47088b069078aee02b2834bcaf6fb99663ae206c6709b28f325019f3a6f",
+  "splits": {
+    "calib": {
+      "row_count": 9000,
+      "site_counts": {
+        "AGLT2": 3119,
+        "BNL": 2729,
+        "MWT2": 3152
+      },
+      "t_max": 18902530.0,
+      "t_min": 1818.0
+    },
+    "dev": {
+      "row_count": 3000,
+      "site_counts": {
+        "AGLT2": 834,
+        "BNL": 1242,
+        "MWT2": 924
+      },
+      "t_max": 19184786.0,
+      "t_min": 18902531.0
+    },
+    "test": {
+      "row_count": 3000,
+      "site_counts": {
+        "AGLT2": 1047,
+        "BNL": 1029,
+        "MWT2": 924
+      },
+      "t_max": 21207133.0,
+      "t_min": 19184786.0
+    }
+  },
+  "t_calib_end": 18902530.0,
+  "t_dev_end": 19184786.0,
+  "total_rows": 15000
+}

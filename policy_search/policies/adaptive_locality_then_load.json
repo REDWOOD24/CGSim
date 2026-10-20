@@ -1,0 +1,44 @@
+{
+  "policy_name": "adaptive_locality_then_load",
+  "check_interval_seconds": 500,
+  "phases": [
+    {
+      "phase_name": "locality_first",
+      "spec": {
+        "features": [
+          {
+            "name": "input_locality_bytes_fraction",
+            "weight": 5.0
+          },
+          {
+            "name": "pending_queue_depth",
+            "weight": -0.5
+          }
+        ],
+        "normalization": "minmax_across_candidates"
+      }
+    },
+    {
+      "phase_name": "load_balance_fallback",
+      "activate_when": {
+        "feature": "available_cores_fraction",
+        "aggregate": "min_over_sites",
+        "op": "<",
+        "value": 0.99999
+      },
+      "spec": {
+        "features": [
+          {
+            "name": "available_cores_fraction",
+            "weight": 1.0
+          },
+          {
+            "name": "pending_queue_depth",
+            "weight": -1.0
+          }
+        ],
+        "normalization": "minmax_across_candidates"
+      }
+    }
+  ]
+}

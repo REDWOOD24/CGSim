@@ -1,0 +1,10 @@
+# The policy_search/harness package itself is stdlib-only (Python 3.9+) and
+# runs fine under the repo's default Anaconda python3. Only the MCP server
+# layer needs the `mcp` package, which requires Python >= 3.10 -- run it
+# from a separate environment, e.g.:
+#
+#   conda create -n policy-search python=3.11
+#   conda run -n policy-search pip install -r policy_search/requirements.txt
+#   conda run -n policy-search python policy_search/mcp_server/server.py
+#
+mcp
